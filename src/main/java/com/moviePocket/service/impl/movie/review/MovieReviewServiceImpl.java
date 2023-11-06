@@ -77,8 +77,6 @@ public class MovieReviewServiceImpl implements MovieReviewService {
         User user = userRepository.findByEmail(username);
         ReviewMovie movieReview = movieReviewRepository.getById(idReview);
         if (movieReview.getUser() == user) {
-            likeMovieReviewRepository.deleteAllByMovieReview(movieReview);
-            movieReviewRepository.delete(movieReview);
             return ResponseEntity.ok().body(true);
         } else {
             return ResponseEntity.ok().body(false);
