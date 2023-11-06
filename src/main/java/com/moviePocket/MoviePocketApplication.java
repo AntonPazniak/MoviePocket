@@ -1,5 +1,4 @@
 package com.moviePocket;
-//https://www.youtube.com/watch?v=L9oWG6aj_U8
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

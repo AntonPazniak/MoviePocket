@@ -22,4 +22,7 @@ public interface MovieReviewService {
     ResponseEntity<List<ParsReview>> getAllByUserAndIdMovie(String email, Long idMovie);
 
     ResponseEntity<Void> updateMovieReview(Long idMovieReview, String username, String title, String content);
+
+    ResponseEntity<Boolean> authorshipCheck(Long idReview, String username);
+
 }

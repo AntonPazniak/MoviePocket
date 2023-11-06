@@ -31,7 +31,6 @@ public class DislikedMovieController {
     public ResponseEntity<Void> setOrDeleteMovieWatched(@RequestParam("idMovie") Long idMovie, HttpServletRequest request) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println(authentication.getName());
         return dislikedMovieService.setOrDeleteDislikedMovie(authentication.getName(), idMovie);
     }
 
