@@ -59,7 +59,7 @@ public class DislikedMovieController {
     }
 
     @GetMapping("/count/dislike")
-    public ResponseEntity<Integer> getAllCountDislikedByIdMovie(@RequestParam("id") Long id) {
-        return dislikedMovieService.getAllCountByIdMovie(id);
+    public ResponseEntity<Integer> getAllCountDislikedByIdMovie(@RequestParam("idMovie") Long idMovie) {
+        return dislikedMovieService.getAllCountByIdMovie(idMovie);
     }
 }

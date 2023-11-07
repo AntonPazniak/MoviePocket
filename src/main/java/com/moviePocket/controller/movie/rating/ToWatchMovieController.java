@@ -17,13 +17,13 @@ public class ToWatchMovieController {
     ToWatchMovieService toWatchMovieService;
 
     @PostMapping("/set")
-    public ResponseEntity<Void> setOrDeleteMovieToWatch(@RequestParam("id") Long id) {
+    public ResponseEntity<Void> setOrDeleteMovieToWatch(@RequestParam("idMovie") Long id) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return toWatchMovieService.setOrDeleteToWatch(authentication.getName(), id);
     }
 
     @GetMapping("/get")
-    public ResponseEntity<Boolean> getIsUserMovieToWatch(@RequestParam("id") Long id) {
+    public ResponseEntity<Boolean> getIsUserMovieToWatch(@RequestParam("idMovie") Long id) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return toWatchMovieService.getFromToWatch(
                 authentication.getName(), id);
@@ -37,7 +37,7 @@ public class ToWatchMovieController {
     }
 
     @GetMapping("/count/towatch")
-    public ResponseEntity<Integer> getAllCountToWatchByIdMovie(@RequestParam("id") Long id) {
+    public ResponseEntity<Integer> getAllCountToWatchByIdMovie(@RequestParam("idMovie") Long id) {
         return toWatchMovieService.getAllCountByIdMovie(id);
     }
 
