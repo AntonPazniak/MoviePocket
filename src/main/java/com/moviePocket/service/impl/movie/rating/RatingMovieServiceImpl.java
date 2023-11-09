@@ -33,20 +33,20 @@ public class RatingMovieServiceImpl implements RatingMovieService {
             User user = userRepository.findByEmail(email);
             if (user == null)
                 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-            if (ratingMovieRepository.findByUserAndIdMovie(user, idMovie) == null) {
-                ratingMovieRepository.save(
-                        new RatingMovie(userRepository.findByEmail(email), idMovie, rating));
+
+            RatingMovie ratingMovie = ratingMovieRepository.findByUserAndIdMovie(user, idMovie);
+            if (ratingMovie == null) {
+                ratingMovie = new RatingMovie(user, idMovie, rating);
                 watchedMovieService.setOrDeleteNewWatched(email, idMovie);
             } else {
-                RatingMovie ratingMovie = ratingMovieRepository.findByUserAndIdMovie(
-                        userRepository.findByEmail(email), idMovie);
                 ratingMovie.setRating(rating);
-                ratingMovieRepository.save(ratingMovie);
             }
+            ratingMovieRepository.save(ratingMovie);
             return new ResponseEntity<>(HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
+
 
     @Transactional
     public ResponseEntity<Void> removeFromRatingMovie(String email, Long idMovie) {
