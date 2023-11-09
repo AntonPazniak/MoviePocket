@@ -11,7 +11,7 @@ import javax.persistence.*;
 
 
 @Entity
-@Table(name = "review_movie")
+@Table(name = "review_movie", uniqueConstraints = @UniqueConstraint(columnNames = {"idUser", "id"}))
 @Getter
 @Setter
 @NoArgsConstructor
