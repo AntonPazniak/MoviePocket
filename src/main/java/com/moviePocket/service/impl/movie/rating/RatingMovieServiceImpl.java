@@ -64,9 +64,10 @@ public class RatingMovieServiceImpl implements RatingMovieService {
         RatingMovie ratingMovie = ratingMovieRepository.findByUserAndIdMovie(
                 userRepository.findByEmail(email), idMovie);
         if (ratingMovie == null)
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity.ok(0);
         return ResponseEntity.ok(ratingMovie.getRating());
     }
+
 
     public ResponseEntity<List<Rating>> getAllUserRatingMovie(String email) {
         User user = userRepository.findByEmail(email);

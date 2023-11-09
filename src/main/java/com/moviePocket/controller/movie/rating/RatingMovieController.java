@@ -55,7 +55,7 @@ public class RatingMovieController {
             @ApiResponse(code = 400, message = "Bad request"),
             @ApiResponse(code = 401, message = "User is not authentificated")
     })
-    public ResponseEntity<Integer> getRatingMovie(@RequestParam("idMovie") Long idMovie) {
+    public ResponseEntity<Integer> getUserRatingMovie(@RequestParam("idMovie") Long idMovie) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return ratingMovieService.getFromRatingMovie(authentication.getName(), idMovie);
     }
@@ -72,8 +72,8 @@ public class RatingMovieController {
         return ratingMovieService.getAllUserRatingMovie(authentication.getName());
     }
 
-    @GetMapping("/rating")
-    public ResponseEntity<Double> getMovieRating(@RequestParam("idMovie") Long idMovie) {
+    @GetMapping("/getByIdMovie")
+    public ResponseEntity<Double> getByIdMovieRating(@RequestParam("idMovie") Long idMovie) {
         return ratingMovieService.getMovieRating(idMovie);
     }
 
