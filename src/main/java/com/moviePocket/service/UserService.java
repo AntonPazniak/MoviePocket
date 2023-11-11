@@ -34,4 +34,8 @@ public interface UserService extends UserDetailsService {
 
     User findUserByUsername(String username);
 
+    ResponseEntity<Boolean> existsByUsername(String username);
+
+    ResponseEntity<Boolean> existsByEmail(String email);
+
 }
