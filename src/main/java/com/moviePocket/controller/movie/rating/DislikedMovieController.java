@@ -31,7 +31,6 @@ public class DislikedMovieController {
     public ResponseEntity<Void> setOrDeleteMovieWatched(@RequestParam("idMovie") Long idMovie, HttpServletRequest request) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println(authentication.getName());
         return dislikedMovieService.setOrDeleteDislikedMovie(authentication.getName(), idMovie);
     }
 
@@ -60,7 +59,7 @@ public class DislikedMovieController {
     }
 
     @GetMapping("/count/dislike")
-    public ResponseEntity<Integer> getAllCountDislikedByIdMovie(@RequestParam("id") Long id) {
-        return dislikedMovieService.getAllCountByIdMovie(id);
+    public ResponseEntity<Integer> getAllCountDislikedByIdMovie(@RequestParam("idMovie") Long idMovie) {
+        return dislikedMovieService.getAllCountByIdMovie(idMovie);
     }
 }

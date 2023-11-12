@@ -29,21 +29,24 @@ public class RatingMovieServiceImpl implements RatingMovieService {
 
     @Transactional
     public ResponseEntity<Void> setNewRatingMovie(String email, Long idMovie, int rating) {
-        User user = userRepository.findByEmail(email);
-        if (user == null)
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        if (ratingMovieRepository.findByUserAndIdMovie(user, idMovie) == null) {
-            ratingMovieRepository.save(
-                    new RatingMovie(userRepository.findByEmail(email), idMovie, rating));
-            watchedMovieService.setOrDeleteNewWatched(email, idMovie);
-        } else {
-            RatingMovie ratingMovie = ratingMovieRepository.findByUserAndIdMovie(
-                    userRepository.findByEmail(email), idMovie);
-            ratingMovie.setRating(rating);
+        if (rating > 0 && rating < 11) {
+            User user = userRepository.findByEmail(email);
+            if (user == null)
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+            RatingMovie ratingMovie = ratingMovieRepository.findByUserAndIdMovie(user, idMovie);
+            if (ratingMovie == null) {
+                ratingMovie = new RatingMovie(user, idMovie, rating);
+                watchedMovieService.setOrDeleteNewWatched(email, idMovie);
+            } else {
+                ratingMovie.setRating(rating);
+            }
             ratingMovieRepository.save(ratingMovie);
+            return new ResponseEntity<>(HttpStatus.OK);
         }
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
+
 
     @Transactional
     public ResponseEntity<Void> removeFromRatingMovie(String email, Long idMovie) {
@@ -61,9 +64,10 @@ public class RatingMovieServiceImpl implements RatingMovieService {
         RatingMovie ratingMovie = ratingMovieRepository.findByUserAndIdMovie(
                 userRepository.findByEmail(email), idMovie);
         if (ratingMovie == null)
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity.ok(0);
         return ResponseEntity.ok(ratingMovie.getRating());
     }
+
 
     public ResponseEntity<List<Rating>> getAllUserRatingMovie(String email) {
         User user = userRepository.findByEmail(email);

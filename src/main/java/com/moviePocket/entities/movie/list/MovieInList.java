@@ -13,7 +13,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "movie_in_list")
+@Table(name = "movie_in_list", uniqueConstraints = @UniqueConstraint(columnNames = {"idMovieList", "idMovie"}))
 public class MovieInList extends BaseEntity {
 
     @ManyToOne

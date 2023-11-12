@@ -238,6 +238,13 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByUsernameAndAccountActive(username, true);
     }
 
+    public ResponseEntity<Boolean> existsByUsername(String username) {
+        return ResponseEntity.ok(userRepository.existsByUsername(username));
+    }
+
+    public ResponseEntity<Boolean> existsByEmail(String email) {
+        return ResponseEntity.ok(userRepository.existsByEmail(email));
+    }
 
     private String buildEmail(String username, String massage, String link) {
         return "<div style=\"font-family:Helvetica,Arial,sans-serif;font-size:16px;margin:0;color:#0b0c0c\">\n" +

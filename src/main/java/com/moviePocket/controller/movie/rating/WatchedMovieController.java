@@ -62,7 +62,7 @@ public class WatchedMovieController {
     }
 
     @GetMapping("/count/watched")
-    public ResponseEntity<Integer> getAllCountWatchedByIdMovie(@RequestParam("id") Long id) {
+    public ResponseEntity<Integer> getAllCountWatchedByIdMovie(@RequestParam("idMovie") Long id) {
         return watchedMovieService.getAllCountByIdMovie(id);
     }
 }

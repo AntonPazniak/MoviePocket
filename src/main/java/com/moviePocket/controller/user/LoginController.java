@@ -1,4 +1,4 @@
-package com.moviePocket.controller;
+package com.moviePocket.controller.user;
 
 import com.moviePocket.controller.dto.UserRegistrationDto;
 import com.moviePocket.entities.user.User;
@@ -89,5 +89,15 @@ public class LoginController {
     @PostMapping("/activate")
     public ResponseEntity<Void> activate(@RequestParam("token") String token) {
         return userService.activateUser(token);
+    }
+
+    @GetMapping("/registration/exist/username")
+    public ResponseEntity<Boolean> existsUserByUsername(@RequestParam("username") String username) {
+        return userService.existsByUsername(username);
+    }
+
+    @GetMapping("/registration/exist/email")
+    public ResponseEntity<Boolean> existsUserByEmail(@RequestParam("email") String email) {
+        return userService.existsByEmail(email);
     }
 }

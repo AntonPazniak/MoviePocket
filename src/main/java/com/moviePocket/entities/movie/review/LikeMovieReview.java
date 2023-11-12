@@ -6,24 +6,21 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
-@Table(name = "like_review")
+@Table(name = "like_review", uniqueConstraints = @UniqueConstraint(columnNames = {"idUser", "idReview"}))
 @Getter
 @Setter
 @NoArgsConstructor
 public class LikeMovieReview extends BaseEntity {
 
     @ManyToOne
-    @JoinColumn(name = "review_id")
+    @JoinColumn(name = "idReview")
     private ReviewMovie movieReview;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "idUser")
     private User user;
 
     private boolean lickOrDis;

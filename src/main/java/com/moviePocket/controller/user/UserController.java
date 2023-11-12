@@ -33,6 +33,7 @@ public class UserController {
     @GetMapping("/getAut")
     public ResponseEntity<Void> checkAuthentication() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println((authentication.getName()));
         if (authentication.getName().equals("anonymousUser"))
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         return new ResponseEntity<>(HttpStatus.OK);

@@ -60,8 +60,8 @@ public class FavoriteMovieController {
     }
 
     @GetMapping("/count/favorite")
-    public ResponseEntity<Integer> getAllCountFavoriteByIdMovie(@RequestParam("id") Long id) {
-        return favoriteMoviesService.getAllCountByIdMovie(id);
+    public ResponseEntity<Integer> getAllCountFavoriteByIdMovie(@RequestParam("idMovie") Long idMovie) {
+        return favoriteMoviesService.getAllCountByIdMovie(idMovie);
     }
 
 }

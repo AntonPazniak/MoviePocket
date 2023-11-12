@@ -12,7 +12,7 @@ import javax.persistence.*;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "user_to_watch_movies")
+@Table(name = "user_to_watch_movies", uniqueConstraints = @UniqueConstraint(columnNames = {"idUser", "idMovie"}))
 public class ToWatchMovie extends BaseEntity {
 
     @ManyToOne
