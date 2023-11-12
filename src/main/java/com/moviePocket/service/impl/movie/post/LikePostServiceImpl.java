@@ -7,20 +7,18 @@ import com.moviePocket.repository.movie.post.LikePostRepository;
 import com.moviePocket.repository.movie.post.PostRepository;
 import com.moviePocket.repository.user.UserRepository;
 import com.moviePocket.service.movie.post.LikePostService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class LikePostServiceImpl implements LikePostService {
 
-    @Autowired
-    private LikePostRepository likePostRepository;
-    @Autowired
-    private PostRepository postRepository;
-    @Autowired
-    private UserRepository userRepository;
+    private final LikePostRepository likePostRepository;
+    private final PostRepository postRepository;
+    private final UserRepository userRepository;
 
     @Override
     public ResponseEntity<Void> setLikeOrDisOrDel(String username, Long id, boolean likeOrDis) {
