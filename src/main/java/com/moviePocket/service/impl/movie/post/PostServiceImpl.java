@@ -83,7 +83,7 @@ public class PostServiceImpl implements PostService {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         } else {
             movieListInPostRepository.deleteAllByPost(post);
-            likePostRepository.deleteAllByMovieList(post);
+            likePostRepository.deleteAllByPost(post);
             postRepository.delete(post);
             return new ResponseEntity<>(HttpStatus.OK);
         }

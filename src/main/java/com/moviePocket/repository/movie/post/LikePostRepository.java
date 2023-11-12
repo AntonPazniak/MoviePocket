@@ -16,10 +16,10 @@ public interface LikePostRepository extends JpaRepository<LikePost, Long> {
     LikePost getByUserAndPost(User user, Post post);
 
     @Query("SELECT COUNT(lmr) FROM LikePost lmr WHERE lmr.post = :post AND lmr.lickOrDis = true")
-    int countByPostAndLickOrDisIsTrue(@Param("movieList") Post post);
+    int countByPostAndLickOrDisIsTrue(@Param("post") Post post);
 
     @Query("SELECT COUNT(lmr) FROM LikePost lmr WHERE lmr.post = :post AND lmr.lickOrDis = false")
-    int countByPostAndLickOrDisIsFalse(@Param("movieList") Post post);
+    int countByPostAndLickOrDisIsFalse(@Param("post") Post post);
 
-    void deleteAllByMovieList(Post post);
+    void deleteAllByPost(Post post);
 }
