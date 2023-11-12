@@ -10,11 +10,11 @@ import lombok.Setter;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "post")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "post", uniqueConstraints = @UniqueConstraint(columnNames = {"id", "idUser"}))
 public class Post extends BaseEntity {
 
     @ManyToOne

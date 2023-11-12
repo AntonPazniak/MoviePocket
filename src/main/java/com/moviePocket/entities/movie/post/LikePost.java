@@ -7,25 +7,22 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "post")
+@Table(name = "like_post", uniqueConstraints = @UniqueConstraint(columnNames = {"idUser", "idPost"}))
 public class LikePost extends BaseEntity {
 
     @ManyToOne
-    @JoinColumn(name = "post_id")
+    @JoinColumn(name = "idPost")
     private Post post;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "idUser")
     private User user;
 
     private boolean lickOrDis;

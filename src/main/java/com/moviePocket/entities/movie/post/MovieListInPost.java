@@ -13,11 +13,11 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "movieList_in_post")
+@Table(name = "movieList_in_post", uniqueConstraints = @UniqueConstraint(columnNames = {"idPost", "idMovieList"}))
 public class MovieListInPost extends BaseEntity {
 
     @ManyToOne
-    @JoinColumn(name = "post_id")
+    @JoinColumn(name = "idPost")
     private Post post;
 
     @Column(nullable = false)
