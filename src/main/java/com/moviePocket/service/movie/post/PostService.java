@@ -23,4 +23,8 @@ public interface PostService {
     ResponseEntity<List<ParsPost>> getAllMyPosts(String email);
 
     ResponseEntity<List<ParsPost>> getAllByUsernamePosts(String username);
+
+    ResponseEntity<List<ParsPost>> getNewestPosts();
+
+    ResponseEntity<List<ParsPost>> getOldestPosts();
 }

@@ -15,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -132,6 +134,21 @@ public class PostServiceImpl implements PostService {
             List<Post> posts = postRepository.findAllByUser(user);
             return ResponseEntity.ok(parsPost(posts));
         }
+    }
+
+    @Override
+    public ResponseEntity<List<ParsPost>> getNewestPosts() {
+
+        List<Post> posts = postRepository.findAll();
+        Collections.sort(posts, Comparator.comparing(Post::getCreated).reversed());
+        return ResponseEntity.ok(parsPost(posts));
+    }
+
+    @Override
+    public ResponseEntity<List<ParsPost>> getOldestPosts() {
+        List<Post> posts = postRepository.findAll();
+        Collections.sort(posts, Comparator.comparing(Post::getCreated));
+        return ResponseEntity.ok(parsPost(posts));
     }
 
     private List<ParsPost> parsPost(List<Post> posts) {

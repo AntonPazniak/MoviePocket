@@ -134,7 +134,7 @@ public class PostController {
             @ApiResponse(code = 200, message = "Successfully retrieved all posts")
     })
     @GetMapping("/getAllPosts")
-    public ResponseEntity<List<ParsPost>> getAllList() {
+    public ResponseEntity<List<ParsPost>> getAllPosts() {
         return postService.getAllPosts();
     }
 
@@ -144,7 +144,7 @@ public class PostController {
             @ApiResponse(code = 401, message = "User not authenticated")
     })
     @GetMapping("/getAllMyPosts")
-    public ResponseEntity<List<ParsPost>> getAllMyLists() {
+    public ResponseEntity<List<ParsPost>> getAllMyPosts() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return postService.getAllMyPosts(authentication.getName());
     }
@@ -158,5 +158,27 @@ public class PostController {
     @GetMapping("/getAllUserPosts")
     public ResponseEntity<List<ParsPost>> getAllUsername(@RequestParam("username") String username) {
         return postService.getAllByUsernamePosts(username);
+    }
+
+    @ApiOperation(value = "Get the most recent posts", notes = "Returns a sorted list of posts from newest to oldest")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully retrieved all posts "),
+            @ApiResponse(code = 400, message = "Invalid username"),
+            @ApiResponse(code = 404, message = "User not found")
+    })
+    @GetMapping("/getNewestPosts")
+    public ResponseEntity<List<ParsPost>> getNewestPosts() {
+        return postService.getNewestPosts();
+    }
+
+    @ApiOperation(value = "Get the oldest posts", notes = "Returns a sorted list of posts from oldest")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully retrieved all posts "),
+            @ApiResponse(code = 400, message = "Invalid username"),
+            @ApiResponse(code = 404, message = "User not found")
+    })
+    @GetMapping("/getNewestPosts")
+    public ResponseEntity<List<ParsPost>> getOldestPosts() {
+        return postService.getOldestPosts();
     }
 }
