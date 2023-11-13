@@ -61,6 +61,12 @@ public class WatchedMovieController {
                 authentication.getName());
     }
 
+    @ApiOperation(value = "Get int number of times the movie was added to watched")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully retrieved number "),
+            @ApiResponse(code = 400, message = "Smth wrong"),
+
+    })
     @GetMapping("/count/watched")
     public ResponseEntity<Integer> getAllCountWatchedByIdMovie(@RequestParam("idMovie") Long id) {
         return watchedMovieService.getAllCountByIdMovie(id);
