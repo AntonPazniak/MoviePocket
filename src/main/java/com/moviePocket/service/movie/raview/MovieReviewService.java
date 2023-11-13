@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface MovieReviewService {
 
-    ResponseEntity<Void> creatMovieReview(String username, Long idMovie, String title, String content);
+    ResponseEntity<Void> createMovieReview(String username, Long idMovie, String title, String content);
 
     ResponseEntity<List<ParsReview>> getAllByIDMovie(Long idMovie);
 

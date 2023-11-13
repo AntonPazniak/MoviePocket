@@ -33,7 +33,7 @@ public class FavoriteMovieController {
         return favoriteMoviesService.setOrDeleteNewFavoriteMovies(authentication.getName(), idMovie);
     }
 
-    @ApiOperation(value = "Check if a user has favorited a movie")
+    @ApiOperation(value = "Check if a user has favorite a movie")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully retrieved the result"),
             @ApiResponse(code = 400, message = "Bad request"),

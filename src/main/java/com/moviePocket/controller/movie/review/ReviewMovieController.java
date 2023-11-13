@@ -28,7 +28,7 @@ public class ReviewMovieController {
                                                @RequestParam("title") String title,
                                                @RequestParam("content") String content) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return movieReviewService.creatMovieReview(authentication.getName(), idMovie, title, content);
+        return movieReviewService.createMovieReview(authentication.getName(), idMovie, title, content);
     }
 
     @PostMapping("/up")

@@ -124,9 +124,9 @@ public class PostController {
             @ApiResponse(code = 404, message = "post not found")
     })
     @PostMapping("/setLike")
-    public ResponseEntity<Void> setLikeOrDesPost(@RequestParam("idList") Long idList, @RequestParam("like") Boolean like) {
+    public ResponseEntity<Void> setLikeOrDesPost(@RequestParam("idPost") Long idPost, @RequestParam("like") Boolean like) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return likePostService.setLikeOrDisOrDel(authentication.getName(), idList, like);
+        return likePostService.setLikeOrDisOrDel(authentication.getName(), idPost, like);
     }
 
     @ApiOperation(value = "Get all post in the system", notes = "Returns a list of all posts")
