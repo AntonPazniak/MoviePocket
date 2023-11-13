@@ -151,7 +151,7 @@ public class PostServiceImpl implements PostService {
         return ResponseEntity.ok(parsPost(posts));
     }
 
-    private List<ParsPost> parsPost(List<Post> posts) {
+    public List<ParsPost> parsPost(List<Post> posts) {
         List<ParsPost> parsPostLL = new ArrayList<>();
         for (Post post : posts) {
             List<MovieListInPost> movieListInPostList = movieListInPostRepository.getAllByPost(post);

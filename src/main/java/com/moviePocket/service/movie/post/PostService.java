@@ -27,4 +27,5 @@ public interface PostService {
     ResponseEntity<List<ParsPost>> getNewestPosts();
 
     ResponseEntity<List<ParsPost>> getOldestPosts();
+
 }

@@ -163,8 +163,7 @@ public class PostController {
     @ApiOperation(value = "Get the most recent posts", notes = "Returns a sorted list of posts from newest to oldest")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully retrieved all posts "),
-            @ApiResponse(code = 400, message = "Invalid username"),
-            @ApiResponse(code = 404, message = "User not found")
+            @ApiResponse(code = 404, message = "Not found")
     })
     @GetMapping("/getNewestPosts")
     public ResponseEntity<List<ParsPost>> getNewestPosts() {
@@ -174,10 +173,9 @@ public class PostController {
     @ApiOperation(value = "Get the oldest posts", notes = "Returns a sorted list of posts from oldest")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully retrieved all posts "),
-            @ApiResponse(code = 400, message = "Invalid username"),
-            @ApiResponse(code = 404, message = "User not found")
+            @ApiResponse(code = 404, message = "Not found")
     })
-    @GetMapping("/getNewestPosts")
+    @GetMapping("/getOldestPosts")
     public ResponseEntity<List<ParsPost>> getOldestPosts() {
         return postService.getOldestPosts();
     }
@@ -190,5 +188,25 @@ public class PostController {
     @GetMapping("/getAllLikes")
     public ResponseEntity<Integer[]> getAllLikePostsByIdMovie(@RequestParam("idPost") Long idPost) {
         return likePostService.getAllLikeAndDisByIdPost(idPost);
+    }
+
+    @ApiOperation(value = "Get the most liked(popular) posts", notes = "Returns a sorted list of posts from most liked to least")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully retrieved all posts "),
+            @ApiResponse(code = 404, message = "Not found")
+    })
+    @GetMapping("/getMostLikedPosts")
+    public ResponseEntity<List<ParsPost>> getMostLikedPosts() {
+        return likePostService.getMostLikedPosts();
+    }
+
+    @ApiOperation(value = "Get the least liked(popular) posts", notes = "Returns a sorted list of posts from most least to liked")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully retrieved all posts "),
+            @ApiResponse(code = 404, message = "Not found")
+    })
+    @GetMapping("/getLeastLikedPosts")
+    public ResponseEntity<List<ParsPost>> getLeastLikedPosts() {
+        return likePostService.getLeastLikedPosts();
     }
 }

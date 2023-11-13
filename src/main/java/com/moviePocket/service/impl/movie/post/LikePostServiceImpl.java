@@ -1,6 +1,7 @@
 package com.moviePocket.service.impl.movie.post;
 
 import com.moviePocket.entities.movie.post.LikePost;
+import com.moviePocket.entities.movie.post.ParsPost;
 import com.moviePocket.entities.movie.post.Post;
 import com.moviePocket.entities.user.User;
 import com.moviePocket.repository.movie.post.LikePostRepository;
@@ -12,6 +13,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class LikePostServiceImpl implements LikePostService {
@@ -19,6 +24,7 @@ public class LikePostServiceImpl implements LikePostService {
     private final LikePostRepository likePostRepository;
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final PostServiceImpl postService;
 
     @Override
     public ResponseEntity<Void> setLikeOrDisOrDel(String username, Long id, boolean likeOrDis) {
@@ -69,5 +75,36 @@ public class LikePostServiceImpl implements LikePostService {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @Override
+    public ResponseEntity<List<ParsPost>> getMostLikedPosts() {
+        List<Post> posts = postRepository.findAll();
+
+        // Sort the posts based on the total number of likes and dislikes
+        posts.sort(Comparator.comparingInt(post -> {
+            int likes = likePostRepository.countByPostAndLickOrDisIsTrue(post);
+            int dislikes = likePostRepository.countByPostAndLickOrDisIsFalse(post);
+            return likes - dislikes; // Sorting from most liked to least
+        }));
+
+        // Reverse the list to get it from most liked to least liked
+        Collections.reverse(posts);
+
+        return ResponseEntity.ok(postService.parsPost(posts));
+    }
+
+    @Override
+    public ResponseEntity<List<ParsPost>> getLeastLikedPosts() {
+        List<Post> posts = postRepository.findAll();
+
+        // Sort the posts based on the total number of likes and dislikes
+        posts.sort(Comparator.comparingInt(post -> {
+            int likes = likePostRepository.countByPostAndLickOrDisIsTrue(post);
+            int dislikes = likePostRepository.countByPostAndLickOrDisIsFalse(post);
+            return likes - dislikes; // Sorting from most liked to least
+        }));
+
+        return ResponseEntity.ok(postService.parsPost(posts));
     }
 }
