@@ -59,10 +59,10 @@ public class LikePostServiceImpl implements LikePostService {
     }
 
     @Override
-    public ResponseEntity<int[]> getAllLikeAndDisByIdPost(Long idPost) {
+    public ResponseEntity<Integer[]> getAllLikeAndDisByIdPost(Long idPost) {
         Post post = postRepository.getById(idPost);
         if (post != null) {
-            return ResponseEntity.ok(new int[]{
+            return ResponseEntity.ok(new Integer[]{
                     likePostRepository.countByPostAndLickOrDisIsTrue(post),
                     likePostRepository.countByPostAndLickOrDisIsFalse(post)
             });

@@ -7,5 +7,5 @@ public interface LikePostService {
 
     ResponseEntity<boolean[]> getLikeOrDis(String username, Long id);
 
-    ResponseEntity<int[]> getAllLikeAndDisByIdPost(Long idPost);
+    ResponseEntity<Integer[]> getAllLikeAndDisByIdPost(Long idPost);
 }

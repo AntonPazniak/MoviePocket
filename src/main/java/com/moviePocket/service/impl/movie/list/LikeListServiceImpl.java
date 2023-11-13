@@ -60,10 +60,10 @@ public class LikeListServiceImpl implements LikeListService {
         }
     }
 
-    public ResponseEntity<int[]> getAllLikeAndDisByIdMovieReview(Long idMovieList) {
+    public ResponseEntity<Integer[]> getAllLikeAndDisByIdMovieList(Long idMovieList) {
         MovieList movieList = movieListRepository.getById(idMovieList);
         if (movieList != null) {
-            return ResponseEntity.ok(new int[]{
+            return ResponseEntity.ok(new Integer[]{
                     likeListRepository.countByMovieReviewAndLickOrDisIsTrue(movieList),
                     likeListRepository.countByMovieReviewAndLickOrDisIsFalse(movieList)
             });

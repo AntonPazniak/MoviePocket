@@ -181,4 +181,14 @@ public class PostController {
     public ResponseEntity<List<ParsPost>> getOldestPosts() {
         return postService.getOldestPosts();
     }
+
+    @ApiOperation(value = "Get num of likes by post", notes = "Returns list of Integers")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully retrieved num of likes "),
+            @ApiResponse(code = 404, message = "User not found")
+    })
+    @GetMapping("/getAllLikes")
+    public ResponseEntity<Integer[]> getAllLikePostsByIdMovie(@RequestParam("idPost") Long idPost) {
+        return likePostService.getAllLikeAndDisByIdPost(idPost);
+    }
 }

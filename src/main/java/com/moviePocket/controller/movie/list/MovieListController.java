@@ -178,4 +178,14 @@ public class MovieListController {
         return movieListService.getAllByUsernameList(username);
     }
 
+    @ApiOperation(value = "Get num of likes by movie list", notes = "Returns list of Integers")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully retrieved num of likes "),
+            @ApiResponse(code = 404, message = "User not found")
+    })
+    @GetMapping("/getAllLikes")
+    public ResponseEntity<Integer[]> getAllLikePostsByIdMovie(@RequestParam("idMovieList") Long idMovieList) {
+        return likeListService.getAllLikeAndDisByIdMovieList(idMovieList);
+    }
+
 }
