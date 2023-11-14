@@ -17,7 +17,7 @@ public interface MovieListService {
 
     ResponseEntity<List<ParsMovieList>> getAllByTitle(String title);
 
-    ResponseEntity<List<ParsMovieList>> getMovieList(Long idMovieList);
+    ResponseEntity<ParsMovieList> getMovieList(Long idMovieList);
 
     ResponseEntity<List<ParsMovieList>> getAllList();
 
