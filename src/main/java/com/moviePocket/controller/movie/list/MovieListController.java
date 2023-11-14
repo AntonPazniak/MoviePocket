@@ -178,4 +178,9 @@ public class MovieListController {
         return movieListService.getAllByUsernameList(username);
     }
 
+    @GetMapping("/getAllByIdMovie")
+    public ResponseEntity<List<ParsMovieList>> getAllListExistIdMovie(@RequestParam("idMovie") Long idMovie) {
+        return movieListService.getAllListExistIdMovie(idMovie);
+    }
+
 }

@@ -25,4 +25,6 @@ public interface MovieListService {
 
     ResponseEntity<List<ParsMovieList>> getAllByUsernameList(String username);
 
+    ResponseEntity<List<ParsMovieList>> getAllListExistIdMovie(Long idMovie);
+
 }

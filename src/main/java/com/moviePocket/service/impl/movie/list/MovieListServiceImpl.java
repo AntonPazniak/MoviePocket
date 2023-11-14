@@ -172,5 +172,10 @@ public class MovieListServiceImpl implements MovieListService {
         return parsMovieLL;
     }
 
+    public ResponseEntity<List<ParsMovieList>> getAllListExistIdMovie(Long idMovie) {
+        List<MovieList> lists = movieListRepository.findMovieListByIdMovie(idMovie);
+        return ResponseEntity.ok(parsList(lists));
+    }
+
 
 }
