@@ -49,7 +49,14 @@ public class TracingServiceImpl implements TracingService {
             if (tracking == null) {
                 Movie movie = TMDBApi.getInfoMovie(idMovie);
                 if (movie != null) {
-                    if (movie.getStatus().equals("Planned")) {
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.add(Calendar.DAY_OF_MONTH, 0);
+                    calendar.set(Calendar.HOUR_OF_DAY, 0);
+                    calendar.set(Calendar.MINUTE, 0);
+                    calendar.set(Calendar.SECOND, 0);
+                    calendar.set(Calendar.MILLISECOND, 0);
+                    Date date = calendar.getTime();
+                    if (movie.getReleaseDate().compareTo(date) > 0) {
                         tracking = new Tracking(user, idMovie, movie.getReleaseDate());
                         trackingRepository.save(tracking);
                         return ResponseEntity.ok(true); // save tracking
@@ -104,7 +111,7 @@ public class TracingServiceImpl implements TracingService {
                 Long[] idsMovie = new Long[trackings.size()];
                 int index = 0;
                 for (Tracking t : trackings) {
-                    idsMovie[index] = t.getId();
+                    idsMovie[index] = t.getIdMovie();
                     index++;
                 }
                 return ResponseEntity.ok(idsMovie);
