@@ -70,7 +70,7 @@ public class TracingServiceImpl implements TracingService {
         return trackingRepository.countByIdMovie(idMovie);
     }
 
-    @Scheduled(cron = "0 21 22 * * *", zone = "Europe/Warsaw") // Каждый день в 21:20 по польскому времени
+    @Scheduled(cron = "0 00 20 * * *", zone = "Europe/Warsaw") // Каждый день в 21:20 по польскому времени
     public void sendDailyMessages() throws MessagingException {
         System.out.println("Рассылка сообщений...");
 
