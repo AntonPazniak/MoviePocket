@@ -17,6 +17,8 @@ public interface TrackingRepository extends JpaRepository<Tracking, Long> {
 
     List<Tracking> findByDateRelease(Date dateRelease);
 
+    List<Tracking> findAllByUser(User user);
+
     @Query("SELECT COUNT(t) FROM Tracking t WHERE t.idMovie = :idMovie")
     Long countByIdMovie(@Param("idMovie") long idMovie);
 }

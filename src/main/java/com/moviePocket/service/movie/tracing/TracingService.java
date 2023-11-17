@@ -9,6 +9,8 @@ public interface TracingService {
 
     ResponseEntity<Boolean> setOrDelByIdMovie(String email, Long idMovie);
 
+    ResponseEntity<Long[]> getAllByUser(String email);
+
     Long getCountByIdMovie(Long idMovie);
 
 

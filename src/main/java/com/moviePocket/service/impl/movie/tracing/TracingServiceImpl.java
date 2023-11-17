@@ -96,6 +96,24 @@ public class TracingServiceImpl implements TracingService {
 
     }
 
+    public ResponseEntity<Long[]> getAllByUser(String email) {
+        User user = userRepository.findByEmail(email);
+        if (user != null) {
+            List<Tracking> trackings = trackingRepository.findAllByUser(user);
+            if (trackings != null) {
+                Long[] idsMovie = new Long[trackings.size()];
+                int index = 0;
+                for (Tracking t : trackings) {
+                    idsMovie[index] = t.getId();
+                    index++;
+                }
+                return ResponseEntity.ok(idsMovie);
+            } else
+                return ResponseEntity.ok(new Long[]{});
+        }
+        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+    }
+
 
 
 }

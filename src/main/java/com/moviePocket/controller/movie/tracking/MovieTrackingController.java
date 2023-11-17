@@ -36,7 +36,12 @@ public class MovieTrackingController {
         return ResponseEntity.ok(tracingService.getCountByIdMovie(idMovie));
     }
 
-
+    @GetMapping("/allMy")
+    public ResponseEntity<Long[]> getAllMovieTracingByUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        return tracingService.getAllByUser(email);
+    }
 
 
 }
