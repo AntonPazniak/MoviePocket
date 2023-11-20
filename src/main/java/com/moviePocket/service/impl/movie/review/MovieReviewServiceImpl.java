@@ -27,7 +27,7 @@ public class MovieReviewServiceImpl implements MovieReviewService {
     @Autowired
     private LikeMovieReviewRepository likeMovieReviewRepository;
 
-    public ResponseEntity<Void> creatMovieReview(String email, Long idMovie, String title, String content) {
+    public ResponseEntity<Void> createMovieReview(String email, Long idMovie, String title, String content) {
         User user = userRepository.findByEmail(email);
         if (user == null)
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);

@@ -33,7 +33,7 @@ public class FavoriteMovieController {
         return favoriteMoviesService.setOrDeleteNewFavoriteMovies(authentication.getName(), idMovie);
     }
 
-    @ApiOperation(value = "Check if a user has favorited a movie")
+    @ApiOperation(value = "Check if a user has favorite a movie")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully retrieved the result"),
             @ApiResponse(code = 400, message = "Bad request"),
@@ -59,6 +59,12 @@ public class FavoriteMovieController {
                 authentication.getName());
     }
 
+    @ApiOperation(value = "Get int number of times the movie was added to fav")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully retrieved number "),
+            @ApiResponse(code = 400, message = "Smth wrong"),
+
+    })
     @GetMapping("/count/favorite")
     public ResponseEntity<Integer> getAllCountFavoriteByIdMovie(@RequestParam("idMovie") Long idMovie) {
         return favoriteMoviesService.getAllCountByIdMovie(idMovie);

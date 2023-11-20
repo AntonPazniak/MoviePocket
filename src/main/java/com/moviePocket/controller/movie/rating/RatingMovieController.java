@@ -72,11 +72,23 @@ public class RatingMovieController {
         return ratingMovieService.getAllUserRatingMovie(authentication.getName());
     }
 
+    @ApiOperation(value = "Get double number which represents the current rating of the movie(avr of all from users)")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully retrieved (0.0 if it was now rated yet "),
+            @ApiResponse(code = 400, message = "Smth wrong"),
+
+    })
     @GetMapping("/getByIdMovie")
     public ResponseEntity<Double> getByIdMovieRating(@RequestParam("idMovie") Long idMovie) {
         return ratingMovieService.getMovieRating(idMovie);
     }
 
+    @ApiOperation(value = "Get int number of times the movie was rated")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully retrieved number "),
+            @ApiResponse(code = 400, message = "Smth wrong"),
+
+    })
     @GetMapping("/count/rating")
     public ResponseEntity<Integer> getCountMovieRating(@RequestParam("idMovie") Long idMovie) {
         return ratingMovieService.getAllCountByIdMovie(idMovie);

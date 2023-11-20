@@ -211,7 +211,7 @@
                             <outputDirectory>target/classes/static</outputDirectory>
                             <resources>
                                 <resource>
-                                    <directory>src/myreactapp/build</directory>
+                                    <directory>src/main/frontend/build</directory>
                                     <filtering>true</filtering>
                                 </resource>
                             </resources>

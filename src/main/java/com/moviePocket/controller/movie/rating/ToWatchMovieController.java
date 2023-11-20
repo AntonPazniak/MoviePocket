@@ -1,6 +1,9 @@
 package com.moviePocket.controller.movie.rating;
 
 import com.moviePocket.service.movie.rating.ToWatchMovieService;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -16,12 +19,24 @@ public class ToWatchMovieController {
     @Autowired
     ToWatchMovieService toWatchMovieService;
 
+    @ApiOperation("Set or delete a movie from ToWatch list")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Successfully set or deleted the movie as toWatch"),
+            @ApiResponse(code = 401, message = "Unauthorized"),
+            @ApiResponse(code = 500, message = "Internal Server Error")
+    })
     @PostMapping("/set")
     public ResponseEntity<Void> setOrDeleteMovieToWatch(@RequestParam("idMovie") Long id) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return toWatchMovieService.setOrDeleteToWatch(authentication.getName(), id);
     }
 
+    @ApiOperation("Check if a movie is added toWatch by the user")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Successfully retrieved the movie Towatch status"),
+            @ApiResponse(code = 401, message = "Unauthorized"),
+            @ApiResponse(code = 500, message = "Internal Server Error")
+    })
     @GetMapping("/get")
     public ResponseEntity<Boolean> getIsUserMovieToWatch(@RequestParam("idMovie") Long id) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -29,6 +44,12 @@ public class ToWatchMovieController {
                 authentication.getName(), id);
     }
 
+    @ApiOperation("Get all movies ToWatch by the user")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Successfully retrieved all ToWatch movies"),
+            @ApiResponse(code = 401, message = "Unauthorized"),
+            @ApiResponse(code = 500, message = "Internal Server Error")
+    })
     @GetMapping("/all")
     public ResponseEntity<List<Long>> allUserMovieToWatchMovies() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -36,7 +57,13 @@ public class ToWatchMovieController {
                 authentication.getName());
     }
 
-    @GetMapping("/count/towatch")
+    @ApiOperation(value = "Get int number of times the movie was added toWatch")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully retrieved number "),
+            @ApiResponse(code = 400, message = "Smth wrong"),
+
+    })
+    @GetMapping("/count/toWatch")
     public ResponseEntity<Integer> getAllCountToWatchByIdMovie(@RequestParam("idMovie") Long id) {
         return toWatchMovieService.getAllCountByIdMovie(id);
     }

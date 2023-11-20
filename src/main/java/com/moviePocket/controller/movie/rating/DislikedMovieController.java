@@ -58,6 +58,12 @@ public class DislikedMovieController {
                 authentication.getName());
     }
 
+    @ApiOperation(value = "Get int number of times the movie was added to disliked")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully retrieved number "),
+            @ApiResponse(code = 400, message = "Smth wrong"),
+
+    })
     @GetMapping("/count/dislike")
     public ResponseEntity<Integer> getAllCountDislikedByIdMovie(@RequestParam("idMovie") Long idMovie) {
         return dislikedMovieService.getAllCountByIdMovie(idMovie);
