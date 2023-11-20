@@ -1,0 +1,19 @@
+.Navlist{
+    margin: 0 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    column-gap: 3vh;
+    font-family: 'Poppins', sans-serif;
+}
+
+.NavListLink{
+    color: var(--primary-yellow);
+    font-size: 16px;
+    transition: opacity 0.3s ease;
+}
+
+.NavListLink:hover{
+    color: var(--primary-yellow);
+    opacity: 0.8;
+}

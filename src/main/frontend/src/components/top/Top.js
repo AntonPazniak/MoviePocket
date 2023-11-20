@@ -1,29 +1,35 @@
 import './Top.css';
 import Carousel from 'react-material-ui-carousel';
-import {Paper} from '@mui/material';
+import {Link} from "react-router-dom";
 
 const Top = ({movies}) => {
     const path = 'https://www.themoviedb.org/t/p/w220_and_h330_face';
     return (
         <div className='movie-carousel-container'>
-            <Carousel>
+            <Carousel indicators={false}>
                 {
                     movies.map((movie) =>{
                         return(
-                            <Paper>
-                                <div className='movie-card-container'>
-                                    <div className='movie-card'>
+                            <div className='main-container'>
+                                <div key={movie.id} className='movie-card'
+                                     style={{backgroundImage: `url(${path + movie.poster_path})`}}>
+                                    <div className='movie-detail'>
                                         <div className='movie-poster'>
-                                            <img src={path+movie.poster_path} alt="" />
+                                            <Link to={`/film/${movie.id}`}>
+                                                <img src={path + movie.poster_path} alt="Movie poster"/>
+                                            </Link>
                                         </div>
-                                        <div className='movie-detail'>
-                                            <div className='movie-title'>
-                                                <h4>{movie.title}</h4>
-                                            </div>
+                                        <div className='movie-title'>
+                                            <Link to={`/film/${movie.id}`}>
+                                                <h1>{movie.title}</h1>
+                                            </Link>
+                                        </div>
+                                        <div className='movie-description'>
+                                            <h4>{movie.overview}</h4>
                                         </div>
                                     </div>
                                 </div>
-                            </Paper>
+                            </div>
                         )
                     })
                 }

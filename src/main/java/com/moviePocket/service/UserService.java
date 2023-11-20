@@ -1,7 +1,8 @@
 package com.moviePocket.service;
 
 import com.moviePocket.controller.dto.UserRegistrationDto;
-import com.moviePocket.entities.User;
+import com.moviePocket.entities.user.User;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import javax.mail.MessagingException;
@@ -9,23 +10,32 @@ import javax.mail.MessagingException;
 public interface UserService extends UserDetailsService {
     void save(UserRegistrationDto registrationDto) throws MessagingException;
 
+    User findById(Long id);
+
     User findUserByEmail(String email);
 
-    boolean activateUser(String code);
+    ResponseEntity<Void> activateUser(String code);
 
-    boolean setTokenPassword(String mail) throws MessagingException;
+    ResponseEntity<Void> setTokenPassword(String mail) throws MessagingException;
 
-    boolean setNewLostPassword(String token,String pas);
+    ResponseEntity<Void> setNewLostPassword(String token, String password1, String password2);
 
-    boolean setNewPassword(String email, String passwordOld,String passwordNew);
+    ResponseEntity<Void> setNewPassword(String email, String passwordOld, String passwordNew0, String passwordNew1);
 
-    boolean deleteUser(String email,String pas);
-    boolean setTokenEmail(String oldEmail, String newEmail) throws MessagingException;
+    ResponseEntity<Void> deleteUser(String email, String pas);
 
-    boolean activateNewEmail(String token);
+    ResponseEntity<Void> setTokenEmail(String oldEmail, String newEmail) throws MessagingException;
 
-    void setNewUsername(String email, String username);
+    ResponseEntity<Void> activateNewEmail(String token);
 
-    boolean setNewBio(String email, String bio);
+    ResponseEntity<Void> setNewUsername(String email, String username);
+
+    ResponseEntity<Void> setNewBio(String email, String bio);
+
+    User findUserByUsername(String username);
+
+    ResponseEntity<Boolean> existsByUsername(String username);
+
+    ResponseEntity<Boolean> existsByEmail(String email);
 
 }
