@@ -100,12 +100,12 @@ public class MovieListServiceImpl implements MovieListService {
         }
     }
 
-    public ResponseEntity<List<ParsMovieList>> getMovieList(Long idMovieList) {
+    public ResponseEntity<ParsMovieList> getMovieList(Long idMovieList) {
         if (movieListRepository.existsById(idMovieList)) {
             MovieList movieList = movieListRepository.getById(idMovieList);
             List<MovieList> movieLists = new ArrayList<>();
             movieLists.add(movieList);
-            return ResponseEntity.ok(parsList(movieLists));
+            return ResponseEntity.ok(parsList(movieLists).get(0));
         }
         return ResponseEntity.notFound().build();
     }
@@ -170,6 +170,11 @@ public class MovieListServiceImpl implements MovieListService {
             parsMovieLL.add(parsMovieList);
         }
         return parsMovieLL;
+    }
+
+    public ResponseEntity<List<ParsMovieList>> getAllListExistIdMovie(Long idMovie) {
+        List<MovieList> lists = movieListRepository.findMovieListByIdMovie(idMovie);
+        return ResponseEntity.ok(parsList(lists));
     }
 
 

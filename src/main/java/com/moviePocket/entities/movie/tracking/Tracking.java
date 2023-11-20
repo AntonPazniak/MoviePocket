@@ -6,14 +6,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "tracking_movie")
+@Table(name = "movie_tracking", uniqueConstraints = @UniqueConstraint(columnNames = {"idUser", "idMovie"}))
 @Getter
 @Setter
 @NoArgsConstructor
@@ -23,7 +20,12 @@ public class Tracking extends BaseEntity {
     private long idMovie;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "idUser")
     private User user;
 
+    public Tracking(User user, long idMovie, Date dateRelease) {
+        this.dateRelease = dateRelease;
+        this.idMovie = idMovie;
+        this.user = user;
+    }
 }

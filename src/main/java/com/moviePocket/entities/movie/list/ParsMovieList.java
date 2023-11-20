@@ -21,7 +21,7 @@ public class ParsMovieList {
     private List<Long> idMovies;
     private int[] likeOrDis;
     private String username;
-    private Date creat;
+    private Date create;
     private Date update;
 
 }

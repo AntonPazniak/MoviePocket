@@ -10,6 +10,7 @@ import org.springframework.web.client.RestTemplate;
 @EnableJpaAuditing
 public class MoviePocketApplication {
 
+
 	public static void main(String[] args) {
 		SpringApplication.run(MoviePocketApplication.class, args);
 	}

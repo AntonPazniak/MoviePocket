@@ -95,7 +95,7 @@ public class MovieListController {
             @ApiResponse(code = 404, message = "Movie list not found")
     })
     @GetMapping("/get")
-    public ResponseEntity<List<ParsMovieList>> getMovieList(@RequestParam("idMovieList") Long idMovieList) {
+    public ResponseEntity<ParsMovieList> getMovieList(@RequestParam("idMovieList") Long idMovieList) {
         return movieListService.getMovieList(idMovieList);
     }
 
@@ -177,7 +177,6 @@ public class MovieListController {
     public ResponseEntity<List<ParsMovieList>> getAllUsername(@RequestParam("username") String username) {
         return movieListService.getAllByUsernameList(username);
     }
-
     @ApiOperation(value = "Get num of likes by movie list", notes = "Returns list of Integers")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully retrieved num of likes "),
@@ -186,6 +185,11 @@ public class MovieListController {
     @GetMapping("/getAllLikes")
     public ResponseEntity<Integer[]> getAllLikePostsByIdMovie(@RequestParam("idMovieList") Long idMovieList) {
         return likeListService.getAllLikeAndDisByIdMovieList(idMovieList);
+
+    @GetMapping("/getAllByIdMovie")
+    public ResponseEntity<List<ParsMovieList>> getAllListExistIdMovie(@RequestParam("idMovie") Long idMovie) {
+        return movieListService.getAllListExistIdMovie(idMovie);
+
     }
 
 }
