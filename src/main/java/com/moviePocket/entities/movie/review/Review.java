@@ -16,7 +16,7 @@ import javax.persistence.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReviewMovie extends BaseEntity {
+public class Review extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "idUser", referencedColumnName = "id")

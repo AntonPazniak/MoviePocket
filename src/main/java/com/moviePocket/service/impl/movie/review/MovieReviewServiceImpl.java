@@ -1,7 +1,7 @@
 package com.moviePocket.service.impl.movie.review;
 
 import com.moviePocket.entities.movie.review.ParsReview;
-import com.moviePocket.entities.movie.review.ReviewMovie;
+import com.moviePocket.entities.movie.review.Review;
 import com.moviePocket.entities.user.User;
 import com.moviePocket.repository.movie.review.LikeMovieReviewRepository;
 import com.moviePocket.repository.movie.review.MovieReviewRepository;
@@ -32,7 +32,7 @@ public class MovieReviewServiceImpl implements MovieReviewService {
         if (user == null)
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         else {
-            ReviewMovie movieReview = new ReviewMovie(user, idMovie, title, content);
+            Review movieReview = new Review(user, idMovie, title, content);
             movieReviewRepository.save(movieReview);
             return new ResponseEntity<>(HttpStatus.OK);
         }
@@ -41,7 +41,7 @@ public class MovieReviewServiceImpl implements MovieReviewService {
 
     public ResponseEntity<Void> updateMovieReview(Long idMovieReview, String username, String title, String content) {
         User user = userRepository.findByEmail(username);
-        ReviewMovie movieReview = movieReviewRepository.getById(idMovieReview);
+        Review movieReview = movieReviewRepository.getById(idMovieReview);
         if (user == null)
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         else if (movieReview == null)
@@ -59,7 +59,7 @@ public class MovieReviewServiceImpl implements MovieReviewService {
     @Transactional
     public ResponseEntity<Void> delMovieReview(Long idMovieReview, String username) {
         User user = userRepository.findByEmail(username);
-        ReviewMovie movieReview = movieReviewRepository.getById(idMovieReview);
+        Review movieReview = movieReviewRepository.getById(idMovieReview);
         if (user == null)
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         else if (movieReview == null)
@@ -76,7 +76,7 @@ public class MovieReviewServiceImpl implements MovieReviewService {
     public ResponseEntity<Boolean> authorshipCheck(Long idReview, String username) {
         try {
             User user = userRepository.findByEmail(username);
-            ReviewMovie movieReview = movieReviewRepository.getById(idReview);
+            Review movieReview = movieReviewRepository.getById(idReview);
             return ResponseEntity.ok(movieReview.getUser().equals(user));
         } catch (EntityNotFoundException e) {
             System.out.println(e);
@@ -87,7 +87,7 @@ public class MovieReviewServiceImpl implements MovieReviewService {
 
     public ResponseEntity<ParsReview> getByIDMovieReview(Long idMovieReview) {
         try {
-            ReviewMovie movieReview = movieReviewRepository.getById(idMovieReview);
+            Review movieReview = movieReviewRepository.getById(idMovieReview);
             return ResponseEntity.ok(new ParsReview(
                     movieReview.getTitle(),
                     movieReview.getContent(),
@@ -108,9 +108,9 @@ public class MovieReviewServiceImpl implements MovieReviewService {
     }
 
 
-    private List<ParsReview> parsMovieReview(List<ReviewMovie> movieReviewList) {
+    private List<ParsReview> parsMovieReview(List<Review> movieReviewList) {
         List<ParsReview> reviewList = new ArrayList<>();
-        for (ReviewMovie movieReview : movieReviewList) {
+        for (Review movieReview : movieReviewList) {
             reviewList.add(new ParsReview(
                     movieReview.getTitle(),
                     movieReview.getContent(),
@@ -129,7 +129,7 @@ public class MovieReviewServiceImpl implements MovieReviewService {
     }
 
     public ResponseEntity<List<ParsReview>> getAllByIDMovie(Long idMovie) {
-        List<ReviewMovie> movieList = movieReviewRepository.getAllByIdMovie(idMovie);
+        List<Review> movieList = movieReviewRepository.getAllByIdMovie(idMovie);
         if (movieList.size() == 0) {
             List<ParsReview> reviewList = new ArrayList<>();
             return new ResponseEntity<>(reviewList, HttpStatus.OK);
@@ -153,7 +153,7 @@ public class MovieReviewServiceImpl implements MovieReviewService {
             List<ParsReview> reviewList = new ArrayList<>();
             return new ResponseEntity<>(reviewList, HttpStatus.OK);
         } else {
-            List<ReviewMovie> movieReviewList = movieReviewRepository.getAllByUser(user);
+            List<Review> movieReviewList = movieReviewRepository.getAllByUser(user);
             return ResponseEntity.ok(parsMovieReview(movieReviewList));
         }
     }

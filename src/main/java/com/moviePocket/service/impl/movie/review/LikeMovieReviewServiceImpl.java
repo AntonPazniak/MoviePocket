@@ -2,7 +2,7 @@ package com.moviePocket.service.impl.movie.review;
 
 
 import com.moviePocket.entities.movie.review.LikeMovieReview;
-import com.moviePocket.entities.movie.review.ReviewMovie;
+import com.moviePocket.entities.movie.review.Review;
 import com.moviePocket.entities.user.User;
 import com.moviePocket.repository.movie.review.LikeMovieReviewRepository;
 import com.moviePocket.repository.movie.review.MovieReviewRepository;
@@ -24,7 +24,7 @@ public class LikeMovieReviewServiceImpl implements LikeMovieReviewService {
     UserRepository userRepository;
 
     public ResponseEntity<Void> setLikeOrDisOrDel(String username, Long id, boolean likeOrDis) {
-        ReviewMovie movieReview = movieReviewRepository.getById(id);
+        Review movieReview = movieReviewRepository.getById(id);
         User user = userRepository.findByEmail(username);
         LikeMovieReview likeMovieReview = likeMovieReviewRepository.getByUserAndMovieReview(user, movieReview);
         if (user == null)
@@ -43,7 +43,7 @@ public class LikeMovieReviewServiceImpl implements LikeMovieReviewService {
     }
 
     public ResponseEntity<Boolean> getLikeOrDis(String username, Long id) {
-        ReviewMovie movieReview = movieReviewRepository.getById(id);
+        Review movieReview = movieReviewRepository.getById(id);
         User user = userRepository.findByEmail(username);
         if (user == null)
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -56,7 +56,7 @@ public class LikeMovieReviewServiceImpl implements LikeMovieReviewService {
     }
 
     public ResponseEntity<Integer[]> getAllLikeAndDisByIdMovieReview(Long idReview) {
-        ReviewMovie movieReview = movieReviewRepository.getById(idReview);
+        Review movieReview = movieReviewRepository.getById(idReview);
         if (movieReview == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         {

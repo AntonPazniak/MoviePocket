@@ -17,7 +17,7 @@ public class LikeMovieReview extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "idReview")
-    private ReviewMovie movieReview;
+    private Review movieReview;
 
     @ManyToOne
     @JoinColumn(name = "idUser")
@@ -25,7 +25,7 @@ public class LikeMovieReview extends BaseEntity {
 
     private boolean lickOrDis;
 
-    public LikeMovieReview(ReviewMovie movieReview, User user, boolean lickOrDis) {
+    public LikeMovieReview(Review movieReview, User user, boolean lickOrDis) {
         this.movieReview = movieReview;
         this.user = user;
         this.lickOrDis = lickOrDis;
