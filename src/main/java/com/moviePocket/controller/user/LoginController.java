@@ -1,4 +1,4 @@
-package com.moviePocket.controller;
+package com.moviePocket.controller.user;
 
 import com.moviePocket.controller.dto.UserRegistrationDto;
 import com.moviePocket.entities.user.User;
@@ -10,12 +10,17 @@ import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 @Controller
@@ -90,4 +95,43 @@ public class LoginController {
     public ResponseEntity<Void> activate(@RequestParam("token") String token) {
         return userService.activateUser(token);
     }
+
+    @GetMapping("/registration/exist/username")
+    public ResponseEntity<Boolean> existsUserByUsername(@RequestParam("username") String username) {
+        return userService.existsByUsername(username);
+    }
+
+    @GetMapping("/registration/exist/email")
+    public ResponseEntity<Boolean> existsUserByEmail(@RequestParam("email") String email) {
+        return userService.existsByEmail(email);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Boolean> logout(HttpServletRequest request, HttpServletResponse response) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication != null) {
+            // Clear authentication
+            SecurityContextHolder.getContext().setAuthentication(null);
+
+            // Invalidate HttpSession (if any)
+            request.getSession().invalidate();
+
+            // Remove any authentication-related cookies
+            removeAuthenticationCookies(request, response);
+        }
+
+        return ResponseEntity.ok(true);
+    }
+
+    private void removeAuthenticationCookies(HttpServletRequest request, HttpServletResponse response) {
+        // You need to provide the names of your authentication-related cookies
+        String[] cookieNames = {"yourCookieName1", "yourCookieName2"};
+
+        for (String cookieName : cookieNames) {
+            // Remove the cookie by setting its value to an empty string and setting the maxAge to 0
+            response.addCookie(new Cookie(cookieName, ""));
+        }
+    }
+
 }

@@ -1,4 +1,4 @@
-package com.moviePocket.controller.movie;
+package com.moviePocket.controller.movie.review;
 
 
 import com.moviePocket.entities.movie.review.ParsReview;
@@ -82,5 +82,11 @@ public class ReviewMovieController {
     @GetMapping("/getAllLike")
     public ResponseEntity<Integer[]> getAllLikeReviewByIdMovie(@RequestParam("idReview") Long idReview) {
         return likeMovieReviewService.getAllLikeAndDisByIdMovieReview(idReview);
+    }
+
+    @GetMapping("/getAuthorship")
+    public ResponseEntity<Boolean> getAuthorshipByIdMovie(@RequestParam("idReview") Long idReview) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return movieReviewService.authorshipCheck(idReview, authentication.getName());
     }
 }

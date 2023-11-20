@@ -73,6 +73,17 @@ public class MovieReviewServiceImpl implements MovieReviewService {
         }
     }
 
+    public ResponseEntity<Boolean> authorshipCheck(Long idReview, String username) {
+        try {
+            User user = userRepository.findByEmail(username);
+            ReviewMovie movieReview = movieReviewRepository.getById(idReview);
+            return ResponseEntity.ok(movieReview.getUser().equals(user));
+        } catch (EntityNotFoundException e) {
+            System.out.println(e);
+        }
+        return ResponseEntity.ok(false);
+    }
+
 
     public ResponseEntity<ParsReview> getByIDMovieReview(Long idMovieReview) {
         try {

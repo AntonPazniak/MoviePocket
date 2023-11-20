@@ -30,10 +30,10 @@ public class RatingMovieController {
             @ApiResponse(code = 401, message = "User is not authentificated")
     })
     public ResponseEntity<Void> setRatingMovie(
-            @RequestParam("MovieId") Long MovieId,
+            @RequestParam("idMovie") Long idMovie,
             @RequestParam("rating") int rating) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return ratingMovieService.setNewRatingMovie(authentication.getName(), MovieId, rating);
+        return ratingMovieService.setNewRatingMovie(authentication.getName(), idMovie, rating);
     }
 
     @PostMapping("/del")
@@ -43,9 +43,9 @@ public class RatingMovieController {
             @ApiResponse(code = 400, message = "Bad request"),
             @ApiResponse(code = 401, message = "User is not authentificated")
     })
-    public ResponseEntity<Void> delRatingMovie(@RequestParam("MovieId") Long MovieId) {
+    public ResponseEntity<Void> delRatingMovie(@RequestParam("idMovie") Long idMovie) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return ratingMovieService.removeFromRatingMovie(authentication.getName(), MovieId);
+        return ratingMovieService.removeFromRatingMovie(authentication.getName(), idMovie);
     }
 
     @GetMapping("/get")
@@ -55,9 +55,9 @@ public class RatingMovieController {
             @ApiResponse(code = 400, message = "Bad request"),
             @ApiResponse(code = 401, message = "User is not authentificated")
     })
-    public ResponseEntity<Integer> getRatingMovie(@RequestParam("MovieId") Long MovieId) {
+    public ResponseEntity<Integer> getUserRatingMovie(@RequestParam("idMovie") Long idMovie) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return ratingMovieService.getFromRatingMovie(authentication.getName(), MovieId);
+        return ratingMovieService.getFromRatingMovie(authentication.getName(), idMovie);
     }
 
     @GetMapping("/allByUser")
@@ -72,14 +72,14 @@ public class RatingMovieController {
         return ratingMovieService.getAllUserRatingMovie(authentication.getName());
     }
 
-    @GetMapping("/rating")
-    public ResponseEntity<Double> getMovieRating(@RequestParam("id") Long id) {
-        return ratingMovieService.getMovieRating(id);
+    @GetMapping("/getByIdMovie")
+    public ResponseEntity<Double> getByIdMovieRating(@RequestParam("idMovie") Long idMovie) {
+        return ratingMovieService.getMovieRating(idMovie);
     }
 
     @GetMapping("/count/rating")
-    public ResponseEntity<Integer> getCountMovieRating(@RequestParam("id") Long id) {
-        return ratingMovieService.getAllCountByIdMovie(id);
+    public ResponseEntity<Integer> getCountMovieRating(@RequestParam("idMovie") Long idMovie) {
+        return ratingMovieService.getAllCountByIdMovie(idMovie);
     }
 
 }

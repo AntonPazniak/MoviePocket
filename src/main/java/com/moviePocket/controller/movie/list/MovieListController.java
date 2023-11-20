@@ -95,7 +95,7 @@ public class MovieListController {
             @ApiResponse(code = 404, message = "Movie list not found")
     })
     @GetMapping("/get")
-    public ResponseEntity<List<ParsMovieList>> getMovieList(@RequestParam("idMovieList") Long idMovieList) {
+    public ResponseEntity<ParsMovieList> getMovieList(@RequestParam("idMovieList") Long idMovieList) {
         return movieListService.getMovieList(idMovieList);
     }
 
@@ -176,6 +176,11 @@ public class MovieListController {
     @GetMapping("/getAllUserLists")
     public ResponseEntity<List<ParsMovieList>> getAllUsername(@RequestParam("username") String username) {
         return movieListService.getAllByUsernameList(username);
+    }
+
+    @GetMapping("/getAllByIdMovie")
+    public ResponseEntity<List<ParsMovieList>> getAllListExistIdMovie(@RequestParam("idMovie") Long idMovie) {
+        return movieListService.getAllListExistIdMovie(idMovie);
     }
 
 }
