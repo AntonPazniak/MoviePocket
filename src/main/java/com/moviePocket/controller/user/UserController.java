@@ -5,7 +5,7 @@ import com.moviePocket.entities.user.User;
 import com.moviePocket.service.UserService;
 import com.moviePocket.service.movie.list.MovieListService;
 import com.moviePocket.service.movie.rating.*;
-import com.moviePocket.service.movie.raview.MovieReviewService;
+import com.moviePocket.service.movie.raview.ReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +23,7 @@ public class UserController {
 
     public final UserService userService;
     public final MovieListService movieListService;
-    public final MovieReviewService movieReviewService;
+    public final ReviewService reviewService;
     public final FavoriteMovieService favoriteMovieService;
     public final DislikedMovieService dislikedMovieService;
     public final WatchedMovieService watchedMovieService;

@@ -18,8 +18,7 @@ public interface ReviewMovieRepository extends JpaRepository<ReviewMovie, Long> 
     @Query("SELECT rm.review FROM ReviewMovie rm WHERE rm.idMovie = :idMovie")
     List<Review> findReviewsByMovieId(@Param("idMovie") Long idMovie);
 
-    @Query("SELECT COUNT(rm) FROM ReviewMovie rm WHERE rm.idMovie = :idMovie")
-    int countByMovieId(@Param("idMovie") Long idMovie);
+    int countByIdMovie(Long idMovie);
 
     Boolean existsByReview(Review review);
 

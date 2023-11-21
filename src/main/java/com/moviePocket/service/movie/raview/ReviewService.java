@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
-public interface MovieReviewService {
+public interface ReviewService {
 
     ResponseEntity<Void> createMovieReview(String email, Long idMovie, String title, String content);
 
@@ -20,5 +20,12 @@ public interface MovieReviewService {
     ResponseEntity<ParsReview> getByIdReview(Long idReview);
 
     ResponseEntity<Boolean> authorshipCheck(Long idReview, String username);
+
+    ResponseEntity<Void> createListReview(String email, Long idList, String title, String content);
+
+    ResponseEntity<List<ParsReview>> getAllByIdList(Long idList);
+
+    ResponseEntity<Integer> getCountByIdList(Long idList);
+
 
 }
