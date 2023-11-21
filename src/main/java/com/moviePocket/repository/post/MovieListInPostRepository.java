@@ -1,7 +1,7 @@
-package com.moviePocket.repository.movie.post;
+package com.moviePocket.repository.post;
 
-import com.moviePocket.entities.movie.post.MovieListInPost;
-import com.moviePocket.entities.movie.post.Post;
+import com.moviePocket.entities.post.MovieListInPost;
+import com.moviePocket.entities.post.Post;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

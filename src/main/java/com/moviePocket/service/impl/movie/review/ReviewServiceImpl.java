@@ -1,16 +1,12 @@
 package com.moviePocket.service.impl.movie.review;
 
 import com.moviePocket.entities.movie.list.MovieList;
-import com.moviePocket.entities.movie.review.ParsReview;
-import com.moviePocket.entities.movie.review.Review;
-import com.moviePocket.entities.movie.review.ReviewList;
-import com.moviePocket.entities.movie.review.ReviewMovie;
+import com.moviePocket.entities.post.Post;
+import com.moviePocket.entities.review.*;
 import com.moviePocket.entities.user.User;
 import com.moviePocket.repository.movie.list.MovieListRepository;
-import com.moviePocket.repository.movie.review.LikeReviewRepository;
-import com.moviePocket.repository.movie.review.ReviewListRepository;
-import com.moviePocket.repository.movie.review.ReviewMovieRepository;
-import com.moviePocket.repository.movie.review.ReviewRepository;
+import com.moviePocket.repository.post.PostRepository;
+import com.moviePocket.repository.review.*;
 import com.moviePocket.repository.user.UserRepository;
 import com.moviePocket.service.movie.raview.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +35,10 @@ public class ReviewServiceImpl implements ReviewService {
     private MovieListRepository movieListRepository;
     @Autowired
     private ReviewListRepository reviewListRepository;
+    @Autowired
+    private PostRepository postRepository;
+    @Autowired
+    private ReviewPostRepository reviewPostRepository;
 
     @Transactional
     public ResponseEntity<Void> createMovieReview(String email, Long idMovie, String title, String content) {
@@ -62,6 +62,22 @@ public class ReviewServiceImpl implements ReviewService {
             else {
                 ReviewList reviewList = new ReviewList(movieList, review);
                 reviewListRepository.save(reviewList);
+                return new ResponseEntity<>(HttpStatus.OK);
+            }
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @Transactional
+    public ResponseEntity<Void> createPostReview(String email, Long idPost, String title, String content) {
+        Post post = postRepository.getById(idPost);
+        if (post != null) {
+            Review review = createReview(email, title, content);
+            if (review == null)
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            else {
+                ReviewPost reviewPost = new ReviewPost(post, review);
+                reviewPostRepository.save(reviewPost);
                 return new ResponseEntity<>(HttpStatus.OK);
             }
         }
@@ -111,6 +127,12 @@ public class ReviewServiceImpl implements ReviewService {
                 likeReviewRepository.deleteAllByReview(review);
                 reviewRepository.delete(review);
                 return new ResponseEntity<>(HttpStatus.OK);
+            }
+            ReviewPost reviewPost = reviewPostRepository.findByReview(review);
+            if (reviewPost != null) {
+                reviewPostRepository.delete(reviewPost);
+                likeReviewRepository.deleteAllByReview(review);
+                reviewRepository.delete(review);
             }
         }
 
@@ -187,6 +209,20 @@ public class ReviewServiceImpl implements ReviewService {
 
     public ResponseEntity<Integer> getCountByIdList(Long idList) {
         return ResponseEntity.ok(reviewListRepository.countByMovieList_Id(idList));
+    }
+
+    public ResponseEntity<List<ParsReview>> getAllByIdPost(Long idPost) {
+        Post post = postRepository.getById(idPost);
+        List<Review> reviews = reviewPostRepository.findReviewsByPost(post);
+        if (reviews.isEmpty()) {
+            List<ParsReview> reviewList = new ArrayList<>();
+            return new ResponseEntity<>(reviewList, HttpStatus.OK);
+        }
+        return ResponseEntity.ok(parsMovieReview(reviews));
+    }
+
+    public ResponseEntity<Integer> getCountByIdPost(Long idList) {
+        return ResponseEntity.ok(reviewPostRepository.countByPost_Id(idList));
     }
 
     private List<ParsReview> parsMovieReview(List<Review> movieReviewList) {

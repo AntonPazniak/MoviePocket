@@ -1,6 +1,6 @@
-package com.moviePocket.repository.movie.review;
+package com.moviePocket.repository.review;
 
-import com.moviePocket.entities.movie.review.Review;
+import com.moviePocket.entities.review.Review;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

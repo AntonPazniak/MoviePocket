@@ -1,4 +1,4 @@
-package com.moviePocket.entities.movie.review;
+package com.moviePocket.entities.review;
 
 import com.moviePocket.entities.BaseEntity;
 import com.moviePocket.entities.user.User;

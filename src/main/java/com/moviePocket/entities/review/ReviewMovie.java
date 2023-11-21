@@ -1,4 +1,4 @@
-package com.moviePocket.entities.movie.review;
+package com.moviePocket.entities.review;
 
 
 import lombok.AllArgsConstructor;

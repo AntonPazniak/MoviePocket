@@ -1,6 +1,6 @@
 package com.moviePocket.service.movie.raview;
 
-import com.moviePocket.entities.movie.review.ParsReview;
+import com.moviePocket.entities.review.ParsReview;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -26,6 +26,12 @@ public interface ReviewService {
     ResponseEntity<List<ParsReview>> getAllByIdList(Long idList);
 
     ResponseEntity<Integer> getCountByIdList(Long idList);
+
+    ResponseEntity<List<ParsReview>> getAllByIdPost(Long idPost);
+
+    ResponseEntity<Integer> getCountByIdPost(Long idList);
+
+    ResponseEntity<Void> createPostReview(String email, Long idPost, String title, String content);
 
 
 }

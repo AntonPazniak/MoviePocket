@@ -1,4 +1,4 @@
-package com.moviePocket.entities.movie.post;
+package com.moviePocket.entities.post;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

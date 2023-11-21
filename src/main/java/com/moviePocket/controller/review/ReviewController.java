@@ -1,7 +1,7 @@
 package com.moviePocket.controller.review;
 
 
-import com.moviePocket.entities.movie.review.ParsReview;
+import com.moviePocket.entities.review.ParsReview;
 import com.moviePocket.service.movie.raview.LikeMovieReviewService;
 import com.moviePocket.service.movie.raview.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +39,14 @@ public class ReviewController {
         return reviewService.createListReview(authentication.getName(), idList, title, content);
     }
 
+    @PostMapping("/post/set")
+    public ResponseEntity<Void> setPostReview(@RequestParam("idPost") Long idPost,
+                                              @RequestParam("title") String title,
+                                              @RequestParam("content") String content) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return reviewService.createPostReview(authentication.getName(), idPost, title, content);
+    }
+
     @PostMapping("/up")
     public ResponseEntity<Void> setUpdateReview(@RequestParam("idReview") Long idReview,
                                                      @RequestParam("title") String title,
@@ -60,6 +68,11 @@ public class ReviewController {
     @GetMapping("/list/all")
     public ResponseEntity<List<ParsReview>> getAllReviewByIdList(@RequestParam("idList") Long idList) {
         return reviewService.getAllByIdList(idList);
+    }
+
+    @GetMapping("/post/all")
+    public ResponseEntity<List<ParsReview>> getAllReviewByIdPost(@RequestParam("idPost") Long idPost) {
+        return reviewService.getAllByIdPost(idPost);
     }
 
     @PostMapping("/del")

@@ -1,6 +1,6 @@
 package com.moviePocket.controller.movie.post;
 
-import com.moviePocket.entities.movie.post.ParsPost;
+import com.moviePocket.entities.post.ParsPost;
 import com.moviePocket.service.movie.post.LikePostService;
 import com.moviePocket.service.movie.post.MovieListInPostService;
 import com.moviePocket.service.movie.post.PostService;
