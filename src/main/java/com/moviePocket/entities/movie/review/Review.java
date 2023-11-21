@@ -11,7 +11,7 @@ import javax.persistence.*;
 
 
 @Entity
-@Table(name = "review_movie", uniqueConstraints = @UniqueConstraint(columnNames = {"idUser", "id"}))
+@Table(name = "review", uniqueConstraints = @UniqueConstraint(columnNames = {"idUser", "id"}))
 @Getter
 @Setter
 @NoArgsConstructor
@@ -21,9 +21,6 @@ public class Review extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "idUser", referencedColumnName = "id")
     private User user;
-
-    @Column(nullable = false)
-    private long idMovie;
 
     @Column(nullable = false)
     private String title;

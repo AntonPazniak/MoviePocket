@@ -11,16 +11,16 @@ import javax.transaction.Transactional;
 
 @Transactional
 @Repository
-public interface LikeMovieReviewRepository extends JpaRepository<LikeMovieReview, Long> {
+public interface LikeReviewRepository extends JpaRepository<LikeMovieReview, Long> {
 
-    LikeMovieReview getByUserAndMovieReview(User user, Review movieReview);
+    LikeMovieReview getByUserAndReview(User user, Review review);
 
-    void deleteAllByMovieReview(Review movieReview);
+    void deleteAllByReview(Review review);
 
-    @Query("SELECT COUNT(lmr) FROM LikeMovieReview lmr WHERE lmr.movieReview = :movieReview AND lmr.lickOrDis = true")
+    @Query("SELECT COUNT(lmr) FROM LikeMovieReview lmr WHERE lmr.review = :movieReview AND lmr.lickOrDis = true")
     int countByMovieReviewAndLickOrDisIsTrue(Review movieReview);
 
-    @Query("SELECT COUNT(lmr) FROM LikeMovieReview lmr WHERE lmr.movieReview = :movieReview AND lmr.lickOrDis = false")
+    @Query("SELECT COUNT(lmr) FROM LikeMovieReview lmr WHERE lmr.review = :movieReview AND lmr.lickOrDis = false")
     int countByMovieReviewAndLickOrDisIsFalse(Review movieReview);
 
 

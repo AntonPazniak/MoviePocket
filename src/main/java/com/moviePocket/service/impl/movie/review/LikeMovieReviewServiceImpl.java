@@ -4,8 +4,8 @@ package com.moviePocket.service.impl.movie.review;
 import com.moviePocket.entities.movie.review.LikeMovieReview;
 import com.moviePocket.entities.movie.review.Review;
 import com.moviePocket.entities.user.User;
-import com.moviePocket.repository.movie.review.LikeMovieReviewRepository;
-import com.moviePocket.repository.movie.review.MovieReviewRepository;
+import com.moviePocket.repository.movie.review.LikeReviewRepository;
+import com.moviePocket.repository.movie.review.ReviewRepository;
 import com.moviePocket.repository.user.UserRepository;
 import com.moviePocket.service.movie.raview.LikeMovieReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,52 +17,52 @@ import org.springframework.stereotype.Service;
 @Service
 public class LikeMovieReviewServiceImpl implements LikeMovieReviewService {
     @Autowired
-    MovieReviewRepository movieReviewRepository;
+    ReviewRepository reviewRepository;
     @Autowired
-    LikeMovieReviewRepository likeMovieReviewRepository;
+    LikeReviewRepository likeReviewRepository;
     @Autowired
     UserRepository userRepository;
 
     public ResponseEntity<Void> setLikeOrDisOrDel(String username, Long id, boolean likeOrDis) {
-        Review movieReview = movieReviewRepository.getById(id);
+        Review movieReview = reviewRepository.getById(id);
         User user = userRepository.findByEmail(username);
-        LikeMovieReview likeMovieReview = likeMovieReviewRepository.getByUserAndMovieReview(user, movieReview);
+        LikeMovieReview likeMovieReview = likeReviewRepository.getByUserAndReview(user, movieReview);
         if (user == null)
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         {
             if (likeMovieReview == null) {
-                likeMovieReviewRepository.save(new LikeMovieReview(movieReview, user, likeOrDis));
+                likeReviewRepository.save(new LikeMovieReview(movieReview, user, likeOrDis));
             } else if (likeMovieReview.isLickOrDis() == likeOrDis) {
-                likeMovieReviewRepository.delete(likeMovieReview);
+                likeReviewRepository.delete(likeMovieReview);
             } else {
                 likeMovieReview.setLickOrDis(likeOrDis);
-                likeMovieReviewRepository.save(likeMovieReview);
+                likeReviewRepository.save(likeMovieReview);
             }
             return new ResponseEntity<>(HttpStatus.OK);
         }
     }
 
     public ResponseEntity<Boolean> getLikeOrDis(String username, Long id) {
-        Review movieReview = movieReviewRepository.getById(id);
+        Review movieReview = reviewRepository.getById(id);
         User user = userRepository.findByEmail(username);
         if (user == null)
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         if (movieReview == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        LikeMovieReview likeMovieReview = likeMovieReviewRepository.getByUserAndMovieReview(user, movieReview);
+        LikeMovieReview likeMovieReview = likeReviewRepository.getByUserAndReview(user, movieReview);
         if (likeMovieReview == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         return ResponseEntity.ok(likeMovieReview.isLickOrDis());
     }
 
     public ResponseEntity<Integer[]> getAllLikeAndDisByIdMovieReview(Long idReview) {
-        Review movieReview = movieReviewRepository.getById(idReview);
+        Review movieReview = reviewRepository.getById(idReview);
         if (movieReview == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         {
             return ResponseEntity.ok(new Integer[]{
-                    likeMovieReviewRepository.countByMovieReviewAndLickOrDisIsTrue(movieReview),
-                    likeMovieReviewRepository.countByMovieReviewAndLickOrDisIsFalse(movieReview)
+                    likeReviewRepository.countByMovieReviewAndLickOrDisIsTrue(movieReview),
+                    likeReviewRepository.countByMovieReviewAndLickOrDisIsFalse(movieReview)
             });
         }
     }

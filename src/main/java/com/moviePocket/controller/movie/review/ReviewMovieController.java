@@ -32,22 +32,16 @@ public class ReviewMovieController {
     }
 
     @PostMapping("/up")
-    public ResponseEntity<Void> setUpdateMovieReview(@RequestParam("idReview") Long idReview,
+    public ResponseEntity<Void> setUpdateReview(@RequestParam("idReview") Long idReview,
                                                      @RequestParam("title") String title,
                                                      @RequestParam("content") String content) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return movieReviewService.updateMovieReview(idReview, authentication.getName(), title, content);
+        return movieReviewService.updateReview(idReview, authentication.getName(), title, content);
     }
 
     @GetMapping("/get")
     public ResponseEntity<ParsReview> getByIdReview(@RequestParam("idReview") Long idReview) {
-        return movieReviewService.getByIDMovieReview(idReview);
-    }
-
-    @GetMapping("/getAllMovieUser")
-    public ResponseEntity<List<ParsReview>> getAllByUserAndIdMovie(@RequestParam("id") Long id) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return movieReviewService.getAllByUserAndIdMovie(authentication.getName(), id);
+        return movieReviewService.getByIdReview(idReview);
     }
 
     @GetMapping("/getAllByMovie")
@@ -55,16 +49,10 @@ public class ReviewMovieController {
         return movieReviewService.getAllByIDMovie(idMovie);
     }
 
-    @GetMapping("/getAllMy")
-    public ResponseEntity<List<ParsReview>> getAllReviewByUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return movieReviewService.getAllByUser(authentication.getName());
-    }
-
     @PostMapping("/del")
     public ResponseEntity<Void> delMovieReview(@RequestParam("idReview") Long idReview) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return movieReviewService.delMovieReview(idReview, authentication.getName());
+        return movieReviewService.delReview(idReview, authentication.getName());
     }
 
     @PostMapping("/setLike")

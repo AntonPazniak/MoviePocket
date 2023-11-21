@@ -7,21 +7,17 @@ import java.util.List;
 
 public interface MovieReviewService {
 
-    ResponseEntity<Void> createMovieReview(String username, Long idMovie, String title, String content);
+    ResponseEntity<Void> createMovieReview(String email, Long idMovie, String title, String content);
+
+    ResponseEntity<Void> updateReview(Long idReview, String username, String title, String content);
 
     ResponseEntity<List<ParsReview>> getAllByIDMovie(Long idMovie);
 
-    ResponseEntity<List<ParsReview>> getAllByUser(String email);
-
-    ResponseEntity<Void> delMovieReview(Long idMovieReview, String username);
+    ResponseEntity<Void> delReview(Long idReview, String username);
 
     ResponseEntity<Integer> getAllCountByIdMovie(Long idMovie);
 
-    ResponseEntity<ParsReview> getByIDMovieReview(Long idMovieReview);
-
-    ResponseEntity<List<ParsReview>> getAllByUserAndIdMovie(String email, Long idMovie);
-
-    ResponseEntity<Void> updateMovieReview(Long idMovieReview, String username, String title, String content);
+    ResponseEntity<ParsReview> getByIdReview(Long idReview);
 
     ResponseEntity<Boolean> authorshipCheck(Long idReview, String username);
 
