@@ -1,6 +1,6 @@
-package com.moviePocket.repository.movie.post;
+package com.moviePocket.repository.post;
 
-import com.moviePocket.entities.movie.post.Post;
+import com.moviePocket.entities.post.Post;
 import com.moviePocket.entities.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

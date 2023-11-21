@@ -1,12 +1,12 @@
 package com.moviePocket.service.impl.movie.post;
 
-import com.moviePocket.entities.movie.post.MovieListInPost;
-import com.moviePocket.entities.movie.post.ParsPost;
-import com.moviePocket.entities.movie.post.Post;
+import com.moviePocket.entities.post.MovieListInPost;
+import com.moviePocket.entities.post.ParsPost;
+import com.moviePocket.entities.post.Post;
 import com.moviePocket.entities.user.User;
-import com.moviePocket.repository.movie.post.LikePostRepository;
-import com.moviePocket.repository.movie.post.MovieListInPostRepository;
-import com.moviePocket.repository.movie.post.PostRepository;
+import com.moviePocket.repository.post.LikePostRepository;
+import com.moviePocket.repository.post.MovieListInPostRepository;
+import com.moviePocket.repository.post.PostRepository;
 import com.moviePocket.repository.user.UserRepository;
 import com.moviePocket.service.movie.post.PostService;
 import lombok.RequiredArgsConstructor;

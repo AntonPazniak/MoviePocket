@@ -1,4 +1,4 @@
-package com.moviePocket.entities.movie.review;
+package com.moviePocket.entities.post;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -6,20 +6,19 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ParsReview {
-
+public class ParsPost {
+    private Long id;
     private String title;
     private String content;
+    private List<Long> idMovieList;
+    private int[] likeOrDis;
     private String username;
-    private Date dataCreated;
-    private Date dataUpdated;
-    private Long idMovie;
-    private Long id;
-    private int[] likes;
-
+    private Date create;
+    private Date update;
 }

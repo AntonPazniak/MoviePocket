@@ -4,7 +4,7 @@ import com.moviePocket.controller.dto.MovieDto;
 import com.moviePocket.service.impl.movie.MovieServiceImpl;
 import com.moviePocket.service.movie.list.MovieListService;
 import com.moviePocket.service.movie.rating.*;
-import com.moviePocket.service.movie.raview.MovieReviewService;
+import com.moviePocket.service.movie.raview.ReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +26,7 @@ public class MovieController {
     private final FavoriteMovieService favoriteMovieService;
     private final WatchedMovieService watchedMovieService;
     private final ToWatchMovieService toWatchMovieService;
-    private final MovieReviewService movieReviewService;
+    private final ReviewService reviewService;
     private final MovieListService movieListService;
 
 

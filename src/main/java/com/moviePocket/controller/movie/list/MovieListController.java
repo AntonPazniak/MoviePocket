@@ -182,14 +182,10 @@ public class MovieListController {
             @ApiResponse(code = 200, message = "Successfully retrieved num of likes "),
             @ApiResponse(code = 404, message = "User not found")
     })
+
     @GetMapping("/getAllLikes")
     public ResponseEntity<Integer[]> getAllLikePostsByIdMovie(@RequestParam("idMovieList") Long idMovieList) {
         return likeListService.getAllLikeAndDisByIdMovieList(idMovieList);
-
-    @GetMapping("/getAllByIdMovie")
-    public ResponseEntity<List<ParsMovieList>> getAllListExistIdMovie(@RequestParam("idMovie") Long idMovie) {
-        return movieListService.getAllListExistIdMovie(idMovie);
-
     }
 
 }
