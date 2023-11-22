@@ -1,4 +1,4 @@
-package com.moviePocket.service.impl.movie.review;
+package com.moviePocket.service.impl.review;
 
 import com.moviePocket.entities.movie.list.MovieList;
 import com.moviePocket.entities.post.Post;

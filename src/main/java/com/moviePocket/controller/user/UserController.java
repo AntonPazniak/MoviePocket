@@ -2,10 +2,10 @@ package com.moviePocket.controller.user;
 
 import com.moviePocket.entities.user.ParsUserPage;
 import com.moviePocket.entities.user.User;
-import com.moviePocket.service.UserService;
 import com.moviePocket.service.movie.list.MovieListService;
 import com.moviePocket.service.movie.rating.*;
 import com.moviePocket.service.movie.raview.ReviewService;
+import com.moviePocket.service.movie.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
