@@ -34,4 +34,8 @@ public interface UserService extends UserDetailsService {
 
     ResponseEntity<Boolean> existsByEmail(String email);
 
+    ResponseEntity<Void> createPasswordToken(String email) throws MessagingException;
+
+    ResponseEntity<Void> resetPassword(String token, String password);
+
 }

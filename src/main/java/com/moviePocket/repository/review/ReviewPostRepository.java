@@ -6,9 +6,11 @@ import com.moviePocket.entities.review.ReviewPost;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public interface ReviewPostRepository extends JpaRepository<ReviewPost, Long> {
 
     ReviewPost findByReview(Review review);

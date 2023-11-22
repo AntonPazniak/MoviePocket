@@ -1,7 +1,7 @@
 package com.moviePocket.controller.user;
 
 import com.moviePocket.security.validation.ValidPassword;
-import com.moviePocket.service.movie.user.ForgotPasswordService;
+import com.moviePocket.service.movie.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,23 +12,23 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.mail.MessagingException;
 
 @RestController
-@RequestMapping("/forgotpassword")
+@RequestMapping("/lostpassword")
 
 //@Validated
 //TODO password validation for lost password
-public class ForgotPasswordController {
+public class LostPasswordController {
 
     @Autowired
-    private ForgotPasswordService forgotPasswordService;
+    private UserService userService;
 
-    @PostMapping("/set")
-    public ResponseEntity<Void> setEmail(@RequestParam("email") String email) throws MessagingException {
-        return forgotPasswordService.createPasswordToken(email);
+    @PostMapping("/setEmail")
+    public ResponseEntity<Void> setMail(@RequestParam("email") String email) throws MessagingException {
+        return userService.createPasswordToken(email);
     }
 
     @PostMapping("/reset")
-    public ResponseEntity<Void> resetPassword(@RequestParam("token") String token, @RequestParam("password") @ValidPassword String password) {
-        return forgotPasswordService.resetPassword(token, password);
+    public ResponseEntity<Void> resetPassword(@RequestParam("token") String token, @RequestParam("password0") @ValidPassword String password0, @RequestParam("password1") String password1) {
+        return userService.resetPassword(token, password0);
     }
 
 }
