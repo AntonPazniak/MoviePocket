@@ -70,7 +70,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         "/swagger-ui.html",
                         "/webjars/**").permitAll()
                 .antMatchers("/registration/**", "/login/**").permitAll()
-                .antMatchers("/activate/**", "/lostpassword/**").permitAll()
+                .antMatchers("/activate/**", "/forgotpassword/**").permitAll()
                 .antMatchers("/movies/**").permitAll()
                 .antMatchers("/review/**").permitAll()
                 .antMatchers("/user/**").permitAll()

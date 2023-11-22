@@ -45,9 +45,6 @@ public class User extends BaseEntity {
     private String newEmail;
 
     @Column(nullable = true)
-    private String tokenLostPassword;
-
-    @Column(nullable = true)
     private String newEmailToken;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)

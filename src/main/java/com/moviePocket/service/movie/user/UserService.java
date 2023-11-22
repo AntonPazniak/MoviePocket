@@ -1,4 +1,4 @@
-package com.moviePocket.service;
+package com.moviePocket.service.movie.user;
 
 import com.moviePocket.controller.dto.UserRegistrationDto;
 import com.moviePocket.entities.user.User;
@@ -15,10 +15,6 @@ public interface UserService extends UserDetailsService {
     User findUserByEmail(String email);
 
     ResponseEntity<Void> activateUser(String code);
-
-    ResponseEntity<Void> setTokenPassword(String mail) throws MessagingException;
-
-    ResponseEntity<Void> setNewLostPassword(String token, String password1, String password2);
 
     ResponseEntity<Void> setNewPassword(String email, String passwordOld, String passwordNew0, String passwordNew1);
 
