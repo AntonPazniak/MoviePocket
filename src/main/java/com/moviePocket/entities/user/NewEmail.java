@@ -1,7 +1,6 @@
-package com.moviePocket.entities.movie.review;
+package com.moviePocket.entities.user;
 
 import com.moviePocket.entities.BaseEntity;
-import com.moviePocket.entities.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,26 +8,23 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
-
-@Entity
-@Table(name = "review_movie", uniqueConstraints = @UniqueConstraint(columnNames = {"idUser", "id"}))
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class ReviewMovie extends BaseEntity {
+@NoArgsConstructor
+@Entity
+@Table(name = "new_email", uniqueConstraints = @UniqueConstraint(columnNames = {"idUser"}))
+public class NewEmail extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "idUser", referencedColumnName = "id")
     private User user;
 
     @Column(nullable = false)
-    private long idMovie;
+    private String newEmail;
 
     @Column(nullable = false)
-    private String title;
+    private String tokenEmailActivate;
 
-    @Column(nullable = false)
-    private String content;
 
 }

@@ -1,6 +1,6 @@
 package com.moviePocket.service.movie.post;
 
-import com.moviePocket.entities.movie.post.ParsPost;
+import com.moviePocket.entities.post.ParsPost;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;

@@ -1,9 +1,9 @@
-package com.moviePocket.controller.movie.review;
+package com.moviePocket.controller.review;
 
 
-import com.moviePocket.entities.movie.review.ParsReview;
+import com.moviePocket.entities.review.ParsReview;
 import com.moviePocket.service.movie.raview.LikeMovieReviewService;
-import com.moviePocket.service.movie.raview.MovieReviewService;
+import com.moviePocket.service.movie.raview.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -14,79 +14,93 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/movies/review")
+@RequestMapping("/review")
 @Controller
-public class ReviewMovieController {
+public class ReviewController {
 
     @Autowired
-    MovieReviewService movieReviewService;
+    ReviewService reviewService;
     @Autowired
     LikeMovieReviewService likeMovieReviewService;
 
-    @PostMapping("/set")
+    @PostMapping("/movie/set")
     public ResponseEntity<Void> setMovieReview(@RequestParam("idMovie") Long idMovie,
                                                @RequestParam("title") String title,
                                                @RequestParam("content") String content) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return movieReviewService.createMovieReview(authentication.getName(), idMovie, title, content);
+        return reviewService.createMovieReview(authentication.getName(), idMovie, title, content);
+    }
+
+    @PostMapping("/list/set")
+    public ResponseEntity<Void> setListReview(@RequestParam("idList") Long idList,
+                                              @RequestParam("title") String title,
+                                              @RequestParam("content") String content) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return reviewService.createListReview(authentication.getName(), idList, title, content);
+    }
+
+    @PostMapping("/post/set")
+    public ResponseEntity<Void> setPostReview(@RequestParam("idPost") Long idPost,
+                                              @RequestParam("title") String title,
+                                              @RequestParam("content") String content) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return reviewService.createPostReview(authentication.getName(), idPost, title, content);
     }
 
     @PostMapping("/up")
-    public ResponseEntity<Void> setUpdateMovieReview(@RequestParam("idReview") Long idReview,
+    public ResponseEntity<Void> setUpdateReview(@RequestParam("idReview") Long idReview,
                                                      @RequestParam("title") String title,
                                                      @RequestParam("content") String content) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return movieReviewService.updateMovieReview(idReview, authentication.getName(), title, content);
+        return reviewService.updateReview(idReview, authentication.getName(), title, content);
     }
 
     @GetMapping("/get")
     public ResponseEntity<ParsReview> getByIdReview(@RequestParam("idReview") Long idReview) {
-        return movieReviewService.getByIDMovieReview(idReview);
+        return reviewService.getByIdReview(idReview);
     }
 
-    @GetMapping("/getAllMovieUser")
-    public ResponseEntity<List<ParsReview>> getAllByUserAndIdMovie(@RequestParam("id") Long id) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return movieReviewService.getAllByUserAndIdMovie(authentication.getName(), id);
-    }
-
-    @GetMapping("/getAllByMovie")
+    @GetMapping("/movie/all")
     public ResponseEntity<List<ParsReview>> getAllReviewByIdMovie(@RequestParam("idMovie") Long idMovie) {
-        return movieReviewService.getAllByIDMovie(idMovie);
+        return reviewService.getAllByIDMovie(idMovie);
     }
 
-    @GetMapping("/getAllMy")
-    public ResponseEntity<List<ParsReview>> getAllReviewByUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return movieReviewService.getAllByUser(authentication.getName());
+    @GetMapping("/list/all")
+    public ResponseEntity<List<ParsReview>> getAllReviewByIdList(@RequestParam("idList") Long idList) {
+        return reviewService.getAllByIdList(idList);
+    }
+
+    @GetMapping("/post/all")
+    public ResponseEntity<List<ParsReview>> getAllReviewByIdPost(@RequestParam("idPost") Long idPost) {
+        return reviewService.getAllByIdPost(idPost);
     }
 
     @PostMapping("/del")
     public ResponseEntity<Void> delMovieReview(@RequestParam("idReview") Long idReview) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return movieReviewService.delMovieReview(idReview, authentication.getName());
+        return reviewService.delReview(idReview, authentication.getName());
     }
 
-    @PostMapping("/setLike")
+    @PostMapping("/like")
     public ResponseEntity<Void> setLike(@RequestParam("idReview") Long idReview, @RequestParam("like") boolean like) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return likeMovieReviewService.setLikeOrDisOrDel(authentication.getName(), idReview, like);
     }
 
-    @GetMapping("/getLike")
+    @GetMapping("/like")
     public ResponseEntity<Boolean> getLikeOrDisByIdReview(@RequestParam("idReview") Long idReview) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return likeMovieReviewService.getLikeOrDis(authentication.getName(), idReview);
     }
 
-    @GetMapping("/getAllLike")
+    @GetMapping("/likes")
     public ResponseEntity<Integer[]> getAllLikeReviewByIdMovie(@RequestParam("idReview") Long idReview) {
         return likeMovieReviewService.getAllLikeAndDisByIdMovieReview(idReview);
     }
 
-    @GetMapping("/getAuthorship")
+    @GetMapping("/authorship")
     public ResponseEntity<Boolean> getAuthorshipByIdMovie(@RequestParam("idReview") Long idReview) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return movieReviewService.authorshipCheck(idReview, authentication.getName());
+        return reviewService.authorshipCheck(idReview, authentication.getName());
     }
 }

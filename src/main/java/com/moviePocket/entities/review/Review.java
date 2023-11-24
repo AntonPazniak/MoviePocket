@@ -1,4 +1,4 @@
-package com.moviePocket.entities.movie.post;
+package com.moviePocket.entities.review;
 
 import com.moviePocket.entities.BaseEntity;
 import com.moviePocket.entities.user.User;
@@ -9,13 +9,14 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
+
 @Entity
+@Table(name = "review", uniqueConstraints = @UniqueConstraint(columnNames = {"idUser", "id"}))
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "post", uniqueConstraints = @UniqueConstraint(columnNames = {"id", "idUser"}))
-public class Post extends BaseEntity {
+public class Review extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "idUser", referencedColumnName = "id")
@@ -24,6 +25,7 @@ public class Post extends BaseEntity {
     @Column(nullable = false)
     private String title;
 
+    @Column(nullable = false)
     private String content;
 
 }

@@ -1,4 +1,4 @@
-package com.moviePocket.entities.movie.review;
+package com.moviePocket.entities.review;
 
 import com.moviePocket.entities.BaseEntity;
 import com.moviePocket.entities.user.User;
@@ -17,7 +17,7 @@ public class LikeMovieReview extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "idReview")
-    private ReviewMovie movieReview;
+    private Review review;
 
     @ManyToOne
     @JoinColumn(name = "idUser")
@@ -25,8 +25,8 @@ public class LikeMovieReview extends BaseEntity {
 
     private boolean lickOrDis;
 
-    public LikeMovieReview(ReviewMovie movieReview, User user, boolean lickOrDis) {
-        this.movieReview = movieReview;
+    public LikeMovieReview(Review movieReview, User user, boolean lickOrDis) {
+        this.review = movieReview;
         this.user = user;
         this.lickOrDis = lickOrDis;
     }
