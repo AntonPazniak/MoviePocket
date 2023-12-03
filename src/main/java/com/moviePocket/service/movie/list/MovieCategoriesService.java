@@ -1,6 +1,6 @@
 package com.moviePocket.service.movie.list;
 
-import com.moviePocket.entities.movie.list.MovieCategories;
+import com.moviePocket.entities.list.MovieCategories;
 
 import java.util.List;
 

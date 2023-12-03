@@ -1,7 +1,7 @@
 package com.moviePocket.entities.user;
 
-import com.moviePocket.entities.movie.list.ParsMovieList;
-import com.moviePocket.entities.movie.rating.Rating;
+import com.moviePocket.entities.list.ParsMovieList;
+import com.moviePocket.entities.rating.Rating;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

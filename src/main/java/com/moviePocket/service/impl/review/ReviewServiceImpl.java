@@ -1,10 +1,10 @@
 package com.moviePocket.service.impl.review;
 
-import com.moviePocket.entities.movie.list.MovieList;
+import com.moviePocket.entities.list.MovieList;
 import com.moviePocket.entities.post.Post;
 import com.moviePocket.entities.review.*;
 import com.moviePocket.entities.user.User;
-import com.moviePocket.repository.movie.list.MovieListRepository;
+import com.moviePocket.repository.list.MovieListRepository;
 import com.moviePocket.repository.post.PostRepository;
 import com.moviePocket.repository.review.*;
 import com.moviePocket.repository.user.UserRepository;

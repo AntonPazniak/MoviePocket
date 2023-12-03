@@ -1,6 +1,6 @@
 package com.moviePocket.service.movie.rating;
 
-import com.moviePocket.entities.movie.rating.Rating;
+import com.moviePocket.entities.rating.Rating;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;

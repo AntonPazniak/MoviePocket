@@ -1,6 +1,6 @@
 package com.moviePocket.entities.review;
 
-import com.moviePocket.entities.movie.list.MovieList;
+import com.moviePocket.entities.list.MovieList;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

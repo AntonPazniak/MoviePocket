@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/movies")
 @RequiredArgsConstructor
@@ -28,6 +26,7 @@ public class MovieController {
     private final ToWatchMovieService toWatchMovieService;
     private final ReviewService reviewService;
     private final MovieListService movieListService;
+
 
 
     @GetMapping("/{idMovie}")
@@ -44,9 +43,12 @@ public class MovieController {
         return new ResponseEntity<>(movieDto, HttpStatus.OK);
     }
 
-    @GetMapping("/search/{query}")
-    public List<MovieDto> getAllSearchedMovies(@PathVariable String query) {
-        return movieService.searchMovie(query);
-    }
+//    @GetMapping("/{idMovie}")
+//    public ResponseEntity<Void> getMovieInfo(@PathVariable("idMovie") Long idMovie) {
+//        movieService.setMovie(idMovie);
+//        return new ResponseEntity<>(HttpStatus.OK);
+//    }
+
+
 
 }
