@@ -1,7 +1,9 @@
 package com.moviePocket.entities.tracking;
 
 import com.moviePocket.entities.BaseEntity;
+import com.moviePocket.entities.movie.Movie;
 import com.moviePocket.entities.user.User;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,18 +16,18 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class Tracking extends BaseEntity {
 
     private LocalDate dateRelease;
-    private long idMovie;
+
+    @ManyToOne
+    @JoinColumn(name = "idMovie", referencedColumnName = "id")
+    private Movie movie;
 
     @ManyToOne
     @JoinColumn(name = "idUser")
     private User user;
 
-    public Tracking(User user, long idMovie, LocalDate dateRelease) {
-        this.dateRelease = dateRelease;
-        this.idMovie = idMovie;
-        this.user = user;
-    }
+
 }

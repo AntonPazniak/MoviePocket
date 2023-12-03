@@ -2,10 +2,12 @@ package com.moviePocket.service.impl.tracing;
 
 import com.moviePocket.api.TMDBApi;
 import com.moviePocket.api.models.MovieTMDB;
+import com.moviePocket.entities.movie.Movie;
 import com.moviePocket.entities.tracking.Tracking;
 import com.moviePocket.entities.user.User;
 import com.moviePocket.repository.tracking.TrackingRepository;
 import com.moviePocket.repository.user.UserRepository;
+import com.moviePocket.service.impl.movie.MovieServiceImpl;
 import com.moviePocket.service.impl.user.EmailSenderService;
 import com.moviePocket.service.movie.tracing.TracingService;
 import lombok.AllArgsConstructor;
@@ -30,6 +32,8 @@ public class TracingServiceImpl implements TracingService {
     @Autowired
     private TrackingRepository trackingRepository;
     @Autowired
+    private MovieServiceImpl movieService;
+    @Autowired
     private UserRepository userRepository;
     private final EmailSenderService emailSenderService;
 
@@ -37,7 +41,7 @@ public class TracingServiceImpl implements TracingService {
     public ResponseEntity<Boolean> existByIdMovie(String email, Long idMovie) {
         User user = userRepository.findByEmail(email);
         if (user != null) {
-            Boolean exist = trackingRepository.existsByUserAndIdMovie(user, idMovie);
+            Boolean exist = trackingRepository.existsByUserAndMovie_Id(user, idMovie);
             return ResponseEntity.ok(exist);        // return bool if exist true not false
         }
         return new ResponseEntity<>(HttpStatus.UNAUTHORIZED); // no sign in
@@ -46,15 +50,15 @@ public class TracingServiceImpl implements TracingService {
     public ResponseEntity<Boolean> setOrDelByIdMovie(String email, Long idMovie) {
         User user = userRepository.findByEmail(email);
         if (user != null) {
-            Tracking tracking = trackingRepository.findByUserAndIdMovie(user, idMovie);
+            Tracking tracking = trackingRepository.findByUserAndMovie_Id(user, idMovie);
             if (tracking == null) {
-                MovieTMDB movie = TMDBApi.getInfoMovie(idMovie);
+                Movie movie = movieService.setMovie(idMovie);
                 if (movie != null) {
                     LocalDate currentDate = LocalDate.now();
-                    LocalDate releaseDate = movie.getReleaseDate();
+                    LocalDate releaseDate = movie.getRelease_date();
 
                     if (releaseDate.isAfter(currentDate)) {
-                        tracking = new Tracking(user, idMovie, releaseDate);
+                        tracking = new Tracking(movie.getRelease_date(), movie, user);
                         trackingRepository.save(tracking);
                         return ResponseEntity.ok(true); // save tracking
                     } else {
@@ -72,7 +76,7 @@ public class TracingServiceImpl implements TracingService {
     }
 
     public Long getCountByIdMovie(Long idMovie) {
-        return trackingRepository.countByIdMovie(idMovie);
+        return trackingRepository.countAllByMovie_id(idMovie);
     }
 
     @Scheduled(cron = "0 00 20 * * *", zone = "Europe/Warsaw") // Каждый день в 21:20 по польскому времени
@@ -92,7 +96,7 @@ public class TracingServiceImpl implements TracingService {
         List<Tracking> trackings = trackingRepository.findByDateRelease(tomorrowDate);
         if (trackingRepository != null) {
             for (Tracking t : trackings) {
-                MovieTMDB movie = TMDBApi.getInfoMovie(t.getIdMovie());
+                MovieTMDB movie = TMDBApi.getInfoMovie(t.getMovie().getId());
                 emailSenderService.sendMailWithAttachment(t.getUser().getEmail(), "\"" + movie.getTitle() + "\n" + movie.getOverview()
                         , "Movie release tomorrow " + movie.getTitle());
             }
@@ -109,7 +113,7 @@ public class TracingServiceImpl implements TracingService {
                 Long[] idsMovie = new Long[trackings.size()];
                 int index = 0;
                 for (Tracking t : trackings) {
-                    idsMovie[index] = t.getIdMovie();
+                    idsMovie[index] = t.getMovie().getId();
                     index++;
                 }
                 return ResponseEntity.ok(idsMovie);
