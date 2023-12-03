@@ -1,7 +1,7 @@
 package com.moviePocket.controller.list;
 
 
-import com.moviePocket.entities.list.ParsMovieList;
+import com.moviePocket.entities.list.ParsList;
 import com.moviePocket.service.movie.list.CategoriesMovieListService;
 import com.moviePocket.service.movie.list.LikeListService;
 import com.moviePocket.service.movie.list.MovieInListService;
@@ -95,7 +95,7 @@ public class MovieListController {
             @ApiResponse(code = 404, message = "Movie list not found")
     })
     @GetMapping("/get")
-    public ResponseEntity<ParsMovieList> getMovieList(@RequestParam("idMovieList") Long idMovieList) {
+    public ResponseEntity<ParsList> getMovieList(@RequestParam("idMovieList") Long idMovieList) {
         return movieListService.getMovieList(idMovieList);
     }
 
@@ -147,22 +147,13 @@ public class MovieListController {
         return categoriesMovieListService.setOrDelCategoryList(authentication.getName(), idList, idCategory);
     }
 
-    @ApiOperation(value = "Get all movie lists in the system", notes = "Returns a list of all movie lists")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully retrieved all movie lists")
-    })
-    @GetMapping("/getAllList")
-    public ResponseEntity<List<ParsMovieList>> getAllList() {
-        return movieListService.getAllList();
-    }
-
     @ApiOperation(value = "Get all my movie lists", notes = "Returns a list of all movie lists for the authenticated user")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully retrieved all movie lists for authenticated user"),
             @ApiResponse(code = 401, message = "User not authenticated")
     })
     @GetMapping("/getAllMyLists")
-    public ResponseEntity<List<ParsMovieList>> getAllMyLists() {
+    public ResponseEntity<List<ParsList>> getAllMyLists() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return movieListService.getAllMyList(authentication.getName());
     }
@@ -174,7 +165,7 @@ public class MovieListController {
             @ApiResponse(code = 404, message = "User not found")
     })
     @GetMapping("/getAllUserLists")
-    public ResponseEntity<List<ParsMovieList>> getAllUsername(@RequestParam("username") String username) {
+    public ResponseEntity<List<ParsList>> getAllUsername(@RequestParam("username") String username) {
         return movieListService.getAllByUsernameList(username);
     }
     @ApiOperation(value = "Get num of likes by movie list", notes = "Returns list of Integers")

@@ -13,7 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
-public class MovieListInPostServiceImpl implements MovieListInPostService {
+public class ListItemServiceImpl implements MovieListInPostService {
 
     @Autowired
     private MovieListInPostRepository movieListInPostRepository;

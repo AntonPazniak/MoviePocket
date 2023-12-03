@@ -14,8 +14,9 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "movie_list", uniqueConstraints = @UniqueConstraint(columnNames = {"id", "idUser"}))
-public class MovieList extends BaseEntity {
+@Table(name = "list_movie", uniqueConstraints = @UniqueConstraint(columnNames = {"id", "idUser"}))
+public class ListMovie extends BaseEntity {
+
     @Column(nullable = false, unique = true)
     String title;
     @Column(nullable = false)

@@ -1,6 +1,6 @@
 package com.moviePocket.entities.review;
 
-import com.moviePocket.entities.list.MovieList;
+import com.moviePocket.entities.list.ListMovie;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,13 +22,13 @@ public class ReviewList {
 
     @ManyToOne
     @JoinColumn(name = "idList", nullable = false)
-    private MovieList movieList;
+    private ListMovie movieList;
 
     @ManyToOne
     @JoinColumn(name = "idReview", nullable = false)
     private Review review;
 
-    public ReviewList(MovieList movieList, Review review) {
+    public ReviewList(ListMovie movieList, Review review) {
         this.movieList = movieList;
         this.review = review;
     }

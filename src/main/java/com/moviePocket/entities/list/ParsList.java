@@ -1,5 +1,7 @@
 package com.moviePocket.entities.list;
 
+import com.moviePocket.entities.movie.Genre;
+import com.moviePocket.entities.movie.Movie;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,13 +14,13 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ParsMovieList {
+public class ParsList {
 
     private Long id;
     private String title;
     private String content;
-    private List<String> categoriesList;
-    private List<Long> idMovies;
+    private List<Genre> genres;
+    private List<Movie> movies;
     private int[] likeOrDis;
     private String username;
     private Date create;

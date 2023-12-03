@@ -1,11 +1,13 @@
 package com.moviePocket.service.impl.list;
 
-import com.moviePocket.entities.list.MovieInList;
-import com.moviePocket.entities.list.MovieList;
+import com.moviePocket.entities.list.ListItem;
+import com.moviePocket.entities.list.ListMovie;
+import com.moviePocket.entities.movie.Movie;
 import com.moviePocket.entities.user.User;
-import com.moviePocket.repository.list.MovieInListRepository;
+import com.moviePocket.repository.list.ListItemRepository;
 import com.moviePocket.repository.list.MovieListRepository;
 import com.moviePocket.repository.user.UserRepository;
+import com.moviePocket.service.impl.movie.MovieServiceImpl;
 import com.moviePocket.service.movie.list.MovieInListService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,16 +19,18 @@ import javax.transaction.Transactional;
 @Service
 public class MovieInListServiceImpl implements MovieInListService {
     @Autowired
-    private MovieInListRepository movieInListRepository;
+    private ListItemRepository movieInListRepository;
     @Autowired
     private MovieListRepository movieListRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private MovieServiceImpl movieService;
 
     @Transactional
     public ResponseEntity<Void> addOrDelMovieFromList(String email, Long idList, Long idMovie) {
         User user = userRepository.findByEmail(email);
-        MovieList movieList = movieListRepository.getById(idList);
+        ListMovie movieList = movieListRepository.getById(idList);
         if (user == null)
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         else if (movieList == null)
@@ -34,9 +38,13 @@ public class MovieInListServiceImpl implements MovieInListService {
         else if (movieList.getUser() != user) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         } else {
-            MovieInList movieInList = movieInListRepository.findByMovieListAndIdMovie(movieList, idMovie);
+            ListItem movieInList = movieInListRepository.findByMovieListAndMovie_id(movieList, idMovie);
             if (movieInList == null) {
-                movieInListRepository.save(new MovieInList(movieList, idMovie));
+                Movie movie = movieService.setMovie(idMovie);
+                if (movie != null)
+                    movieInListRepository.save(new ListItem(movieList, movie));
+                else
+                    return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             } else {
                 movieInListRepository.delete(movieInList);
             }

@@ -19,7 +19,7 @@ public class LikeList extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "idList")
-    private MovieList movieList;
+    private ListMovie movieList;
 
     @ManyToOne
     @JoinColumn(name = "idUser")

@@ -1,7 +1,7 @@
 package com.moviePocket.service.impl.list;
 
 import com.moviePocket.entities.list.LikeList;
-import com.moviePocket.entities.list.MovieList;
+import com.moviePocket.entities.list.ListMovie;
 import com.moviePocket.entities.user.User;
 import com.moviePocket.repository.list.LikeListRepository;
 import com.moviePocket.repository.list.MovieListRepository;
@@ -25,7 +25,7 @@ public class LikeListServiceImpl implements LikeListService {
 
     @Transactional
     public ResponseEntity<Void> setLikeOrDisOrDel(String username, Long id, boolean likeOrDis) {
-        MovieList movieList = movieListRepository.getById(id);
+        ListMovie movieList = movieListRepository.getById(id);
         User user = userRepository.findByEmail(username);
         LikeList likeList = likeListRepository.getByUserAndMovieList(user, movieList);
         if (user == null)
@@ -46,7 +46,7 @@ public class LikeListServiceImpl implements LikeListService {
     }
 
     public ResponseEntity<boolean[]> getLikeOrDis(String username, Long id) {
-        MovieList movieList = movieListRepository.getById(id);
+        ListMovie movieList = movieListRepository.getById(id);
         User user = userRepository.findByEmail(username);
         LikeList likeList = likeListRepository.getByUserAndMovieList(user, movieList);
         if (user == null)
@@ -61,7 +61,7 @@ public class LikeListServiceImpl implements LikeListService {
     }
 
     public ResponseEntity<Integer[]> getAllLikeAndDisByIdMovieList(Long idMovieList) {
-        MovieList movieList = movieListRepository.getById(idMovieList);
+        ListMovie movieList = movieListRepository.getById(idMovieList);
         if (movieList != null) {
             return ResponseEntity.ok(new Integer[]{
                     likeListRepository.countByMovieReviewAndLickOrDisIsTrue(movieList),

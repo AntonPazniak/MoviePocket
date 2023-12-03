@@ -1,6 +1,6 @@
 package com.moviePocket.service.impl.review;
 
-import com.moviePocket.entities.list.MovieList;
+import com.moviePocket.entities.list.ListMovie;
 import com.moviePocket.entities.post.Post;
 import com.moviePocket.entities.review.*;
 import com.moviePocket.entities.user.User;
@@ -54,7 +54,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Transactional
     public ResponseEntity<Void> createListReview(String email, Long idList, String title, String content) {
-        MovieList movieList = movieListRepository.getById(idList);
+        ListMovie movieList = movieListRepository.getById(idList);
         if (movieList != null) {
             Review review = createReview(email, title, content);
             if (review == null)
@@ -198,7 +198,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     public ResponseEntity<List<ParsReview>> getAllByIdList(Long idList) {
-        MovieList movieList = movieListRepository.getById(idList);
+        ListMovie movieList = movieListRepository.getById(idList);
         List<Review> reviews = reviewListRepository.findReviewsByMovieList(movieList);
         if (reviews.isEmpty()) {
             List<ParsReview> reviewList = new ArrayList<>();

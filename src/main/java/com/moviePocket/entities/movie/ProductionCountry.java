@@ -1,5 +1,6 @@
 package com.moviePocket.entities.movie;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.google.gson.annotations.SerializedName;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,6 +24,7 @@ public class ProductionCountry {
     private String name;
 
     @ManyToMany(mappedBy = "production_countries")
+    @JsonBackReference
     private List<Movie> movies;
 
 }

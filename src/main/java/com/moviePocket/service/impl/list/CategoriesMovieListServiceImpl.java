@@ -1,13 +1,13 @@
 package com.moviePocket.service.impl.list;
 
 
-import com.moviePocket.entities.list.CategoriesMovieList;
-import com.moviePocket.entities.list.MovieCategories;
-import com.moviePocket.entities.list.MovieList;
+import com.moviePocket.entities.list.ListGenres;
+import com.moviePocket.entities.list.ListMovie;
+import com.moviePocket.entities.movie.Genre;
 import com.moviePocket.entities.user.User;
-import com.moviePocket.repository.list.CategoriesMovieListRepository;
-import com.moviePocket.repository.list.MovieCategoriesRepository;
+import com.moviePocket.repository.list.ListGenreRepository;
 import com.moviePocket.repository.list.MovieListRepository;
+import com.moviePocket.repository.movie.GenreRepository;
 import com.moviePocket.repository.user.UserRepository;
 import com.moviePocket.service.movie.list.CategoriesMovieListService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,32 +21,32 @@ import javax.transaction.Transactional;
 @Service
 public class CategoriesMovieListServiceImpl implements CategoriesMovieListService {
     @Autowired
-    private CategoriesMovieListRepository categoriesMovieListRepository;
+    private ListGenreRepository categoriesMovieListRepository;
     @Autowired
     private MovieListRepository movieListRepository;
     @Autowired
-    private MovieCategoriesRepository movieCategoriesRepository;
-    @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private GenreRepository genreRepository;
 
     @Transactional
-    public ResponseEntity<Void> setOrDelCategoryList(String email, Long idList, Long idCategory) throws NotFoundException {
+    public ResponseEntity<Void> setOrDelCategoryList(String email, Long idList, Long idGenre) throws NotFoundException {
         User user = userRepository.findByEmail(email);
-        MovieList movieList = movieListRepository.getById(idList);
+        ListMovie movieList = movieListRepository.getById(idList);
         if (user == null)
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         if (movieList == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        MovieCategories movieCategories = movieCategoriesRepository.getById(idCategory);
-        if (movieList.getUser() != user) {
+        if (!movieList.getUser().equals(user)) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         } else {
-            CategoriesMovieList categoriesMovieList = categoriesMovieListRepository.
-                    getByMovieListAndMovieCategories(movieList, movieCategories);
+            Genre genre = genreRepository.getById(idGenre);
+            ListGenres categoriesMovieList = categoriesMovieListRepository.
+                    getByMovieListAndGenre(movieList, genre);
             if (categoriesMovieList != null) {
                 categoriesMovieListRepository.delete(categoriesMovieList);
             } else {
-                categoriesMovieListRepository.save(new CategoriesMovieList(movieList, movieCategories));
+                categoriesMovieListRepository.save(new ListGenres(movieList, genre));
             }
             return new ResponseEntity<>(HttpStatus.OK);
         }

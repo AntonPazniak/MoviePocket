@@ -1,13 +1,15 @@
 package com.moviePocket.service.impl.list;
 
-import com.moviePocket.entities.list.CategoriesMovieList;
-import com.moviePocket.entities.list.MovieInList;
-import com.moviePocket.entities.list.MovieList;
-import com.moviePocket.entities.list.ParsMovieList;
+import com.moviePocket.entities.list.ListGenres;
+import com.moviePocket.entities.list.ListItem;
+import com.moviePocket.entities.list.ListMovie;
+import com.moviePocket.entities.list.ParsList;
+import com.moviePocket.entities.movie.Genre;
+import com.moviePocket.entities.movie.Movie;
 import com.moviePocket.entities.user.User;
-import com.moviePocket.repository.list.CategoriesMovieListRepository;
 import com.moviePocket.repository.list.LikeListRepository;
-import com.moviePocket.repository.list.MovieInListRepository;
+import com.moviePocket.repository.list.ListGenreRepository;
+import com.moviePocket.repository.list.ListItemRepository;
 import com.moviePocket.repository.list.MovieListRepository;
 import com.moviePocket.repository.user.UserRepository;
 import com.moviePocket.service.movie.list.MovieListService;
@@ -31,17 +33,17 @@ public class MovieListServiceImpl implements MovieListService {
 
     private final UserRepository userRepository;
 
-    private final MovieInListRepository movieInListRepository;
+    private final ListItemRepository listItemRepository;
 
     private final LikeListRepository likeListRepository;
 
-    private final CategoriesMovieListRepository categoriesMovieListRepository;
+    private final ListGenreRepository listGenreRepository;
     @Transactional
     public ResponseEntity<Void> setMovieList(String email, String title, String content) throws NotFoundException {
         User user = userRepository.findByEmail(email);
         if (user == null)
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        MovieList movieList = new MovieList(title, content, user);
+        ListMovie movieList = new ListMovie(title, content, user);
         movieListRepository.save(movieList);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -49,7 +51,7 @@ public class MovieListServiceImpl implements MovieListService {
     @Transactional
     public ResponseEntity<Void> updateMovieListTitle(String email, Long idMovieList, String title) {
         User user = userRepository.findByEmail(email);
-        MovieList movieList = movieListRepository.getById(idMovieList);
+        ListMovie movieList = movieListRepository.getById(idMovieList);
         if (user == null)
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         else if (movieList == null)
@@ -66,7 +68,7 @@ public class MovieListServiceImpl implements MovieListService {
     @Transactional
     public ResponseEntity<Void> updateMovieListContent(String email, Long idMovieList, String content) {
         User user = userRepository.findByEmail(email);
-        MovieList movieList = movieListRepository.getById(idMovieList);
+        ListMovie movieList = movieListRepository.getById(idMovieList);
         if (user == null)
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         else if (movieList == null)
@@ -84,7 +86,7 @@ public class MovieListServiceImpl implements MovieListService {
     @Transactional
     public ResponseEntity<Void> deleteMovieList(String email, Long idMovieList) {
         User user = userRepository.findByEmail(email);
-        MovieList movieList = movieListRepository.getById(idMovieList);
+        ListMovie movieList = movieListRepository.getById(idMovieList);
         if (user == null)
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         else if (movieList == null)
@@ -92,90 +94,92 @@ public class MovieListServiceImpl implements MovieListService {
         else if (movieList.getUser() != user) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         } else {
-            movieInListRepository.deleteAllByMovieList(movieList);
+            listItemRepository.deleteAllByMovieList(movieList);
             likeListRepository.deleteAllByMovieList(movieList);
-            categoriesMovieListRepository.deleteAllByMovieList(movieList);
+            listGenreRepository.deleteAllByMovieList(movieList);
             movieListRepository.delete(movieList);
             return new ResponseEntity<>(HttpStatus.OK);
         }
     }
 
-    public ResponseEntity<ParsMovieList> getMovieList(Long idMovieList) {
+    public ResponseEntity<ParsList> getMovieList(Long idMovieList) {
         if (movieListRepository.existsById(idMovieList)) {
-            MovieList movieList = movieListRepository.getById(idMovieList);
-            List<MovieList> movieLists = new ArrayList<>();
-            movieLists.add(movieList);
-            return ResponseEntity.ok(parsList(movieLists).get(0));
+            ListMovie movieList = movieListRepository.getById(idMovieList);
+            return ResponseEntity.ok(parsList(movieList));
         }
         return ResponseEntity.notFound().build();
     }
 
-    public ResponseEntity<List<ParsMovieList>> getAllList() {
-        List<MovieList> movieList = movieListRepository.findAll();
-        return ResponseEntity.ok(parsList(movieList));
+    public ResponseEntity<List<ParsList>> getAllList() {
+        List<ListMovie> movieList = movieListRepository.findAll();
+        return ResponseEntity.ok(parsLists(movieList));
     }
 
-    public ResponseEntity<List<ParsMovieList>> getAllMyList(String email) {
+    public ResponseEntity<List<ParsList>> getAllMyList(String email) {
         User user = userRepository.findByEmail(email);
         if (user == null)
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         else {
-            List<MovieList> movieList = movieListRepository.findAllByUser(user);
-            return ResponseEntity.ok(parsList(movieList));
+            List<ListMovie> movieList = movieListRepository.findAllByUser(user);
+            return ResponseEntity.ok(parsLists(movieList));
         }
     }
 
-    public ResponseEntity<List<ParsMovieList>> getAllByUsernameList(String username) {
+    public ResponseEntity<List<ParsList>> getAllByUsernameList(String username) {
         User user = userRepository.findByUsernameAndAccountActive(username, true);
         if (user == null)
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         else {
-            List<MovieList> movieList = movieListRepository.findAllByUser(user);
-            return ResponseEntity.ok(parsList(movieList));
+            List<ListMovie> movieList = movieListRepository.findAllByUser(user);
+            return ResponseEntity.ok(parsLists(movieList));
         }
     }
 
-    public ResponseEntity<List<ParsMovieList>> getAllByTitle(String title) {
-        List<MovieList> movieLists = movieListRepository.findAllByTitle(title);
-        return ResponseEntity.ok(parsList(movieLists));
+    public ResponseEntity<List<ParsList>> getAllByTitle(String title) {
+        List<ListMovie> movieLists = movieListRepository.findAllByTitle(title);
+        return ResponseEntity.ok(parsLists(movieLists));
     }
 
-    private List<ParsMovieList> parsList(List<MovieList> movieList) {
-        List<ParsMovieList> parsMovieLL = new ArrayList<>();
-        for (int i = 0; i < movieList.size(); i++) {
-            System.out.println(i);
-            List<CategoriesMovieList> categoriesList = categoriesMovieListRepository.getAllByMovieList(movieList.get(i));
-            List<String> categoriesString = new ArrayList<>();
-            for (CategoriesMovieList categoriesMovieList : categoriesList) {
-                categoriesString.add(categoriesMovieList.getMovieCategories().getName());
-            }
-            List<MovieInList> movieListList = movieInListRepository.getAllByMovieList(movieList.get(i));
-            List<Long> idMovieList = new ArrayList<>();
-            for (MovieInList movieInList : movieListList) {
-                idMovieList.add(movieInList.getIdMovie());
-            }
-            int[] likeAndDis = new int[]{likeListRepository.countByMovieReviewAndLickOrDisIsTrue(movieList.get(i)),
-                    likeListRepository.countByMovieReviewAndLickOrDisIsFalse(movieList.get(i))};
-            ParsMovieList parsMovieList = new ParsMovieList(
-                    movieList.get(i).getId(),
-                    movieList.get(i).getTitle(),
-                    movieList.get(i).getContent(),
-                    categoriesString,
-                    idMovieList,
-                    likeAndDis,
-                    movieList.get(i).getUser().getUsername(),
-                    movieList.get(i).getCreated(),
-                    movieList.get(i).getUpdated()
-            );
-            parsMovieLL.add(parsMovieList);
+    private List<ParsList> parsLists(List<ListMovie> movieList) {
+        List<ParsList> parsMovieLL = new ArrayList<>();
+        for (ListMovie listMovie : movieList) {
+            parsMovieLL.add(parsList(listMovie));
         }
         return parsMovieLL;
     }
 
-    public ResponseEntity<List<ParsMovieList>> getAllListExistIdMovie(Long idMovie) {
-        List<MovieList> lists = movieListRepository.findMovieListByIdMovie(idMovie);
-        return ResponseEntity.ok(parsList(lists));
+    private ParsList parsList(ListMovie listMovie) {
+        List<ListItem> listItems = listItemRepository.getAllByMovieList(listMovie);
+        List<Movie> movies = new ArrayList<>();
+        for (ListItem listItem : listItems) {
+            movies.add(listItem.getMovie());
+        }
+        List<ListGenres> ListGenres = listGenreRepository.getAllByMovieList(listMovie);
+        List<Genre> genres = new ArrayList<>();
+        for (ListGenres g : ListGenres) {
+            genres.add(g.getGenre());
+        }
+
+        int[] likeAndDis = new int[]{likeListRepository.countByMovieReviewAndLickOrDisIsTrue(listMovie),
+                likeListRepository.countByMovieReviewAndLickOrDisIsFalse(listMovie)};
+        ParsList parsMovieList = new ParsList(
+                listMovie.getId(),
+                listMovie.getTitle(),
+                listMovie.getContent(),
+                genres,
+                movies,
+                likeAndDis,
+                listMovie.getUser().getUsername(),
+                listMovie.getCreated(),
+                listMovie.getUpdated()
+        );
+        return parsMovieList;
     }
+
+//    public ResponseEntity<List<ParsMovieList>> getAllListExistIdMovie(Long idMovie) {
+//        List<MovieList> lists = movieListRepository.findMovieListByIdMovie(idMovie);
+//        return ResponseEntity.ok(parsList(lists));
+//    }
 
 
 }

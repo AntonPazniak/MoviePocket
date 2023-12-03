@@ -23,9 +23,10 @@ public class MovieServiceImpl {
     @Autowired
     private ProductionCountryRepository productionCountryRepository;
 
-    public Boolean setMovie(Long idMovie) {
+    public Movie setMovie(Long idMovie) {
+        Movie movie = null;
         if (!movieRepository.existsById(idMovie)) {
-            Movie movie = TMDBApi.getShortInfoMovie(idMovie);
+            movie = TMDBApi.getShortInfoMovie(idMovie);
             if (movie != null) {
                 if (movie.getProduction_companies() != null) {
                     for (ProductionCompany productionCompany : movie.getProduction_companies()) {
@@ -43,13 +44,10 @@ public class MovieServiceImpl {
                 }
                 movieRepository.save(movie);
             }
-
         } else {
-            return true;
+            return movieRepository.getById(idMovie);
         }
-
-
-        return false;
+        return movie;
     }
 
 }

@@ -1,6 +1,7 @@
 package com.moviePocket.entities.list;
 
 import com.moviePocket.entities.BaseEntity;
+import com.moviePocket.entities.movie.Genre;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,21 +11,20 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "categories_list")
-public class CategoriesMovieList extends BaseEntity {
+@Table(name = "list_genres")
+public class ListGenres extends BaseEntity {
+
     @ManyToOne
     @JoinColumn(name = "idMovieList", referencedColumnName = "id")
-    private MovieList movieList;
+    private ListMovie movieList;
 
     @ManyToOne
-    @JoinColumn(name = "idMovieCategories", referencedColumnName = "id")
-    private MovieCategories movieCategories;
+    @JoinColumn(name = "idGenre", referencedColumnName = "id")
+    private Genre genre;
 
 }
-

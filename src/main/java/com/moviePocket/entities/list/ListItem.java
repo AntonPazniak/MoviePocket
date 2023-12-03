@@ -1,6 +1,7 @@
 package com.moviePocket.entities.list;
 
 import com.moviePocket.entities.BaseEntity;
+import com.moviePocket.entities.movie.Movie;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,14 +14,15 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "movie_in_list", uniqueConstraints = @UniqueConstraint(columnNames = {"idMovieList", "idMovie"}))
-public class MovieInList extends BaseEntity {
+@Table(name = "list_item", uniqueConstraints = @UniqueConstraint(columnNames = {"idMovieList", "idMovie"}))
+public class ListItem extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "idMovieList", referencedColumnName = "id")
-    private MovieList movieList;
+    private ListMovie movieList;
 
-    @Column(nullable = false)
-    private long idMovie;
+    @ManyToOne
+    @JoinColumn(name = "idMovie")
+    private Movie movie;
 
 }
