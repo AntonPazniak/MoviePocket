@@ -1,10 +1,12 @@
 package com.moviePocket.service.impl.rating;
 
+import com.moviePocket.entities.movie.Movie;
 import com.moviePocket.entities.rating.Rating;
 import com.moviePocket.entities.rating.RatingMovie;
 import com.moviePocket.entities.user.User;
 import com.moviePocket.repository.rating.RatingMovieRepository;
 import com.moviePocket.repository.user.UserRepository;
+import com.moviePocket.service.impl.movie.MovieServiceImpl;
 import com.moviePocket.service.movie.rating.RatingMovieService;
 import com.moviePocket.service.movie.rating.WatchedMovieService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +27,9 @@ public class RatingMovieServiceImpl implements RatingMovieService {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    WatchedMovieService watchedMovieService;
+    private MovieServiceImpl movieService;
+    @Autowired
+    private WatchedMovieService watchedMovieService;
 
     @Transactional
     public ResponseEntity<Void> setNewRatingMovie(String email, Long idMovie, int rating) {
@@ -33,18 +37,20 @@ public class RatingMovieServiceImpl implements RatingMovieService {
             User user = userRepository.findByEmail(email);
             if (user == null)
                 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-
-            RatingMovie ratingMovie = ratingMovieRepository.findByUserAndIdMovie(user, idMovie);
-            if (ratingMovie == null) {
-                ratingMovie = new RatingMovie(user, idMovie, rating);
-                watchedMovieService.setOrDeleteNewWatched(email, idMovie);
-            } else {
-                ratingMovie.setRating(rating);
+            Movie movie = movieService.setMovie(idMovie);
+            if (movie != null) {
+                RatingMovie ratingMovie = ratingMovieRepository.findByUserAndMovie_id(user, idMovie);
+                if (ratingMovie == null) {
+                    ratingMovie = new RatingMovie(user, movie, rating);
+                    watchedMovieService.setOrDeleteNewWatched(email, idMovie);
+                } else {
+                    ratingMovie.setRating(rating);
+                }
+                ratingMovieRepository.save(ratingMovie);
+                return new ResponseEntity<>(HttpStatus.OK);
             }
-            ratingMovieRepository.save(ratingMovie);
-            return new ResponseEntity<>(HttpStatus.OK);
         }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
 
@@ -53,7 +59,7 @@ public class RatingMovieServiceImpl implements RatingMovieService {
         User user = userRepository.findByEmail(email);
         if (user == null)
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        RatingMovie ratingMovie = ratingMovieRepository.findByUserAndIdMovie(user, idMovie);
+        RatingMovie ratingMovie = ratingMovieRepository.findByUserAndMovie_id(user, idMovie);
         if (ratingMovie == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         ratingMovieRepository.delete(ratingMovie);
@@ -61,7 +67,7 @@ public class RatingMovieServiceImpl implements RatingMovieService {
     }
 
     public ResponseEntity<Integer> getFromRatingMovie(String email, Long idMovie) {
-        RatingMovie ratingMovie = ratingMovieRepository.findByUserAndIdMovie(
+        RatingMovie ratingMovie = ratingMovieRepository.findByUserAndMovie_id(
                 userRepository.findByEmail(email), idMovie);
         if (ratingMovie == null)
             return ResponseEntity.ok(0);
@@ -74,7 +80,7 @@ public class RatingMovieServiceImpl implements RatingMovieService {
         if (user == null)
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         List<RatingMovie> ratingMovieList = ratingMovieRepository.findAllByUser(user);
-        if (ratingMovieList.size() == 0)
+        if (ratingMovieList.isEmpty())
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         return ResponseEntity.ok(parsRatingMovieList(ratingMovieList));
     }
@@ -83,7 +89,7 @@ public class RatingMovieServiceImpl implements RatingMovieService {
         List<Rating> ratingList = new ArrayList<>();
         for (RatingMovie ratingMovie : ratingMovieList) {
             ratingList.add(new Rating(
-                    ratingMovie.getIdMovie(),
+                    ratingMovie.getMovie().getId(),
                     ratingMovie.getRating()
             ));
         }
@@ -101,7 +107,7 @@ public class RatingMovieServiceImpl implements RatingMovieService {
     }
 
     public ResponseEntity<Integer> getAllCountByIdMovie(Long idMovie) {
-        return ResponseEntity.ok(ratingMovieRepository.getAllCountByIdMovie(idMovie));
+        return ResponseEntity.ok(ratingMovieRepository.countAllByMovie_id(idMovie));
     }
 
 }

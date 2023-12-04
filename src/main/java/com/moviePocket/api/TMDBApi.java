@@ -190,8 +190,8 @@ public class TMDBApi {
         try {
             JSONObject jsonObject = new JSONObject(tvSeriesInfoJson);
             Long id = jsonObject.getLong("id") * -1;
-            String posterPath = jsonObject.getString("poster_path");
-            String backdropPath = jsonObject.getString("backdrop_path");
+            String posterPath = jsonObject.optString("poster_path", null);
+            String backdropPath = jsonObject.optString("backdrop_path", null);
             String title = jsonObject.getString("name");
             List<Genre> genres = gson.fromJson(jsonObject.getJSONArray("genres").toString(), new TypeToken<List<Genre>>() {
             }.getType());
@@ -211,8 +211,6 @@ public class TMDBApi {
         }
         return movie;
     }
-
-
 
 
 }
