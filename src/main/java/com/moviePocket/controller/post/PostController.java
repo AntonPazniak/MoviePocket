@@ -1,9 +1,8 @@
-package com.moviePocket.controller.post;
+package com.moviePocket.controller.movie.post;
 
 import com.moviePocket.entities.post.ParsPost;
-import com.moviePocket.service.post.LikePostService;
-import com.moviePocket.service.post.MovieListInPostService;
-import com.moviePocket.service.post.PostService;
+import com.moviePocket.service.movie.post.LikePostService;
+import com.moviePocket.service.movie.post.PostService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -24,8 +23,6 @@ public class PostController {
 
     private final PostService postService;
 
-    private final MovieListInPostService movieListInPostService;
-
     private final LikePostService likePostService;
 
     @ApiOperation(value = "Create a new post", notes = "Return Http response Ok")
@@ -33,12 +30,30 @@ public class PostController {
             @ApiResponse(code = 200, message = "Successfully created new post"),
             @ApiResponse(code = 401, message = "Forbidden - user is not authenticated")
     })
-    @PostMapping("/set")
-    public ResponseEntity<?> setNewPost(@RequestParam("title") String title,
-                                        @RequestParam("content") String content) {
+    @PostMapping("/list/set")
+    public ResponseEntity<?> setNewPostList(@RequestParam("title") String title,
+                                            @RequestParam("content") String content,
+                                            @RequestParam("idList") Long idList) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return postService.setPost(authentication.getName(), title, content);
+        return postService.creatPostList(authentication.getName(), title, content, idList);
     }
+
+    @PostMapping("/movie/set")
+    public ResponseEntity<?> setNewPostMovie(@RequestParam("title") String title,
+                                             @RequestParam("content") String content,
+                                             @RequestParam("idPerson") Long idMovie) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return postService.creatPostMovie(authentication.getName(), title, content, idMovie);
+    }
+
+    @PostMapping("/person/set")
+    public ResponseEntity<?> setNewPostPersom(@RequestParam("title") String title,
+                                              @RequestParam("content") String content,
+                                              @RequestParam("idPerson") Long idPerson) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return postService.creatPostMovie(authentication.getName(), title, content, idPerson);
+    }
+
 
     @ApiOperation(value = "Update post title", notes = "Return Http response Ok")
     @ApiResponses(value = {
@@ -47,26 +62,14 @@ public class PostController {
             @ApiResponse(code = 403, message = "Forbidden - user is not authenticated"),
             @ApiResponse(code = 404, message = "Post not found")
     })
-    @PostMapping("/updateTitle")
+    @PostMapping("/up")
     public ResponseEntity<Void> setUpdatePostTitle(@RequestParam("idPost") Long idPost,
-                                                   @RequestParam("title") String title) {
+                                                   @RequestParam("title") String title,
+                                                   @RequestParam("content") String content) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return postService.updatePostTitle(authentication.getName(), idPost, title);
+        return postService.updatePost(authentication.getName(), idPost, title, content);
     }
 
-    @ApiOperation(value = "Update post content", notes = "Return Http response Ok")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully updated content"),
-            @ApiResponse(code = 401, message = "Forbidden - user is not authenticated"),
-            @ApiResponse(code = 403, message = "Forbidden - user is not authenticated"),
-            @ApiResponse(code = 404, message = "post not found")
-    })
-    @PostMapping("/updateContent")
-    public ResponseEntity<Void> setUpdatePostContent(@RequestParam("idPost") Long idPost,
-                                                     @RequestParam("content") String content) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return postService.updatePostContent(authentication.getName(), idPost, content);
-    }
 
 
     @ApiOperation(value = "Delete post and all that it had(movie lists in it and likes from other 2 tables", notes = "Return Http response Ok")
@@ -94,28 +97,30 @@ public class PostController {
         return postService.getPost(idPost);
     }
 
-    @ApiOperation(value = "Get post by title", notes = "Returns a post that matches the title if it doesn't match it's empty post")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully retrieved post"),
-    })
-    @GetMapping("/getByTitle")
-    public ResponseEntity<?> getPostByTitle(@RequestParam("title") String title) {
-        return postService.getAllByTitle(title);
+    @GetMapping("/movie")
+    public ResponseEntity<List<ParsPost>> getAllPostByIdMovie(@RequestParam("idMovie") Long idMovie) {
+        return postService.getAllByIdMovie(idMovie);
     }
 
-    @ApiOperation(value = "Add or delete movie list from post", notes = "Adds or deletes a movie list from the specified post")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully added or deleted movie to/from post"),
-            @ApiResponse(code = 400, message = "Invalid post ID or movie ID"),
-            @ApiResponse(code = 401, message = "Forbidden - user is not authenticated"),
-            @ApiResponse(code = 404, message = "post or movie not found")
-    })
-    @PostMapping("/setMovieList")
-    public ResponseEntity<Void> setOrDelMovieListInPost(@RequestParam("idPost") Long idPost, @RequestParam("idMovieList") Long idMovieList) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return movieListInPostService.addOrDelMovieListFromPost(authentication.getName(), idPost, idMovieList);
+    @GetMapping("/list")
+    public ResponseEntity<List<ParsPost>> getAllPostByIdList(@RequestParam("idList") Long idList) {
+        return postService.getAllByIdList(idList);
     }
 
+    @GetMapping("/person")
+    public ResponseEntity<List<ParsPost>> getAllPostByIdPerson(@RequestParam("idPerson") Long idPerson) {
+        return postService.getAllByIdPerson(idPerson);
+    }
+
+
+    //    @ApiOperation(value = "Get post by title", notes = "Returns a post that matches the title if it doesn't match it's empty post")
+//    @ApiResponses(value = {
+//            @ApiResponse(code = 200, message = "Successfully retrieved post"),
+//    })
+//    @GetMapping("/getByTitle")
+//    public ResponseEntity<?> getPostByTitle(@RequestParam("title") String title) {
+//        return postService.getAllByTitle(title);
+//    }
     @ApiOperation(value = "Like or dislike post", notes = "Likes or dislikes the specified post")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully liked or disliked post"),
@@ -129,84 +134,75 @@ public class PostController {
         return likePostService.setLikeOrDisOrDel(authentication.getName(), idPost, like);
     }
 
-    @ApiOperation(value = "Get all post in the system", notes = "Returns a list of all posts")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully retrieved all posts")
-    })
-    @GetMapping("/getAllPosts")
-    public ResponseEntity<List<ParsPost>> getAllPosts() {
-        return postService.getAllPosts();
-    }
-
-    @ApiOperation(value = "Get all my posts", notes = "Returns a list of all posts for the authenticated user")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully retrieved all posts for authenticated user"),
-            @ApiResponse(code = 401, message = "User not authenticated")
-    })
-    @GetMapping("/getAllMyPosts")
-    public ResponseEntity<List<ParsPost>> getAllMyPosts() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return postService.getAllMyPosts(authentication.getName());
-    }
-
-    @ApiOperation(value = "Get all posts of user", notes = "Returns a list of all posts for the specified username")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully retrieved all posts for specified username"),
-            @ApiResponse(code = 400, message = "Invalid username"),
-            @ApiResponse(code = 404, message = "User not found")
-    })
-    @GetMapping("/getAllUserPosts")
-    public ResponseEntity<List<ParsPost>> getAllUsername(@RequestParam("username") String username) {
-        return postService.getAllByUsernamePosts(username);
-    }
-
-    @ApiOperation(value = "Get the most recent posts", notes = "Returns a sorted list of posts from newest to oldest")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully retrieved all posts "),
-            @ApiResponse(code = 404, message = "Not found")
-    })
-    @GetMapping("/getNewestPosts")
-    public ResponseEntity<List<ParsPost>> getNewestPosts() {
-        return postService.getNewestPosts();
-    }
-
-    @ApiOperation(value = "Get the oldest posts", notes = "Returns a sorted list of posts from oldest")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully retrieved all posts "),
-            @ApiResponse(code = 404, message = "Not found")
-    })
-    @GetMapping("/getOldestPosts")
-    public ResponseEntity<List<ParsPost>> getOldestPosts() {
-        return postService.getOldestPosts();
-    }
-
-    @ApiOperation(value = "Get num of likes by post", notes = "Returns list of Integers")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully retrieved num of likes "),
-            @ApiResponse(code = 404, message = "User not found")
-    })
-    @GetMapping("/getAllLikes")
-    public ResponseEntity<Integer[]> getAllLikePostsByIdMovie(@RequestParam("idPost") Long idPost) {
-        return likePostService.getAllLikeAndDisByIdPost(idPost);
-    }
-
-    @ApiOperation(value = "Get the most liked(popular) posts", notes = "Returns a sorted list of posts from most liked to least")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully retrieved all posts "),
-            @ApiResponse(code = 404, message = "Not found")
-    })
-    @GetMapping("/getMostLikedPosts")
-    public ResponseEntity<List<ParsPost>> getMostLikedPosts() {
-        return likePostService.getMostLikedPosts();
-    }
-
-    @ApiOperation(value = "Get the least liked(popular) posts", notes = "Returns a sorted list of posts from most least to liked")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully retrieved all posts "),
-            @ApiResponse(code = 404, message = "Not found")
-    })
-    @GetMapping("/getLeastLikedPosts")
-    public ResponseEntity<List<ParsPost>> getLeastLikedPosts() {
-        return likePostService.getLeastLikedPosts();
-    }
+//    @ApiOperation(value = "Get all my posts", notes = "Returns a list of all posts for the authenticated user")
+//    @ApiResponses(value = {
+//            @ApiResponse(code = 200, message = "Successfully retrieved all posts for authenticated user"),
+//            @ApiResponse(code = 401, message = "User not authenticated")
+//    })
+//    @GetMapping("/getAllMyPosts")
+//    public ResponseEntity<List<ParsPost>> getAllMyPosts() {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        return postService.getAllMyPosts(authentication.getName());
+//    }
+//
+//    @ApiOperation(value = "Get all posts of user", notes = "Returns a list of all posts for the specified username")
+//    @ApiResponses(value = {
+//            @ApiResponse(code = 200, message = "Successfully retrieved all posts for specified username"),
+//            @ApiResponse(code = 400, message = "Invalid username"),
+//            @ApiResponse(code = 404, message = "User not found")
+//    })
+//    @GetMapping("/getAllUserPosts")
+//    public ResponseEntity<List<ParsPost>> getAllUsername(@RequestParam("username") String username) {
+//        return postService.getAllByUsernamePosts(username);
+//    }
+//
+//    @ApiOperation(value = "Get the most recent posts", notes = "Returns a sorted list of posts from newest to oldest")
+//    @ApiResponses(value = {
+//            @ApiResponse(code = 200, message = "Successfully retrieved all posts "),
+//            @ApiResponse(code = 404, message = "Not found")
+//    })
+//    @GetMapping("/getNewestPosts")
+//    public ResponseEntity<List<ParsPost>> getNewestPosts() {
+//        return postService.getNewestPosts();
+//    }
+//
+//    @ApiOperation(value = "Get the oldest posts", notes = "Returns a sorted list of posts from oldest")
+//    @ApiResponses(value = {
+//            @ApiResponse(code = 200, message = "Successfully retrieved all posts "),
+//            @ApiResponse(code = 404, message = "Not found")
+//    })
+//    @GetMapping("/getOldestPosts")
+//    public ResponseEntity<List<ParsPost>> getOldestPosts() {
+//        return postService.getOldestPosts();
+//    }
+//
+//    @ApiOperation(value = "Get num of likes by post", notes = "Returns list of Integers")
+//    @ApiResponses(value = {
+//            @ApiResponse(code = 200, message = "Successfully retrieved num of likes "),
+//            @ApiResponse(code = 404, message = "User not found")
+//    })
+//    @GetMapping("/getAllLikes")
+//    public ResponseEntity<Integer[]> getAllLikePostsByIdMovie(@RequestParam("idPost") Long idPost) {
+//        return likePostService.getAllLikeAndDisByIdPost(idPost);
+//    }
+//
+//    @ApiOperation(value = "Get the most liked(popular) posts", notes = "Returns a sorted list of posts from most liked to least")
+//    @ApiResponses(value = {
+//            @ApiResponse(code = 200, message = "Successfully retrieved all posts "),
+//            @ApiResponse(code = 404, message = "Not found")
+//    })
+//    @GetMapping("/getMostLikedPosts")
+//    public ResponseEntity<List<ParsPost>> getMostLikedPosts() {
+//        return likePostService.getMostLikedPosts();
+//    }
+//
+//    @ApiOperation(value = "Get the least liked(popular) posts", notes = "Returns a sorted list of posts from most least to liked")
+//    @ApiResponses(value = {
+//            @ApiResponse(code = 200, message = "Successfully retrieved all posts "),
+//            @ApiResponse(code = 404, message = "Not found")
+//    })
+//    @GetMapping("/getLeastLikedPosts")
+//    public ResponseEntity<List<ParsPost>> getLeastLikedPosts() {
+//        return likePostService.getLeastLikedPosts();
+//    }
 }

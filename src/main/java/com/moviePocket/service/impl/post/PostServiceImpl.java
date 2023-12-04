@@ -1,12 +1,10 @@
 package com.moviePocket.service.impl.post;
 
-import com.moviePocket.entities.post.MovieListInPost;
-import com.moviePocket.entities.post.ParsPost;
-import com.moviePocket.entities.post.Post;
+import com.moviePocket.entities.movie.list.MovieList;
+import com.moviePocket.entities.post.*;
 import com.moviePocket.entities.user.User;
-import com.moviePocket.repository.post.LikePostRepository;
-import com.moviePocket.repository.post.MovieListInPostRepository;
-import com.moviePocket.repository.post.PostRepository;
+import com.moviePocket.repository.movie.list.MovieListRepository;
+import com.moviePocket.repository.post.*;
 import com.moviePocket.repository.user.UserRepository;
 import com.moviePocket.service.post.PostService;
 import lombok.RequiredArgsConstructor;
@@ -25,22 +23,63 @@ public class PostServiceImpl implements PostService {
 
     private final PostRepository postRepository;
     private final UserRepository userRepository;
-    private final MovieListInPostRepository movieListInPostRepository;
     private final LikePostRepository likePostRepository;
+    private final MovieListRepository movieListRepository;
+
+    private final PostListRepository postListRepository;
+    private final PostMovieRepository postMovieRepository;
+    private final PostPersonRepository postPersonRepository;
 
 
-    @Override
-    public ResponseEntity<Void> setPost(String email, String title, String content) {
-        User user = userRepository.findByEmail(email);
-        if (user == null)
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        Post post = new Post(user, content, title);
-        postRepository.save(post);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<Void> creatPostList(String email, String title, String content, Long idList) {
+        MovieList movieList = movieListRepository.getById(idList);
+        if (movieList != null) {
+            Post post = createPost(email, title, content);
+            if (post == null)
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            else {
+                PostList postList = new PostList(movieList, post);
+                postListRepository.save(postList);
+                return new ResponseEntity<>(HttpStatus.OK);
+            }
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @Override
-    public ResponseEntity<Void> updatePostTitle(String email, Long idPost, String title) {
+    public ResponseEntity<Void> creatPostMovie(String email, String title, String content, Long idMovie) {
+        Post post = createPost(email, title, content);
+        if (post == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        else {
+            PostMovie postMovie = new PostMovie(idMovie, post);
+            postMovieRepository.save(postMovie);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+    }
+
+    public ResponseEntity<Void> creatPostPerson(String email, String title, String content, Long idPerson) {
+        Post post = createPost(email, title, content);
+        if (post == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        else {
+            PostPerson postPerson = new PostPerson(idPerson, post);
+            postPersonRepository.save(postPerson);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+    }
+
+    private Post createPost(String email, String title, String content) {
+        User user = userRepository.findByEmail(email);
+        if (user == null)
+            return null;
+        else {
+            Post post = new Post(user, title, content);
+            postRepository.save(post);
+            return post;
+        }
+    }
+
+    public ResponseEntity<Void> updatePost(String email, Long idPost, String title, String content) {
         User user = userRepository.findByEmail(email);
         Post post = postRepository.getById(idPost);
         if (user == null)
@@ -51,22 +90,6 @@ public class PostServiceImpl implements PostService {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         } else {
             post.setTitle(title);
-            postRepository.save(post);
-            return new ResponseEntity<>(HttpStatus.OK);
-        }
-    }
-
-    @Override
-    public ResponseEntity<Void> updatePostContent(String email, Long idPost, String content) {
-        User user = userRepository.findByEmail(email);
-        Post post = postRepository.getById(idPost);
-        if (user == null)
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        else if (post == null)
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        else if (post.getUser() != user) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        } else {
             post.setContent(content);
             postRepository.save(post);
             return new ResponseEntity<>(HttpStatus.OK);
@@ -83,13 +106,65 @@ public class PostServiceImpl implements PostService {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         else if (post.getUser() != user) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        } else {
-            movieListInPostRepository.deleteAllByPost(post);
-            likePostRepository.deleteAllByPost(post);
+        }
+        PostList postList = postListRepository.findByPost(post);
+        if (postList != null) {
+            postListRepository.delete(postList);
             postRepository.delete(post);
             return new ResponseEntity<>(HttpStatus.OK);
         }
+        PostMovie postMovie = postMovieRepository.findByPost(post);
+        if (postMovie != null) {
+            postMovieRepository.delete(postMovie);
+            postRepository.delete(post);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        PostPerson postPerson = postPersonRepository.findByPost(post);
+        if (postPerson != null) {
+            postPersonRepository.delete(postPerson);
+            postRepository.delete(post);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
+
+    public ResponseEntity<List<ParsPost>> getAllByIdMovie(Long idMovie) {
+        List<PostMovie> list = postMovieRepository.findAllByIdMovie(idMovie);
+        if (list != null) {
+            List<Post> posts = new ArrayList<>();
+            for (PostMovie p : list) {
+                posts.add(p.getPost());
+            }
+            return ResponseEntity.ok(parsPost(posts));
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    public ResponseEntity<List<ParsPost>> getAllByIdPerson(Long idPerson) {
+        List<PostPerson> list = postPersonRepository.findAllByIdPerson(idPerson);
+        if (list != null) {
+            List<Post> posts = new ArrayList<>();
+            for (PostPerson p : list) {
+                posts.add(p.getPost());
+            }
+            return ResponseEntity.ok(parsPost(posts));
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    public ResponseEntity<List<ParsPost>> getAllByIdList(Long idList) {
+        List<PostList> list = postListRepository.findAllByMovieList_Id(idList);
+        if (list != null) {
+            List<Post> posts = new ArrayList<>();
+            for (PostList p : list) {
+                posts.add(p.getPost());
+            }
+            return ResponseEntity.ok(parsPost(posts));
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
 
     @Override
     public ResponseEntity<List<ParsPost>> getAllByTitle(String title) {
@@ -106,12 +181,6 @@ public class PostServiceImpl implements PostService {
             return ResponseEntity.ok(parsPost(posts));
         }
         return ResponseEntity.notFound().build();
-    }
-
-    @Override
-    public ResponseEntity<List<ParsPost>> getAllPosts() {
-        List<Post> posts = postRepository.findAll();
-        return ResponseEntity.ok(parsPost(posts));
     }
 
     @Override
@@ -154,23 +223,28 @@ public class PostServiceImpl implements PostService {
     public List<ParsPost> parsPost(List<Post> posts) {
         List<ParsPost> parsPostLL = new ArrayList<>();
         for (Post post : posts) {
-            List<MovieListInPost> movieListInPostList = movieListInPostRepository.getAllByPost(post);
-            List<Long> idPost = new ArrayList<>();
-            for (MovieListInPost movieListInPost : movieListInPostList) {
-                idPost.add(movieListInPost.getIdMovieList());
-            }
             int[] likeAndDis = new int[]{likePostRepository.countByPostAndLickOrDisIsTrue(post),
                     likePostRepository.countByPostAndLickOrDisIsFalse(post)};
             ParsPost parsPost = new ParsPost(
                     post.getId(),
                     post.getTitle(),
                     post.getContent(),
-                    idPost,
                     likeAndDis,
                     post.getUser().getUsername(),
                     post.getCreated(),
                     post.getUpdated()
             );
+            PostList postList = postListRepository.findByPost(post);
+            PostMovie postMovie = postMovieRepository.findByPost(post);
+            PostPerson postPerson = postPersonRepository.findByPost(post);
+            if (postList != null) {
+                parsPost.setIdList(postList.getMovieList().getId());
+            } else if (postMovie != null) {
+                parsPost.setIdMovie(postMovie.getIdMovie());
+            } else if (postPerson != null) {
+                parsPost.setIdPerson(postPerson.getIdPerson());
+            }
+
             parsPostLL.add(parsPost);
         }
         return parsPostLL;

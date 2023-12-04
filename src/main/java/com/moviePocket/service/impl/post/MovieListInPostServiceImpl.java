@@ -1,4 +1,4 @@
-package com.moviePocket.service.impl.post;
+package com.moviePocket.service.impl.movie.post;
 
 import com.moviePocket.entities.post.MovieListInPost;
 import com.moviePocket.entities.post.Post;
@@ -13,7 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ListItemServiceImpl implements MovieListInPostService {
+public class MovieListInPostServiceImpl implements MovieListInPostService {
 
     @Autowired
     private MovieListInPostRepository movieListInPostRepository;
