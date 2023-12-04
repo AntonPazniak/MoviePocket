@@ -89,8 +89,9 @@ public class RatingMovieServiceImpl implements RatingMovieService {
         List<Rating> ratingList = new ArrayList<>();
         for (RatingMovie ratingMovie : ratingMovieList) {
             ratingList.add(new Rating(
-                    ratingMovie.getMovie(),
-                    ratingMovie.getRating()
+
+                    ratingMovie.getRating(),
+                    ratingMovie.getMovie()
             ));
         }
         return ratingList;
