@@ -89,7 +89,7 @@ public class RatingMovieServiceImpl implements RatingMovieService {
         List<Rating> ratingList = new ArrayList<>();
         for (RatingMovie ratingMovie : ratingMovieList) {
             ratingList.add(new Rating(
-                    ratingMovie.getMovie().getId(),
+                    ratingMovie.getMovie(),
                     ratingMovie.getRating()
             ));
         }

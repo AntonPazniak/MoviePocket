@@ -10,9 +10,9 @@ import java.util.List;
 
 public interface DislikedMovieRepository extends JpaRepository<DislikedMovie,Long> {
 
-    DislikedMovie findByUserAndIdMovie(User user, Long idMovie);
+    DislikedMovie findByUserAndMovie_Id(User user, Long idMovie);
     List<DislikedMovie> findAllByUser(User user);
 
-    @Query("SELECT COUNT(u) FROM DislikedMovie u WHERE u.idMovie = :movieId")
+    @Query("SELECT COUNT(u) FROM DislikedMovie u WHERE u.movie.id = :movieId")
     int getAllCountByIdMovie(@Param("movieId") Long idMovie);
 }

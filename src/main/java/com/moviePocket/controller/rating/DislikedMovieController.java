@@ -1,5 +1,6 @@
 package com.moviePocket.controller.rating;
 
+import com.moviePocket.entities.movie.Movie;
 import com.moviePocket.service.rating.DislikedMovieService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -52,7 +53,7 @@ public class DislikedMovieController {
             @ApiResponse(code = 400, message = "Bad request")
     })
     @GetMapping("/all")
-    public ResponseEntity<List<Long>> allUserDislikedMovies() {
+    public ResponseEntity<List<Movie>> allUserDislikedMovies() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return dislikedMovieService.getAllUserDislikedMovie(
                 authentication.getName());

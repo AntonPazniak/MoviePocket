@@ -1,9 +1,11 @@
 package com.moviePocket.service.impl.rating;
 
+import com.moviePocket.entities.movie.Movie;
 import com.moviePocket.entities.rating.DislikedMovie;
 import com.moviePocket.entities.user.User;
 import com.moviePocket.repository.rating.DislikedMovieRepository;
 import com.moviePocket.repository.user.UserRepository;
+import com.moviePocket.service.impl.movie.MovieServiceImpl;
 import com.moviePocket.service.rating.DislikedMovieService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,43 +21,47 @@ import java.util.List;
 public class DislikedMovieServiceImpl implements DislikedMovieService {
 
     private final DislikedMovieRepository dislikedMovieRepository;
-
     private final UserRepository userRepository;
+    private final MovieServiceImpl movieService;
 
     @Transactional
     public ResponseEntity<Void> setOrDeleteDislikedMovie(String email, Long idMovie) {
         User user = userRepository.findByEmail(email);
         if (user == null)
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        DislikedMovie dislikedMovie = dislikedMovieRepository.findByUserAndIdMovie(user, idMovie);
-        if (dislikedMovie == null) {
-            dislikedMovieRepository.save(
-                    new DislikedMovie(userRepository.findByEmail(email), idMovie));
-        } else {
-            dislikedMovieRepository.delete(dislikedMovie);
+        DislikedMovie dislikedMovie = dislikedMovieRepository.findByUserAndMovie_Id(user, idMovie);
+        Movie movie = movieService.setMovie(idMovie);
+        if (movie != null) {
+            if (dislikedMovie == null) {
+                dislikedMovieRepository.save(
+                        new DislikedMovie(userRepository.findByEmail(email), movie));
+            } else {
+                dislikedMovieRepository.delete(dislikedMovie);
+            }
+            return new ResponseEntity<>(HttpStatus.OK);
         }
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     public ResponseEntity<Boolean> getFromDislikedMovie(String email, Long idMovie) {
         User user = userRepository.findByEmail(email);
         if (user == null)
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        DislikedMovie dislikedMovie = dislikedMovieRepository.findByUserAndIdMovie(
+        DislikedMovie dislikedMovie = dislikedMovieRepository.findByUserAndMovie_Id(
                 user, idMovie);
         return ResponseEntity.ok(dislikedMovie != null);
     }
 
-    public ResponseEntity<List<Long>> getAllUserDislikedMovie(String email) {
+    public ResponseEntity<List<Movie>> getAllUserDislikedMovie(String email) {
         List<DislikedMovie> favoriteMoviesList = dislikedMovieRepository.findAllByUser(
                 userRepository.findByEmail(email));
-        List<Long> listIdMovie = new ArrayList<>();
+        List<Movie> movies = new ArrayList<>();
         for (DislikedMovie dislikedMovie : favoriteMoviesList) {
-            listIdMovie.add(dislikedMovie.getIdMovie());
+            movies.add(dislikedMovie.getMovie());
         }
-        if (listIdMovie.size() == 0)
+        if (movies.isEmpty())
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        return ResponseEntity.ok(listIdMovie);
+        return ResponseEntity.ok(movies);
     }
 
     public ResponseEntity<Integer> getAllCountByIdMovie(Long idMovie) {

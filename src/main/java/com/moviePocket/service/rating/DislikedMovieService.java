@@ -1,5 +1,6 @@
 package com.moviePocket.service.rating;
 
+import com.moviePocket.entities.movie.Movie;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -10,7 +11,7 @@ public interface DislikedMovieService {
 
     ResponseEntity<Boolean> getFromDislikedMovie(String email, Long idMovie);
 
-    ResponseEntity<List<Long>> getAllUserDislikedMovie(String email);
+    ResponseEntity<List<Movie>> getAllUserDislikedMovie(String email);
 
     ResponseEntity<Integer> getAllCountByIdMovie(Long idMovie);
 
