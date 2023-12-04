@@ -1,11 +1,13 @@
 package com.moviePocket.service.impl.post;
 
-import com.moviePocket.entities.movie.list.MovieList;
+import com.moviePocket.entities.list.ListMovie;
+import com.moviePocket.entities.movie.Movie;
 import com.moviePocket.entities.post.*;
 import com.moviePocket.entities.user.User;
-import com.moviePocket.repository.movie.list.MovieListRepository;
+import com.moviePocket.repository.list.MovieListRepository;
 import com.moviePocket.repository.post.*;
 import com.moviePocket.repository.user.UserRepository;
+import com.moviePocket.service.impl.movie.MovieServiceImpl;
 import com.moviePocket.service.post.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -30,9 +32,10 @@ public class PostServiceImpl implements PostService {
     private final PostMovieRepository postMovieRepository;
     private final PostPersonRepository postPersonRepository;
 
+    private final MovieServiceImpl movieService;
 
     public ResponseEntity<Void> creatPostList(String email, String title, String content, Long idList) {
-        MovieList movieList = movieListRepository.getById(idList);
+        ListMovie movieList = movieListRepository.getById(idList);
         if (movieList != null) {
             Post post = createPost(email, title, content);
             if (post == null)
@@ -50,8 +53,11 @@ public class PostServiceImpl implements PostService {
         Post post = createPost(email, title, content);
         if (post == null)
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        Movie movie = movieService.setMovie(idMovie);
+        if (movie == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         else {
-            PostMovie postMovie = new PostMovie(idMovie, post);
+            PostMovie postMovie = new PostMovie(movie, post);
             postMovieRepository.save(postMovie);
             return new ResponseEntity<>(HttpStatus.OK);
         }
@@ -130,7 +136,7 @@ public class PostServiceImpl implements PostService {
     }
 
     public ResponseEntity<List<ParsPost>> getAllByIdMovie(Long idMovie) {
-        List<PostMovie> list = postMovieRepository.findAllByIdMovie(idMovie);
+        List<PostMovie> list = postMovieRepository.findAllByMovie_Id(idMovie);
         if (list != null) {
             List<Post> posts = new ArrayList<>();
             for (PostMovie p : list) {
@@ -240,7 +246,7 @@ public class PostServiceImpl implements PostService {
             if (postList != null) {
                 parsPost.setIdList(postList.getMovieList().getId());
             } else if (postMovie != null) {
-                parsPost.setIdMovie(postMovie.getIdMovie());
+                parsPost.setIdMovie(postMovie.getMovie().getId());
             } else if (postPerson != null) {
                 parsPost.setIdPerson(postPerson.getIdPerson());
             }

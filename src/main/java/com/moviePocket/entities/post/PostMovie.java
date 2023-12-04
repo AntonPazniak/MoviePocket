@@ -1,5 +1,6 @@
 package com.moviePocket.entities.post;
 
+import com.moviePocket.entities.movie.Movie;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,15 +20,16 @@ public class PostMovie {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private Long idMovie;
+    @ManyToOne
+    @JoinColumn(name = "idMovie", referencedColumnName = "id")
+    private Movie movie;
 
     @ManyToOne
     @JoinColumn(name = "idPost", nullable = false)
     private Post post;
 
-    public PostMovie(Long idMovie, Post post) {
-        this.idMovie = idMovie;
+    public PostMovie(Movie movie, Post post) {
+        this.movie = movie;
         this.post = post;
     }
 }

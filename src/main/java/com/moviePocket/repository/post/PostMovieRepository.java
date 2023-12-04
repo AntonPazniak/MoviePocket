@@ -14,6 +14,6 @@ public interface PostMovieRepository extends JpaRepository<PostMovie, Long> {
 
     PostMovie findByPost(Post post);
 
-    List<PostMovie> findAllByIdMovie(Long idMovie);
+    List<PostMovie> findAllByMovie_Id(Long idMovie);
 
 }
