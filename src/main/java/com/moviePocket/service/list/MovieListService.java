@@ -7,24 +7,20 @@ import java.util.List;
 
 public interface MovieListService {
 
-    ResponseEntity<Void> setMovieList(String email, String title, String content);
+    ResponseEntity<Void> setList(String email, String title, String content);
 
-    ResponseEntity<Void> updateMovieListTitle(String email, Long idMovieList, String title);
+    ResponseEntity<Void> updateList(String email, Long idMovieList, String title, String content);
 
-    ResponseEntity<Void> updateMovieListContent(String email, Long idMovieList, String content);
-
-    ResponseEntity<Void> deleteMovieList(String email, Long idMovieList);
+    ResponseEntity<Void> deleteList(String email, Long idMovieList);
 
     ResponseEntity<List<ParsList>> getAllByTitle(String title);
 
-    ResponseEntity<ParsList> getMovieList(Long idMovieList);
-
-    ResponseEntity<List<ParsList>> getAllList();
+    ResponseEntity<ParsList> getList(Long idMovieList);
 
     ResponseEntity<List<ParsList>> getAllMyList(String email);
 
     ResponseEntity<List<ParsList>> getAllByUsernameList(String username);
 
-    ResponseEntity<List<ParsList>> getAllListExistIdMovie(Long idMovie);
+    ResponseEntity<List<ParsList>> getAllListsContainingMovie(Long idMovie);
 
 }

@@ -39,7 +39,7 @@ public class MovieListServiceImpl implements MovieListService {
 
     private final ListGenreRepository listGenreRepository;
     @Transactional
-    public ResponseEntity<Void> setMovieList(String email, String title, String content) throws NotFoundException {
+    public ResponseEntity<Void> setList(String email, String title, String content) throws NotFoundException {
         User user = userRepository.findByEmail(email);
         if (user == null)
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -49,7 +49,7 @@ public class MovieListServiceImpl implements MovieListService {
     }
 
     @Transactional
-    public ResponseEntity<Void> updateMovieListTitle(String email, Long idMovieList, String title) {
+    public ResponseEntity<Void> updateList(String email, Long idMovieList, String title, String content) {
         User user = userRepository.findByEmail(email);
         ListMovie movieList = movieListRepository.getById(idMovieList);
         if (user == null)
@@ -60,31 +60,14 @@ public class MovieListServiceImpl implements MovieListService {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         } else {
             movieList.setTitle(title);
-            movieListRepository.save(movieList);
-            return new ResponseEntity<>(HttpStatus.OK);
-        }
-    }
-
-    @Transactional
-    public ResponseEntity<Void> updateMovieListContent(String email, Long idMovieList, String content) {
-        User user = userRepository.findByEmail(email);
-        ListMovie movieList = movieListRepository.getById(idMovieList);
-        if (user == null)
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        else if (movieList == null)
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        else if (movieList.getUser() != user) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        } else {
             movieList.setContent(content);
             movieListRepository.save(movieList);
             return new ResponseEntity<>(HttpStatus.OK);
         }
     }
 
-
     @Transactional
-    public ResponseEntity<Void> deleteMovieList(String email, Long idMovieList) {
+    public ResponseEntity<Void> deleteList(String email, Long idMovieList) {
         User user = userRepository.findByEmail(email);
         ListMovie movieList = movieListRepository.getById(idMovieList);
         if (user == null)
@@ -102,17 +85,12 @@ public class MovieListServiceImpl implements MovieListService {
         }
     }
 
-    public ResponseEntity<ParsList> getMovieList(Long idMovieList) {
+    public ResponseEntity<ParsList> getList(Long idMovieList) {
         if (movieListRepository.existsById(idMovieList)) {
             ListMovie movieList = movieListRepository.getById(idMovieList);
             return ResponseEntity.ok(parsList(movieList));
         }
         return ResponseEntity.notFound().build();
-    }
-
-    public ResponseEntity<List<ParsList>> getAllList() {
-        List<ListMovie> movieList = movieListRepository.findAll();
-        return ResponseEntity.ok(parsLists(movieList));
     }
 
     public ResponseEntity<List<ParsList>> getAllMyList(String email) {
@@ -176,7 +154,7 @@ public class MovieListServiceImpl implements MovieListService {
         return parsMovieList;
     }
 
-    public ResponseEntity<List<ParsList>> getAllListExistIdMovie(Long idMovie) {
+    public ResponseEntity<List<ParsList>> getAllListsContainingMovie(Long idMovie) {
         List<ListItem> items = listItemRepository.findAllByMovie_Id(idMovie);
         List<ParsList> parsLists = new ArrayList<>();
         for (ListItem l : items) {

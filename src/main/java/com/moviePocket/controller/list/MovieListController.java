@@ -42,7 +42,7 @@ public class MovieListController {
     public ResponseEntity<?> setNewMovieList(@RequestParam("title") String title,
                                              @RequestParam("content") String content) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return movieListService.setMovieList(authentication.getName(), title, content);
+        return movieListService.setList(authentication.getName(), title, content);
     }
 
     @ApiOperation(value = "Update movie list title", notes = "Return Http response Ok")
@@ -52,27 +52,13 @@ public class MovieListController {
             @ApiResponse(code = 403, message = "Forbidden - user is not authenticated"),
             @ApiResponse(code = 404, message = "Movie list not found")
     })
-    @PostMapping("/updateTitle")
+    @PostMapping("/up")
     public ResponseEntity<Void> setUpdateMovieListTitle(@RequestParam("idMovieList") Long idMovieList,
-                                                        @RequestParam("title") String title) {
+                                                        @RequestParam("title") String title,
+                                                        @RequestParam("content") String content) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return movieListService.updateMovieListTitle(authentication.getName(), idMovieList, title);
+        return movieListService.updateList(authentication.getName(), idMovieList, title, content);
     }
-
-    @ApiOperation(value = "Update movie list content", notes = "Return Http response Ok")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully updated content"),
-            @ApiResponse(code = 401, message = "Forbidden - user is not authenticated"),
-            @ApiResponse(code = 403, message = "Forbidden - user is not authenticated"),
-            @ApiResponse(code = 404, message = "Movie list not found")
-    })
-    @PostMapping("/updateContent")
-    public ResponseEntity<Void> setUpdateMovieListContent(@RequestParam("idMovieList") Long idMovieList,
-                                                          @RequestParam("content") String content) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return movieListService.updateMovieListContent(authentication.getName(), idMovieList, content);
-    }
-
 
     @ApiOperation(value = "Delete movie list and all that it had(movies in it adn likes from other 2 tables", notes = "Return Http response Ok")
     @ApiResponses(value = {
@@ -84,7 +70,7 @@ public class MovieListController {
     @PostMapping("/del")
     public ResponseEntity<Void> delMovieList(@RequestParam("idMovieList") Long idMovieList) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return movieListService.deleteMovieList(authentication.getName(), idMovieList);
+        return movieListService.deleteList(authentication.getName(), idMovieList);
     }
 
 
@@ -96,7 +82,7 @@ public class MovieListController {
     })
     @GetMapping("/get")
     public ResponseEntity<ParsList> getMovieList(@RequestParam("idMovieList") Long idMovieList) {
-        return movieListService.getMovieList(idMovieList);
+        return movieListService.getList(idMovieList);
     }
 
     @ApiOperation(value = "Get movie list by title", notes = "Returns a list of movies that matches the title if it doesn't match it's empty list")
@@ -141,7 +127,7 @@ public class MovieListController {
             @ApiResponse(code = 401, message = "Forbidden - user is not authenticated"),
             @ApiResponse(code = 404, message = "Movie list or category not found")
     })
-    @PostMapping("/setOrDeleteCategory")
+    @PostMapping("/setOrDeleteGenre")
     public ResponseEntity<?> setOrDelCategoryMovieList(@RequestParam("idList") Long idList, @RequestParam("idCategory") Long idCategory) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return categoriesMovieListService.setOrDelCategoryList(authentication.getName(), idList, idCategory);
@@ -178,5 +164,11 @@ public class MovieListController {
     public ResponseEntity<Integer[]> getAllLikePostsByIdMovie(@RequestParam("idMovieList") Long idMovieList) {
         return likeListService.getAllLikeAndDisByIdMovieList(idMovieList);
     }
+
+    @GetMapping("/getAllListsContainingMovie")
+    public ResponseEntity<List<ParsList>> getAllListsContainingMovie(@RequestParam("idMovie") Long idMovie) {
+        return movieListService.getAllListsContainingMovie(idMovie);
+    }
+
 
 }
