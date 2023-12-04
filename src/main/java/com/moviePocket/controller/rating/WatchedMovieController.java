@@ -1,5 +1,6 @@
 package com.moviePocket.controller.rating;
 
+import com.moviePocket.entities.movie.Movie;
 import com.moviePocket.service.rating.WatchedMovieService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -55,7 +56,7 @@ public class WatchedMovieController {
             @ApiResponse(code = 401, message = "Unauthorized"),
             @ApiResponse(code = 500, message = "Internal Server Error")
     })
-    public ResponseEntity<List<Long>> allUserMovieWatchedMovies() {
+    public ResponseEntity<List<Movie>> allUserMovieWatchedMovies() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return watchedMovieService.getAllUserWatched(
                 authentication.getName());

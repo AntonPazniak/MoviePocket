@@ -1,9 +1,11 @@
 package com.moviePocket.service.impl.rating;
 
+import com.moviePocket.entities.movie.Movie;
 import com.moviePocket.entities.rating.WatchedMovie;
 import com.moviePocket.entities.user.User;
 import com.moviePocket.repository.rating.WatchedMovieRepository;
 import com.moviePocket.repository.user.UserRepository;
+import com.moviePocket.service.impl.movie.MovieServiceImpl;
 import com.moviePocket.service.rating.WatchedMovieService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,44 +22,48 @@ import java.util.List;
 public class WatchedMovieServiceImpl implements WatchedMovieService {
 
     private final WatchedMovieRepository watchedMovieRepository;
-
     private final UserRepository userRepository;
+    private final MovieServiceImpl movieService;
 
     @Transactional
     public ResponseEntity<Void> setOrDeleteNewWatched(String email, Long idMovie) {
         User user = userRepository.findByEmail(email);
         if (user == null)
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        WatchedMovie watchedMovie = watchedMovieRepository.findByUserAndIdMovie(
+        WatchedMovie watchedMovie = watchedMovieRepository.findByUserAndMovie_Id(
                 user, idMovie);
-        if (watchedMovie == null) {
-            watchedMovieRepository.save(
-                    new WatchedMovie(userRepository.findByEmail(email), idMovie));
-        } else {
-            watchedMovieRepository.delete(watchedMovie);
+        Movie movie = movieService.setMovie(idMovie);
+        if (movie != null) {
+            if (watchedMovie == null) {
+                watchedMovieRepository.save(
+                        new WatchedMovie(userRepository.findByEmail(email), movie));
+            } else {
+                watchedMovieRepository.delete(watchedMovie);
+            }
+            return new ResponseEntity<>(HttpStatus.OK);
         }
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     public ResponseEntity<Boolean> getFromWatched(String email, Long idMovie) {
         User user = userRepository.findByEmail(email);
         if (user == null)
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        WatchedMovie watched = watchedMovieRepository.findByUserAndIdMovie(
+        WatchedMovie watched = watchedMovieRepository.findByUserAndMovie_Id(
                 userRepository.findByEmail(email), idMovie);
         return ResponseEntity.ok(watched != null);
     }
 
-    public ResponseEntity<List<Long>> getAllUserWatched(String email) {
+    public ResponseEntity<List<Movie>> getAllUserWatched(String email) {
         List<WatchedMovie> watchedList = watchedMovieRepository.findAllByUser(
                 userRepository.findByEmail(email));
-        List<Long> listIdMovie = new ArrayList<>();
+        List<Movie> movies = new ArrayList<>();
         for (WatchedMovie watched : watchedList) {
-            listIdMovie.add(watched.getIdMovie());
+            movies.add(watched.getMovie());
         }
-        if (listIdMovie.size() == 0)
+        if (movies.isEmpty())
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        return ResponseEntity.ok(listIdMovie);
+        return ResponseEntity.ok(movies);
     }
 
     public ResponseEntity<Integer> getAllCountByIdMovie(Long idMovie) {
