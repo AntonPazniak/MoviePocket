@@ -10,10 +10,10 @@ import java.util.List;
 
 public interface FavoriteMovieRepository extends JpaRepository<FavoriteMovie,Long> {
 
-    FavoriteMovie findByUserAndIdMovie(User user, Long idMovie);
+    FavoriteMovie findByUserAndMovie_id(User user, Long idMovie);
     List<FavoriteMovie> findAllByUser(User user);
 
-    @Query("SELECT COUNT(u) FROM FavoriteMovie u WHERE u.idMovie = :movieId")
+    @Query("SELECT COUNT(u) FROM FavoriteMovie u WHERE u.movie.id = :movieId")
     int getAllCountByIdMovie(@Param("movieId") Long idMovie);
 
 

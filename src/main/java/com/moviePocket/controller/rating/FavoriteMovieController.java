@@ -1,5 +1,6 @@
 package com.moviePocket.controller.rating;
 
+import com.moviePocket.entities.movie.Movie;
 import com.moviePocket.service.rating.FavoriteMovieService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -53,7 +54,7 @@ public class FavoriteMovieController {
             @ApiResponse(code = 401, message = "User is not authentificated")
     })
     @GetMapping("/all")
-    public ResponseEntity<List<Long>> allUserFavoriteMovies() {
+    public ResponseEntity<List<Movie>> allUserFavoriteMovies() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return favoriteMoviesService.getAllUserFavoriteMovies(
                 authentication.getName());

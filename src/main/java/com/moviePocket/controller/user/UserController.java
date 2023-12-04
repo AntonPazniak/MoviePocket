@@ -3,7 +3,6 @@ package com.moviePocket.controller.user;
 import com.moviePocket.entities.user.ParsUserPage;
 import com.moviePocket.entities.user.User;
 import com.moviePocket.service.list.MovieListService;
-import com.moviePocket.service.movie.rating.*;
 import com.moviePocket.service.rating.*;
 import com.moviePocket.service.raview.ReviewService;
 import com.moviePocket.service.user.UserService;

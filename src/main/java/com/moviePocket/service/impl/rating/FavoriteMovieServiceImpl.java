@@ -1,5 +1,6 @@
 package com.moviePocket.service.impl.rating;
 
+import com.moviePocket.entities.movie.Movie;
 import com.moviePocket.entities.rating.FavoriteMovie;
 import com.moviePocket.entities.user.User;
 import com.moviePocket.repository.rating.FavoriteMovieRepository;
@@ -29,36 +30,39 @@ public class FavoriteMovieServiceImpl implements FavoriteMovieService {
         User user = userRepository.findByEmail(email);
         if (user == null)
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        FavoriteMovie favoriteMovie = favoriteMoviesRepository.findByUserAndIdMovie(
+        FavoriteMovie favoriteMovie = favoriteMoviesRepository.findByUserAndMovie_id(
                 userRepository.findByEmail(email), idMovie);
-        if (favoriteMovie == null) {
-            favoriteMoviesRepository.save(new FavoriteMovie(userRepository.findByEmail(email), idMovie));
-            movieService.setMovie(idMovie);
-        } else { // if user already marked movie as fav, it will be deleted
-            favoriteMoviesRepository.delete(favoriteMovie);
+        Movie movie = movieService.setMovie(idMovie);
+        if (movie != null) {
+            if (favoriteMovie == null) {
+                favoriteMoviesRepository.save(new FavoriteMovie(userRepository.findByEmail(email), movie));
+            } else { // if user already marked movie as fav, it will be deleted
+                favoriteMoviesRepository.delete(favoriteMovie);
+            }
+            return new ResponseEntity<>(HttpStatus.OK);
         }
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     public ResponseEntity<Boolean> getFromFavoriteMovies(String email, Long idMovie) {
         User user = userRepository.findByEmail(email);
         if (user == null)
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        FavoriteMovie favoriteMovie = favoriteMoviesRepository.findByUserAndIdMovie(
+        FavoriteMovie favoriteMovie = favoriteMoviesRepository.findByUserAndMovie_id(
                 userRepository.findByEmail(email), idMovie);
         return ResponseEntity.ok(favoriteMovie != null);
     }
 
-    public ResponseEntity<List<Long>> getAllUserFavoriteMovies(String email) {
+    public ResponseEntity<List<Movie>> getAllUserFavoriteMovies(String email) {
         List<FavoriteMovie> favoriteMoviesList = favoriteMoviesRepository.findAllByUser(
                 userRepository.findByEmail(email));
-        List<Long> listIdMovie = new ArrayList<>();
+        List<Movie> movies = new ArrayList<>();
         for (FavoriteMovie favoriteMovies : favoriteMoviesList) {
-            listIdMovie.add(favoriteMovies.getIdMovie());
+            movies.add(favoriteMovies.getMovie());
         }
-        if (listIdMovie.size() == 0)
+        if (movies.isEmpty())
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        return ResponseEntity.ok(listIdMovie);
+        return ResponseEntity.ok(movies);
     }
 
     public ResponseEntity<Integer> getAllCountByIdMovie(Long idMovie) {
