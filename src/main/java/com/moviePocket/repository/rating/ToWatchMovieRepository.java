@@ -12,10 +12,11 @@ import java.util.List;
 @Repository
 public interface ToWatchMovieRepository extends JpaRepository<ToWatchMovie,Long> {
 
-    ToWatchMovie findByUserAndIdMovie(User user, Long idMovie);
+    ToWatchMovie findByUserAndMovie_Id(User user, Long idMovie);
 
     List<ToWatchMovie> findAllByUser(User user);
-    @Query("SELECT COUNT(u) FROM ToWatchMovie u WHERE u.idMovie = :movieId")
+
+    @Query("SELECT COUNT(u) FROM ToWatchMovie u WHERE u.movie.id = :movieId")
     int getAllCountByIdMovie(@Param("movieId") Long idMovie);
 
 

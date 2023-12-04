@@ -1,5 +1,6 @@
 package com.moviePocket.controller.rating;
 
+import com.moviePocket.entities.movie.Movie;
 import com.moviePocket.service.rating.ToWatchMovieService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -51,7 +52,7 @@ public class ToWatchMovieController {
             @ApiResponse(code = 500, message = "Internal Server Error")
     })
     @GetMapping("/all")
-    public ResponseEntity<List<Long>> allUserMovieToWatchMovies() {
+    public ResponseEntity<List<Movie>> allUserMovieToWatchMovies() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return toWatchMovieService.getAllUserToWatch(
                 authentication.getName());

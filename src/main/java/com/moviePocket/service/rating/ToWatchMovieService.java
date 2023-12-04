@@ -1,5 +1,6 @@
 package com.moviePocket.service.rating;
 
+import com.moviePocket.entities.movie.Movie;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -10,7 +11,7 @@ public interface ToWatchMovieService {
 
     ResponseEntity<Boolean> getFromToWatch(String email, Long idMovie);
 
-    ResponseEntity<List<Long>> getAllUserToWatch(String email);
+    ResponseEntity<List<Movie>> getAllUserToWatch(String email);
 
     ResponseEntity<Integer> getAllCountByIdMovie(Long idMovie);
 
