@@ -7,7 +7,7 @@ import com.moviePocket.entities.user.User;
 import com.moviePocket.repository.review.LikeReviewRepository;
 import com.moviePocket.repository.review.ReviewRepository;
 import com.moviePocket.repository.user.UserRepository;
-import com.moviePocket.service.movie.raview.LikeMovieReviewService;
+import com.moviePocket.service.raview.LikeMovieReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

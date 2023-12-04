@@ -4,7 +4,7 @@ import com.moviePocket.entities.rating.ToWatchMovie;
 import com.moviePocket.entities.user.User;
 import com.moviePocket.repository.rating.ToWatchMovieRepository;
 import com.moviePocket.repository.user.UserRepository;
-import com.moviePocket.service.movie.rating.ToWatchMovieService;
+import com.moviePocket.service.rating.ToWatchMovieService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

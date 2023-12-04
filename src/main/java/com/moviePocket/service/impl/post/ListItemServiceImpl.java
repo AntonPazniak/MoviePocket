@@ -6,7 +6,7 @@ import com.moviePocket.entities.user.User;
 import com.moviePocket.repository.post.MovieListInPostRepository;
 import com.moviePocket.repository.post.PostRepository;
 import com.moviePocket.repository.user.UserRepository;
-import com.moviePocket.service.movie.post.MovieListInPostService;
+import com.moviePocket.service.post.MovieListInPostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

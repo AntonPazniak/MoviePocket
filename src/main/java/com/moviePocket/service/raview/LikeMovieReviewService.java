@@ -1,4 +1,4 @@
-package com.moviePocket.service.movie.raview;
+package com.moviePocket.service.raview;
 
 import org.springframework.http.ResponseEntity;
 

@@ -1,9 +1,9 @@
 package com.moviePocket.controller.post;
 
 import com.moviePocket.entities.post.ParsPost;
-import com.moviePocket.service.movie.post.LikePostService;
-import com.moviePocket.service.movie.post.MovieListInPostService;
-import com.moviePocket.service.movie.post.PostService;
+import com.moviePocket.service.post.LikePostService;
+import com.moviePocket.service.post.MovieListInPostService;
+import com.moviePocket.service.post.PostService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;

@@ -3,7 +3,7 @@ package com.moviePocket.service.impl.user;
 import com.moviePocket.controller.dto.UserRegistrationDto;
 import com.moviePocket.entities.user.*;
 import com.moviePocket.repository.user.*;
-import com.moviePocket.service.movie.user.UserService;
+import com.moviePocket.service.user.UserService;
 import com.moviePocket.util.TbConstants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

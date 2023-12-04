@@ -9,7 +9,7 @@ import com.moviePocket.repository.list.ListGenreRepository;
 import com.moviePocket.repository.list.MovieListRepository;
 import com.moviePocket.repository.movie.GenreRepository;
 import com.moviePocket.repository.user.UserRepository;
-import com.moviePocket.service.movie.list.CategoriesMovieListService;
+import com.moviePocket.service.list.CategoriesMovieListService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

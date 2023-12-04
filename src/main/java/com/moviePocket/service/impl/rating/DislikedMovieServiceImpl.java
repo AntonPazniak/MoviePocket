@@ -4,7 +4,7 @@ import com.moviePocket.entities.rating.DislikedMovie;
 import com.moviePocket.entities.user.User;
 import com.moviePocket.repository.rating.DislikedMovieRepository;
 import com.moviePocket.repository.user.UserRepository;
-import com.moviePocket.service.movie.rating.DislikedMovieService;
+import com.moviePocket.service.rating.DislikedMovieService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

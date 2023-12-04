@@ -12,7 +12,7 @@ import com.moviePocket.repository.list.ListGenreRepository;
 import com.moviePocket.repository.list.ListItemRepository;
 import com.moviePocket.repository.list.MovieListRepository;
 import com.moviePocket.repository.user.UserRepository;
-import com.moviePocket.service.movie.list.MovieListService;
+import com.moviePocket.service.list.MovieListService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

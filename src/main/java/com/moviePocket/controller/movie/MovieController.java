@@ -2,9 +2,10 @@ package com.moviePocket.controller.movie;
 
 import com.moviePocket.controller.dto.MovieDto;
 import com.moviePocket.service.impl.movie.MovieServiceImpl;
-import com.moviePocket.service.movie.list.MovieListService;
+import com.moviePocket.service.list.MovieListService;
 import com.moviePocket.service.movie.rating.*;
-import com.moviePocket.service.movie.raview.ReviewService;
+import com.moviePocket.service.rating.*;
+import com.moviePocket.service.raview.ReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

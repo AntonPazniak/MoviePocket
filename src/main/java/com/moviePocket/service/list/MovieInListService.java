@@ -1,4 +1,4 @@
-package com.moviePocket.service.movie.list;
+package com.moviePocket.service.list;
 
 import org.springframework.http.ResponseEntity;
 

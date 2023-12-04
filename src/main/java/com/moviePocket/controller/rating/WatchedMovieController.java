@@ -1,6 +1,6 @@
 package com.moviePocket.controller.rating;
 
-import com.moviePocket.service.movie.rating.WatchedMovieService;
+import com.moviePocket.service.rating.WatchedMovieService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;

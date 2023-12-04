@@ -1,4 +1,4 @@
-package com.moviePocket.service.movie.post;
+package com.moviePocket.service.post;
 
 import com.moviePocket.entities.post.ParsPost;
 import org.springframework.http.ResponseEntity;

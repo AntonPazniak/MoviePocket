@@ -1,7 +1,7 @@
 package com.moviePocket.controller.user;
 
 import com.moviePocket.security.validation.ValidPassword;
-import com.moviePocket.service.movie.user.UserService;
+import com.moviePocket.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
