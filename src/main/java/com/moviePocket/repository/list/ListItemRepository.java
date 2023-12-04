@@ -16,6 +16,8 @@ public interface ListItemRepository extends JpaRepository<ListItem, Long> {
 
     List<ListItem> getAllByMovieList(ListMovie movieList);
 
+    List<ListItem> findAllByMovie_Id(Long idMovie);
+
     void deleteAllByMovieList(ListMovie movieList);
 
     boolean existsById(Long id);

@@ -176,10 +176,33 @@ public class MovieListServiceImpl implements MovieListService {
         return parsMovieList;
     }
 
-//    public ResponseEntity<List<ParsMovieList>> getAllListExistIdMovie(Long idMovie) {
-//        List<MovieList> lists = movieListRepository.findMovieListByIdMovie(idMovie);
-//        return ResponseEntity.ok(parsList(lists));
-//    }
+    public ResponseEntity<List<ParsList>> getAllListExistIdMovie(Long idMovie) {
+        List<ListItem> items = listItemRepository.findAllByMovie_Id(idMovie);
+        List<ParsList> parsLists = new ArrayList<>();
+        for (ListItem l : items) {
+            ListMovie list = l.getMovieList();
+            int[] likeAndDis = new int[]{likeListRepository.countByMovieReviewAndLickOrDisIsTrue(list),
+                    likeListRepository.countByMovieReviewAndLickOrDisIsFalse(list)};
+            List<Genre> genres = new ArrayList<>();
+            List<ListGenres> ListGenres = listGenreRepository.getAllByMovieList(list);
+            for (ListGenres g : ListGenres) {
+                genres.add(g.getGenre());
+            }
+            ParsList parsMovieList = new ParsList(
+                    list.getId(),
+                    list.getTitle(),
+                    list.getContent(),
+                    genres,
+                    null,
+                    likeAndDis,
+                    list.getUser().getUsername(),
+                    list.getCreated(),
+                    list.getUpdated()
+            );
+            parsLists.add(parsMovieList);
+        }
+        return ResponseEntity.ok(parsLists);
+    }
 
 
 }

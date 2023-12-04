@@ -14,8 +14,6 @@ import java.util.List;
 public interface MovieListRepository extends JpaRepository<ListMovie, Long> {
 
     ListMovie getById(Long id);
-
-
     List<ListMovie> findAllByUser(User user);
 
     @Query("SELECT m FROM ListMovie m WHERE m.title LIKE :title%")
