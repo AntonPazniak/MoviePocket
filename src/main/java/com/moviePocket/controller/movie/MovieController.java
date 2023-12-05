@@ -2,9 +2,9 @@ package com.moviePocket.controller.movie;
 
 import com.moviePocket.controller.dto.MovieDto;
 import com.moviePocket.service.impl.movie.MovieServiceImpl;
-import com.moviePocket.service.movie.list.MovieListService;
-import com.moviePocket.service.movie.rating.*;
-import com.moviePocket.service.movie.raview.ReviewService;
+import com.moviePocket.service.list.MovieListService;
+import com.moviePocket.service.rating.*;
+import com.moviePocket.service.raview.ReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/movies")
@@ -30,6 +28,7 @@ public class MovieController {
     private final MovieListService movieListService;
 
 
+
     @GetMapping("/{idMovie}")
     public ResponseEntity<MovieDto> getMovieInfo(@PathVariable("idMovie") Long idMovie) {
         MovieDto movieDto = new MovieDto(
@@ -44,9 +43,12 @@ public class MovieController {
         return new ResponseEntity<>(movieDto, HttpStatus.OK);
     }
 
-    @GetMapping("/search/{query}")
-    public List<MovieDto> getAllSearchedMovies(@PathVariable String query) {
-        return movieService.searchMovie(query);
-    }
+//    @GetMapping("/{idMovie}")
+//    public ResponseEntity<Void> getMovieInfo(@PathVariable("idMovie") Long idMovie) {
+//        movieService.setMovie(idMovie);
+//        return new ResponseEntity<>(HttpStatus.OK);
+//    }
+
+
 
 }

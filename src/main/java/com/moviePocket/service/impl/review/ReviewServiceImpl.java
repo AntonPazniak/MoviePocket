@@ -1,14 +1,16 @@
 package com.moviePocket.service.impl.review;
 
-import com.moviePocket.entities.movie.list.MovieList;
+import com.moviePocket.entities.list.ListMovie;
+import com.moviePocket.entities.movie.Movie;
 import com.moviePocket.entities.post.Post;
 import com.moviePocket.entities.review.*;
 import com.moviePocket.entities.user.User;
-import com.moviePocket.repository.movie.list.MovieListRepository;
+import com.moviePocket.repository.list.MovieListRepository;
 import com.moviePocket.repository.post.PostRepository;
 import com.moviePocket.repository.review.*;
 import com.moviePocket.repository.user.UserRepository;
-import com.moviePocket.service.movie.raview.ReviewService;
+import com.moviePocket.service.impl.movie.MovieServiceImpl;
+import com.moviePocket.service.raview.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,22 +41,26 @@ public class ReviewServiceImpl implements ReviewService {
     private PostRepository postRepository;
     @Autowired
     private ReviewPostRepository reviewPostRepository;
+    @Autowired
+    private MovieServiceImpl movieService;
 
     @Transactional
     public ResponseEntity<Void> createMovieReview(String email, Long idMovie, String title, String content) {
         Review review = createReview(email, title, content);
         if (review == null)
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        else {
-            ReviewMovie reviewMovie = new ReviewMovie(idMovie, review);
+        Movie movie = movieService.setMovie(idMovie);
+        if (movie != null) {
+            ReviewMovie reviewMovie = new ReviewMovie(movie, review);
             reviewMovieRepository.save(reviewMovie);
             return new ResponseEntity<>(HttpStatus.OK);
         }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @Transactional
     public ResponseEntity<Void> createListReview(String email, Long idList, String title, String content) {
-        MovieList movieList = movieListRepository.getById(idList);
+        ListMovie movieList = movieListRepository.getById(idList);
         if (movieList != null) {
             Review review = createReview(email, title, content);
             if (review == null)
@@ -65,7 +71,7 @@ public class ReviewServiceImpl implements ReviewService {
                 return new ResponseEntity<>(HttpStatus.OK);
             }
         }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @Transactional
@@ -81,7 +87,7 @@ public class ReviewServiceImpl implements ReviewService {
                 return new ResponseEntity<>(HttpStatus.OK);
             }
         }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @Transactional
@@ -194,11 +200,11 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     public ResponseEntity<Integer> getAllCountByIdMovie(Long idMovie) {
-        return ResponseEntity.ok(reviewMovieRepository.countByIdMovie(idMovie));
+        return ResponseEntity.ok(reviewMovieRepository.countByMovie_id(idMovie));
     }
 
     public ResponseEntity<List<ParsReview>> getAllByIdList(Long idList) {
-        MovieList movieList = movieListRepository.getById(idList);
+        ListMovie movieList = movieListRepository.getById(idList);
         List<Review> reviews = reviewListRepository.findReviewsByMovieList(movieList);
         if (reviews.isEmpty()) {
             List<ParsReview> reviewList = new ArrayList<>();

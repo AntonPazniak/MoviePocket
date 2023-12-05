@@ -1,6 +1,6 @@
 package com.moviePocket.entities.post;
 
-import com.moviePocket.entities.movie.list.MovieList;
+import com.moviePocket.entities.list.ListMovie;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,13 +22,13 @@ public class PostList {
 
     @ManyToOne
     @JoinColumn(name = "idList", nullable = false)
-    private MovieList movieList;
+    private ListMovie movieList;
 
     @ManyToOne
     @JoinColumn(name = "idPost", nullable = false)
     private Post post;
 
-    public PostList(MovieList movieList, Post post) {
+    public PostList(ListMovie movieList, Post post) {
         this.movieList = movieList;
         this.post = post;
     }

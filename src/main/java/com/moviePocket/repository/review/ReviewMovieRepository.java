@@ -15,10 +15,10 @@ import java.util.List;
 public interface ReviewMovieRepository extends JpaRepository<ReviewMovie, Long> {
 
 
-    @Query("SELECT rm.review FROM ReviewMovie rm WHERE rm.idMovie = :idMovie")
+    @Query("SELECT rm.review FROM ReviewMovie rm WHERE rm.movie.id = :idMovie")
     List<Review> findReviewsByMovieId(@Param("idMovie") Long idMovie);
 
-    int countByIdMovie(Long idMovie);
+    int countByMovie_id(Long idMovie);
 
     Boolean existsByReview(Review review);
 

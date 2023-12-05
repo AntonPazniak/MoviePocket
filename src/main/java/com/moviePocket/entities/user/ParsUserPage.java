@@ -1,7 +1,8 @@
 package com.moviePocket.entities.user;
 
-import com.moviePocket.entities.movie.list.ParsMovieList;
-import com.moviePocket.entities.movie.rating.Rating;
+import com.moviePocket.entities.list.ParsList;
+import com.moviePocket.entities.movie.Movie;
+import com.moviePocket.entities.rating.Rating;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,10 +20,10 @@ public class ParsUserPage {
     private String username;
     private String bio;
     private Date created;
-    private List<ParsMovieList> movieLL;
-    private List<Long> likeMovie;
-    private List<Long> dislikeMovie;
-    private List<Long> watchedMovie;
-    private List<Long> toWatchMovie;
+    private List<ParsList> movieLL;
+    private List<Movie> likeMovie;
+    private List<Movie> dislikeMovie;
+    private List<Movie> watchedMovie;
+    private List<Movie> toWatchMovie;
     private List<Rating> ratingMovie;
 }

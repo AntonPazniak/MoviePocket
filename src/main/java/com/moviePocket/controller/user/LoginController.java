@@ -2,7 +2,7 @@ package com.moviePocket.controller.user;
 
 import com.moviePocket.controller.dto.UserRegistrationDto;
 import com.moviePocket.entities.user.User;
-import com.moviePocket.service.movie.user.UserService;
+import com.moviePocket.service.user.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
