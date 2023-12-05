@@ -1,6 +1,7 @@
 package com.moviePocket.entities.review;
 
 
+import com.moviePocket.entities.movie.Movie;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,15 +21,16 @@ public class ReviewMovie {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private Long idMovie;
+    @ManyToOne
+    @JoinColumn(name = "idMovie", referencedColumnName = "id")
+    private Movie movie;
 
     @ManyToOne
     @JoinColumn(name = "idReview", nullable = false)
     private Review review;
 
-    public ReviewMovie(Long idMovie, Review movieReview) {
-        this.idMovie = idMovie;
+    public ReviewMovie(Movie movie, Review movieReview) {
+        this.movie = movie;
         this.review = movieReview;
     }
 }
