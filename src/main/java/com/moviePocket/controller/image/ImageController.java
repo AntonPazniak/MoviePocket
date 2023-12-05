@@ -18,11 +18,11 @@ public class ImageController {
         return imageService.getImageById(id);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteImage(@PathVariable Long id) {
-        imageService.deleteImage(id);
-        return ResponseEntity.noContent().build();
-    }
+//    @DeleteMapping("/{id}")
+//    public ResponseEntity<Void> deleteImage(@PathVariable Long id) {
+//        imageService.deleteImage(id);
+//        return ResponseEntity.noContent().build();
+//    }
 
     @PostMapping("/upload")
     public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file) {
