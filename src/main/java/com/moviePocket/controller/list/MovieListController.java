@@ -2,10 +2,10 @@ package com.moviePocket.controller.list;
 
 
 import com.moviePocket.entities.list.ParsList;
-import com.moviePocket.service.list.CategoriesMovieListService;
-import com.moviePocket.service.list.LikeListService;
-import com.moviePocket.service.list.MovieInListService;
-import com.moviePocket.service.list.MovieListService;
+import com.moviePocket.service.inter.list.CategoriesMovieListService;
+import com.moviePocket.service.inter.list.LikeListService;
+import com.moviePocket.service.inter.list.MovieInListService;
+import com.moviePocket.service.inter.list.MovieListService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;

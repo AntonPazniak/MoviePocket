@@ -1,6 +1,6 @@
 package com.moviePocket.controller.tracking;
 
-import com.moviePocket.service.tracing.TracingService;
+import com.moviePocket.service.inter.tracing.TracingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

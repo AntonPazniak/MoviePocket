@@ -9,7 +9,7 @@ import com.moviePocket.repository.tracking.TrackingRepository;
 import com.moviePocket.repository.user.UserRepository;
 import com.moviePocket.service.impl.movie.MovieServiceImpl;
 import com.moviePocket.service.impl.user.EmailSenderService;
-import com.moviePocket.service.tracing.TracingService;
+import com.moviePocket.service.inter.tracing.TracingService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

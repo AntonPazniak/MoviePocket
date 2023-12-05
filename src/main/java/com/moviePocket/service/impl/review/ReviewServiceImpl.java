@@ -10,7 +10,7 @@ import com.moviePocket.repository.post.PostRepository;
 import com.moviePocket.repository.review.*;
 import com.moviePocket.repository.user.UserRepository;
 import com.moviePocket.service.impl.movie.MovieServiceImpl;
-import com.moviePocket.service.raview.ReviewService;
+import com.moviePocket.service.inter.raview.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

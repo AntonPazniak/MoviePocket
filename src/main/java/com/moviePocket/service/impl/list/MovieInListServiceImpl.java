@@ -8,7 +8,7 @@ import com.moviePocket.repository.list.ListItemRepository;
 import com.moviePocket.repository.list.MovieListRepository;
 import com.moviePocket.repository.user.UserRepository;
 import com.moviePocket.service.impl.movie.MovieServiceImpl;
-import com.moviePocket.service.list.MovieInListService;
+import com.moviePocket.service.inter.list.MovieInListService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

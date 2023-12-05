@@ -8,7 +8,7 @@ import com.moviePocket.repository.list.MovieListRepository;
 import com.moviePocket.repository.post.*;
 import com.moviePocket.repository.user.UserRepository;
 import com.moviePocket.service.impl.movie.MovieServiceImpl;
-import com.moviePocket.service.post.PostService;
+import com.moviePocket.service.inter.post.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

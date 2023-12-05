@@ -1,4 +1,4 @@
-package com.moviePocket.service.tracing;
+package com.moviePocket.service.inter.tracing;
 
 import org.springframework.http.ResponseEntity;
 
