@@ -3,8 +3,10 @@ package com.moviePocket.controller.image;
 import com.moviePocket.service.inter.image.ImageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/images")
@@ -24,8 +26,11 @@ public class ImageController {
 //        return ResponseEntity.noContent().build();
 //    }
 
-    @PostMapping("/upload")
-    public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file) {
-        return imageService.handleFileUpload(file);
-    }
+//    @PostMapping("/upload")
+//    public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file) {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        return imageService.handleFileUpload(file);
+//    }
+
+
 }

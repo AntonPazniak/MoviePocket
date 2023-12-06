@@ -9,7 +9,7 @@ public interface ImageService {
 
     void deleteImage(Long id);
 
-    ResponseEntity<String> handleFileUpload(MultipartFile file);
+    ImageEntity handleFileUpload(MultipartFile file);
 
     byte[] getImageDataById(Long id);
 }
