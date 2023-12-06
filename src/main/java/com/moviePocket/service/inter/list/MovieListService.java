@@ -23,4 +23,6 @@ public interface MovieListService {
 
     ResponseEntity<List<ParsList>> getAllListsContainingMovie(Long idMovie);
 
+    ResponseEntity<Void> addOrDelItemLIst(String email, Long idList, Long idMovie);
+
 }

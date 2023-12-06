@@ -1,7 +1,6 @@
 package com.moviePocket.service.impl.list;
 
 import com.moviePocket.entities.list.ListGenres;
-import com.moviePocket.entities.list.ListItem;
 import com.moviePocket.entities.list.ListMovie;
 import com.moviePocket.entities.list.ParsList;
 import com.moviePocket.entities.movie.Genre;
@@ -9,9 +8,9 @@ import com.moviePocket.entities.movie.Movie;
 import com.moviePocket.entities.user.User;
 import com.moviePocket.repository.list.LikeListRepository;
 import com.moviePocket.repository.list.ListGenreRepository;
-import com.moviePocket.repository.list.ListItemRepository;
 import com.moviePocket.repository.list.MovieListRepository;
 import com.moviePocket.repository.user.UserRepository;
+import com.moviePocket.service.impl.movie.MovieServiceImpl;
 import com.moviePocket.service.inter.list.MovieListService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -33,11 +32,12 @@ public class MovieListServiceImpl implements MovieListService {
 
     private final UserRepository userRepository;
 
-    private final ListItemRepository listItemRepository;
-
     private final LikeListRepository likeListRepository;
 
     private final ListGenreRepository listGenreRepository;
+
+    private final MovieServiceImpl movieService;
+
     @Transactional
     public ResponseEntity<Void> setList(String email, String title, String content) throws NotFoundException {
         User user = userRepository.findByEmail(email);
@@ -77,12 +77,36 @@ public class MovieListServiceImpl implements MovieListService {
         else if (movieList.getUser() != user) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         } else {
-            listItemRepository.deleteAllByMovieList(movieList);
             likeListRepository.deleteAllByMovieList(movieList);
             listGenreRepository.deleteAllByMovieList(movieList);
             movieListRepository.delete(movieList);
             return new ResponseEntity<>(HttpStatus.OK);
         }
+    }
+
+    public ResponseEntity<Void> addOrDelItemLIst(String email, Long idList, Long idMovie) {
+        User user = userRepository.findByEmail(email);
+        ListMovie movieList = movieListRepository.getById(idList);
+        if (user == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        else if (movieList == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        else if (movieList.getUser() != user) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        } else {
+            Movie movie = movieService.setMovie(idMovie);
+            if (movie != null) {
+                if (movieList.getMovies().contains(movie)) {
+                    movieList.getMovies().remove(movie);
+                } else {
+                    movieList.getMovies().add(movie);
+                }
+                movieListRepository.save(movieList);
+                return new ResponseEntity<>(HttpStatus.OK);
+            }
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
     }
 
     public ResponseEntity<ParsList> getList(Long idMovieList) {
@@ -127,11 +151,6 @@ public class MovieListServiceImpl implements MovieListService {
     }
 
     private ParsList parsList(ListMovie listMovie) {
-        List<ListItem> listItems = listItemRepository.getAllByMovieList(listMovie);
-        List<Movie> movies = new ArrayList<>();
-        for (ListItem listItem : listItems) {
-            movies.add(listItem.getMovie());
-        }
         List<ListGenres> ListGenres = listGenreRepository.getAllByMovieList(listMovie);
         List<Genre> genres = new ArrayList<>();
         for (ListGenres g : ListGenres) {
@@ -145,7 +164,7 @@ public class MovieListServiceImpl implements MovieListService {
                 listMovie.getTitle(),
                 listMovie.getContent(),
                 genres,
-                movies,
+                listMovie.getMovies(),
                 likeAndDis,
                 listMovie.getUser().getUsername(),
                 listMovie.getCreated(),
@@ -155,10 +174,9 @@ public class MovieListServiceImpl implements MovieListService {
     }
 
     public ResponseEntity<List<ParsList>> getAllListsContainingMovie(Long idMovie) {
-        List<ListItem> items = listItemRepository.findAllByMovie_Id(idMovie);
         List<ParsList> parsLists = new ArrayList<>();
-        for (ListItem l : items) {
-            ListMovie list = l.getMovieList();
+        List<ListMovie> listMovies = movieListRepository.findAllByidMovie(idMovie);
+        for (ListMovie list : listMovies) {
             int[] likeAndDis = new int[]{likeListRepository.countByMovieReviewAndLickOrDisIsTrue(list),
                     likeListRepository.countByMovieReviewAndLickOrDisIsFalse(list)};
             List<Genre> genres = new ArrayList<>();
