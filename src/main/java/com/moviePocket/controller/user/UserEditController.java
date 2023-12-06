@@ -2,6 +2,7 @@ package com.moviePocket.controller.user;
 
 import com.moviePocket.controller.dto.UserDto;
 import com.moviePocket.entities.user.User;
+import com.moviePocket.service.inter.image.ImageService;
 import com.moviePocket.service.inter.user.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -13,6 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.mail.MessagingException;
 
@@ -25,6 +27,9 @@ public class UserEditController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ImageService imageService;
 
     @GetMapping("/getUserDto")
     public ResponseEntity<UserDto> getUserDto() {
@@ -105,5 +110,28 @@ public class UserEditController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return userService.setNewBio(authentication.getName(), bio);
     }
+
+
+    @PostMapping("/avatar/set")
+    @ApiOperation("Set a new avatar")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Successfully set the new avatar"),
+            @ApiResponse(code = 400, message = "Bad request")
+    })
+    public ResponseEntity<Void> setNewAvatar(@RequestParam("file") MultipartFile file) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return userService.setNewAvatar(authentication.getName(), file);
+    }
+
+    @GetMapping("/avatar/{userId}")
+    public ResponseEntity<byte[]> getAvatarByUserId(@PathVariable Long userId) {
+        User user = userService.findById(userId);
+        if (user != null && user.getAvatar() != null) {
+            return imageService.getImageById(user.getAvatar().getId());
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 
 }
