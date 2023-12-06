@@ -15,6 +15,8 @@ public class UserDto {
 
     private String bio;
 
+    private Long avatar;
+
 
     public UserDto(String username, String email, String bio) {
         this.username = username;

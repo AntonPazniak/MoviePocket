@@ -4,6 +4,7 @@ import com.moviePocket.controller.dto.UserRegistrationDto;
 import com.moviePocket.entities.image.ImageEntity;
 import com.moviePocket.entities.user.*;
 import com.moviePocket.repository.user.*;
+import com.moviePocket.service.impl.image.ImageServiceImpl;
 import com.moviePocket.service.inter.user.UserService;
 import com.moviePocket.util.TbConstants;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.mail.MessagingException;
 import javax.transaction.Transactional;
@@ -36,6 +38,7 @@ public class UserServiceImpl implements UserService {
     private final AccountActivateRepository accountActivateRepository;
     private final NewEmailRepository newEmailRepository;
     private final ForgotPasswordRepository forgotPasswordRepository;
+    private final ImageServiceImpl imageService;
     @Override
     public void save(UserRegistrationDto userDto) throws MessagingException {
         Role role = roleRepository.findByName(TbConstants.Roles.USER);

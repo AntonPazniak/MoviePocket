@@ -4,6 +4,7 @@ import com.moviePocket.controller.dto.UserRegistrationDto;
 import com.moviePocket.entities.user.User;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.mail.MessagingException;
 
