@@ -1,4 +1,4 @@
-package com.moviePocket.service.rating;
+package com.moviePocket.service.inter.rating;
 
 import com.moviePocket.entities.movie.Movie;
 import org.springframework.http.ResponseEntity;

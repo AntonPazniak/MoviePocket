@@ -1,4 +1,4 @@
-package com.moviePocket.service.user;
+package com.moviePocket.service.inter.user;
 
 import com.moviePocket.controller.dto.UserRegistrationDto;
 import com.moviePocket.entities.user.User;

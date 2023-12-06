@@ -7,7 +7,7 @@ import com.moviePocket.entities.user.User;
 import com.moviePocket.repository.post.LikePostRepository;
 import com.moviePocket.repository.post.PostRepository;
 import com.moviePocket.repository.user.UserRepository;
-import com.moviePocket.service.post.LikePostService;
+import com.moviePocket.service.inter.post.LikePostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

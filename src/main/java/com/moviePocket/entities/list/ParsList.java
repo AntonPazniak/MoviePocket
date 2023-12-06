@@ -19,6 +19,7 @@ public class ParsList {
     private Long id;
     private String title;
     private String content;
+    private Long poster;
     private List<Genre> genres;
     private List<Movie> movies;
     private int[] likeOrDis;

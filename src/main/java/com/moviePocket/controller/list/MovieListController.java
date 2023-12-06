@@ -2,10 +2,9 @@ package com.moviePocket.controller.list;
 
 
 import com.moviePocket.entities.list.ParsList;
-import com.moviePocket.service.list.CategoriesMovieListService;
-import com.moviePocket.service.list.LikeListService;
-import com.moviePocket.service.list.MovieInListService;
-import com.moviePocket.service.list.MovieListService;
+import com.moviePocket.service.inter.list.CategoriesMovieListService;
+import com.moviePocket.service.inter.list.LikeListService;
+import com.moviePocket.service.inter.list.MovieListService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -26,8 +25,6 @@ public class MovieListController {
 
 
     private final MovieListService movieListService;
-
-    private final MovieInListService movieInListService;
 
     private final LikeListService likeListService;
 
@@ -104,7 +101,7 @@ public class MovieListController {
     @PostMapping("/setMovie")
     public ResponseEntity<Void> setOrDelMovieInMovieList(@RequestParam("idList") Long idList, @RequestParam("idMovie") Long idMovie) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return movieInListService.addOrDelMovieFromList(authentication.getName(), idList, idMovie);
+        return movieListService.addOrDelItemLIst(authentication.getName(), idList, idMovie);
     }
 
     @ApiOperation(value = "Like or dislike movie list", notes = "Likes or dislikes the specified movie list")

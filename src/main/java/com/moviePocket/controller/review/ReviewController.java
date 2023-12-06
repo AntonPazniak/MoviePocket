@@ -2,8 +2,8 @@ package com.moviePocket.controller.review;
 
 
 import com.moviePocket.entities.review.ParsReview;
-import com.moviePocket.service.raview.LikeMovieReviewService;
-import com.moviePocket.service.raview.ReviewService;
+import com.moviePocket.service.inter.raview.LikeMovieReviewService;
+import com.moviePocket.service.inter.raview.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;

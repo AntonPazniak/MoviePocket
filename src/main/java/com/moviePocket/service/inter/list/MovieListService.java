@@ -1,4 +1,4 @@
-package com.moviePocket.service.list;
+package com.moviePocket.service.inter.list;
 
 import com.moviePocket.entities.list.ParsList;
 import org.springframework.http.ResponseEntity;
@@ -22,5 +22,7 @@ public interface MovieListService {
     ResponseEntity<List<ParsList>> getAllByUsernameList(String username);
 
     ResponseEntity<List<ParsList>> getAllListsContainingMovie(Long idMovie);
+
+    ResponseEntity<Void> addOrDelItemLIst(String email, Long idList, Long idMovie);
 
 }
