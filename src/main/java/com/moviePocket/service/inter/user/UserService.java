@@ -28,6 +28,8 @@ public interface UserService extends UserDetailsService {
 
     ResponseEntity<Void> setNewBio(String email, String bio);
 
+    ResponseEntity<Void> setNewAvatar(String email, MultipartFile file);
+
     User findUserByUsername(String username);
 
     ResponseEntity<Boolean> existsByUsername(String username);
