@@ -142,6 +142,21 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    public ResponseEntity<Void> deleteAvatar(String email, Long imageId) {
+        User user = userRepository.findByEmail(email);
+        if (user == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        else if (user.getAvatar() == null) {
+           return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        ImageEntity image = user.getAvatar();
+
+        user.setAvatar(null);
+        userRepository.save(user);
+
+        imageService.deleteImage(image.getId());
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
     public ResponseEntity<Void> setTokenEmail(String email, String newEmail) throws MessagingException {
         User user = userRepository.findByEmail(email);

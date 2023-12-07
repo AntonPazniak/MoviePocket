@@ -31,6 +31,8 @@ public interface UserService extends UserDetailsService {
 
     ResponseEntity<Void> setNewAvatar(String email, MultipartFile file);
 
+    ResponseEntity<Void> deleteAvatar(String email, Long imageId);
+
     User findUserByUsername(String username);
 
     ResponseEntity<Boolean> existsByUsername(String username);

@@ -112,7 +112,7 @@ public class UserEditController {
     }
 
 
-    @PostMapping("/avatar/set")
+    @PostMapping("/newAvatar")
     @ApiOperation("Set a new avatar")
     @ApiResponses({
             @ApiResponse(code = 200, message = "Successfully set the new avatar"),
@@ -123,15 +123,16 @@ public class UserEditController {
         return userService.setNewAvatar(authentication.getName(), file);
     }
 
-    @GetMapping("/avatar/{userId}")
-    public ResponseEntity<byte[]> getAvatarByUserId(@PathVariable Long userId) {
-        User user = userService.findById(userId);
-        if (user != null && user.getAvatar() != null) {
-            return imageService.getImageById(user.getAvatar().getId());
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+
+    @PostMapping("/deleteAvatar")
+    @ApiOperation("Delete current avatar")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "Successfully deleted avatar"),
+            @ApiResponse(code = 400, message = "Avatar is null"),
+            @ApiResponse(code = 401, message = "User is not authorized")
+    })
+    public ResponseEntity<Void> deleteAvatar(@RequestParam("avatarId") Long avatarId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return userService.deleteAvatar(authentication.getName(), avatarId);
     }
-
-
 }
