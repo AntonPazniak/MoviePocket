@@ -47,14 +47,13 @@ public class ImageServiceImpl implements ImageService {
 
     @SneakyThrows
     @Override
-    public ImageEntity handleFileUpload(MultipartFile file) {
+    public void handleFileUpload(MultipartFile file) {
         ImageEntity imageEntity = new ImageEntity();
         byte[] imageData = file.getBytes();
         String originalFilename = file.getOriginalFilename();
         imageEntity.setName(originalFilename);
         imageEntity.setData(imageData);
         imageRepository.save(imageEntity);
-        return imageEntity;
     }
 
     @Override
@@ -140,5 +139,41 @@ public class ImageServiceImpl implements ImageService {
 
     public void delImage(ImageEntity image) {
         imageRepository.delete(image);
+    }
+
+    public ImageEntity resizeImage(MultipartFile file) {
+        try {
+            BufferedImage originalImage = ImageIO.read(file.getInputStream());
+
+            int standardWidth = 1000;
+            int standardHeight = 1000;
+
+            double scaleFactor = Math.min(1.0 * standardWidth / originalImage.getWidth(),
+                    1.0 * standardHeight / originalImage.getHeight());
+
+            int newWidth = (int) (originalImage.getWidth() * scaleFactor);
+            int newHeight = (int) (originalImage.getHeight() * scaleFactor);
+
+            Image scaledImage = originalImage.getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH);
+
+            BufferedImage bufferedImage = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_RGB);
+            Graphics2D g2d = bufferedImage.createGraphics();
+            g2d.drawImage(scaledImage, 0, 0, null);
+            g2d.dispose();
+
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            ImageIO.write(bufferedImage, "jpg", byteArrayOutputStream);
+            byte[] imageData = byteArrayOutputStream.toByteArray();
+
+            ImageEntity imageEntity = new ImageEntity();
+            imageEntity.setName("Avatar");
+            imageEntity.setData(imageData);
+            imageRepository.save(imageEntity);
+
+            return imageEntity;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

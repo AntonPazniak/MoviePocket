@@ -129,8 +129,7 @@ public class UserServiceImpl implements UserService {
         else {
             if (user.getAvatar() != null)
                 lastImage = user.getAvatar();
-
-            ImageEntity imageEntity = imageService.handleFileUpload(file);
+            ImageEntity imageEntity = imageService.resizeImage(file);
             user.setAvatar(imageEntity);
             userRepository.save(user);
 

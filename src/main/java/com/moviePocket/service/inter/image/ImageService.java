@@ -10,7 +10,9 @@ public interface ImageService {
 
     void deleteImage(Long id);
 
-    ImageEntity handleFileUpload(MultipartFile file);
+    void handleFileUpload(MultipartFile file);
 
     byte[] getImageDataById(Long id);
+
+    ImageEntity resizeImage(MultipartFile file);
 }
