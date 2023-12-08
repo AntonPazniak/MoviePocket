@@ -1,12 +1,14 @@
 package com.moviePocket.controller.dto;
 
 import com.moviePocket.entities.user.User;
-import lombok.*;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Data
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
 public class UserDto {
 
