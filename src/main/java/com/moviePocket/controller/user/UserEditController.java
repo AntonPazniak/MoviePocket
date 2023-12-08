@@ -37,10 +37,14 @@ public class UserEditController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(authentication.getName());
         if (user != null) {
+            Long idAvatar = null;
+            if (user.getAvatar() != null)
+                idAvatar = user.getAvatar().getId();
             return ResponseEntity.ok(new UserDto(
                     user.getUsername(),
                     user.getEmail(),
-                    user.getBio()
+                    user.getBio(),
+                    idAvatar
             ));
         } else {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
