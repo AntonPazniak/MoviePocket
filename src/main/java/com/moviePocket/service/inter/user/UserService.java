@@ -4,6 +4,7 @@ import com.moviePocket.controller.dto.UserRegistrationDto;
 import com.moviePocket.entities.user.User;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.mail.MessagingException;
 
@@ -27,6 +28,10 @@ public interface UserService extends UserDetailsService {
     ResponseEntity<Void> setNewUsername(String email, String username);
 
     ResponseEntity<Void> setNewBio(String email, String bio);
+
+    ResponseEntity<Void> setNewAvatar(String email, MultipartFile file);
+
+    ResponseEntity<Void> deleteAvatar(String email, Long imageId);
 
     User findUserByUsername(String username);
 

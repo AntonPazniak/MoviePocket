@@ -1,5 +1,6 @@
 package com.moviePocket.service.inter.image;
 
+import com.moviePocket.entities.image.ImageEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -9,7 +10,9 @@ public interface ImageService {
 
     void deleteImage(Long id);
 
-    ResponseEntity<String> handleFileUpload(MultipartFile file);
+    void handleFileUpload(MultipartFile file);
 
     byte[] getImageDataById(Long id);
+
+    ImageEntity resizeImage(MultipartFile file);
 }

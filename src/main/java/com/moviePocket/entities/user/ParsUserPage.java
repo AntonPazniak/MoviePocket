@@ -20,7 +20,8 @@ public class ParsUserPage {
     private String username;
     private String bio;
     private Date created;
-    private List<ParsList> movieLL;
+    private Long avatar;
+    private List<ParsList> lists;
     private List<Movie> likeMovie;
     private List<Movie> dislikeMovie;
     private List<Movie> watchedMovie;
