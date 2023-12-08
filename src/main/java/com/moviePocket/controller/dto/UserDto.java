@@ -16,10 +16,11 @@ public class UserDto {
     private Long avatar;
 
 
-    public UserDto(String username, String email, String bio) {
+    public UserDto(String username, String email, String bio, Long avatar) {
         this.username = username;
         this.email = email;
         this.bio = bio;
+        this.avatar = avatar;
     }
 
     public User toUser() {
