@@ -53,11 +53,14 @@ public class UserController {
         if (user == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+        Long idAvatar = null;
+        if (user.getAvatar() != null)
+            idAvatar = user.getAvatar().getId();
         ParsUserPage parsUserPage = new ParsUserPage(
                 user.getUsername(),
                 user.getBio(),
                 user.getCreated(),
-                user.getAvatar().getId(),
+                idAvatar,
                 movieListService.getAllMyList(user.getEmail()).getBody(),
                 favoriteMovieService.getAllUserFavoriteMovies(user.getEmail()).getBody(),
                 dislikedMovieService.getAllUserDislikedMovie(user.getEmail()).getBody(),

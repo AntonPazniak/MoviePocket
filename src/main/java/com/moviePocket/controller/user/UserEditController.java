@@ -9,6 +9,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -35,11 +36,15 @@ public class UserEditController {
     public ResponseEntity<UserDto> getUserDto() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User user = userService.findUserByEmail(authentication.getName());
-        return ResponseEntity.ok(new UserDto(
-                user.getUsername(),
-                user.getEmail(),
-                user.getBio()
-        ));
+        if (user != null) {
+            return ResponseEntity.ok(new UserDto(
+                    user.getUsername(),
+                    user.getEmail(),
+                    user.getBio()
+            ));
+        } else {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
     }
 
     @ApiOperation(value = "Delete a user", notes = "User set status deleted and stays in db")

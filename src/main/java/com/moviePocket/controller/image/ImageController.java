@@ -26,11 +26,9 @@ public class ImageController {
 //        return ResponseEntity.noContent().build();
 //    }
 
+
 //    @PostMapping("/upload")
 //    public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file) {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 //        return imageService.handleFileUpload(file);
 //    }
-
-
 }
