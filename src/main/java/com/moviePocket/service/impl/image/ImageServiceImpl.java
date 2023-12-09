@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -143,6 +144,11 @@ public class ImageServiceImpl implements ImageService {
 
     public ImageEntity resizeImage(MultipartFile file) {
         try {
+
+            if (file.getSize() > 1048576) {
+                // You can handle the case where the file size is too large, for example, throw an exception or return null
+                throw new IllegalArgumentException("File size exceeds the maximum allowed size (1 MB).");
+            }
             BufferedImage originalImage = ImageIO.read(file.getInputStream());
 
             int standardWidth = 1000;
@@ -154,15 +160,24 @@ public class ImageServiceImpl implements ImageService {
             int newWidth = (int) (originalImage.getWidth() * scaleFactor);
             int newHeight = (int) (originalImage.getHeight() * scaleFactor);
 
-            Image scaledImage = originalImage.getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH);
+            int diameter = Math.min(newWidth, newHeight);
+            int borderWidth = 5;
 
-            BufferedImage bufferedImage = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_RGB);
+            BufferedImage bufferedImage = new BufferedImage(diameter, diameter, BufferedImage.TYPE_INT_ARGB);
             Graphics2D g2d = bufferedImage.createGraphics();
-            g2d.drawImage(scaledImage, 0, 0, null);
+
+            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g2d.setClip(new Ellipse2D.Float(0, 0, diameter, diameter));
+            g2d.drawImage(originalImage, 0, 0, diameter, diameter, null);
+
+            g2d.setColor(Color.WHITE); // Set border color
+            g2d.setStroke(new BasicStroke(borderWidth));
+            g2d.draw(new Ellipse2D.Float(borderWidth / 2, borderWidth / 2, diameter - borderWidth, diameter - borderWidth));
+
             g2d.dispose();
 
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            ImageIO.write(bufferedImage, "jpg", byteArrayOutputStream);
+            ImageIO.write(bufferedImage, "png", byteArrayOutputStream);
             byte[] imageData = byteArrayOutputStream.toByteArray();
 
             ImageEntity imageEntity = new ImageEntity();
