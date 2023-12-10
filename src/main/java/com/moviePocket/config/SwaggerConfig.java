@@ -35,8 +35,7 @@ public class SwaggerConfig {
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder().title("MoviePocket API")
                 .description("MoviePocket API reference for developers")
-                .contact("javainuse@gmail.com").license("MIT License")
-                .licenseUrl("https://opensource.org/license/mit/").version("1.0").build();
+                .contact("danpry@st.amu.edu.pl").version("2.0").build();
     }
 
 }
