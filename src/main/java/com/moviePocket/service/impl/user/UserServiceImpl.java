@@ -53,7 +53,7 @@ public class UserServiceImpl implements UserService {
         accountActivateRepository.save(accountActivate);
 
         String username = user.getUsername();
-        String link = "http://localhost:3000/activateUser?token=" + accountActivate.getTokenAccountActivate();
+        String link = "https://moviepocket.projektstudencki.pl/activateUser?token=" + accountActivate.getTokenAccountActivate();
         String massage = "Welcome to MoviePocket family. We really hope that you will enjoy being a part of MoviePocket family \n" +
                 " We want to make sure it's really you. To do that please confirm your mail by clicking the link below.";
 
@@ -174,7 +174,7 @@ public class UserServiceImpl implements UserService {
             }
 
             String username = user.getUsername();
-            String link = "http://localhost:8080/user/edit/activateNewEmail/" + newEmailOb.getTokenEmailActivate();
+            String link = "https://moviepocket.projektstudencki.pl/api/user/edit/activateNewEmail/" + newEmailOb.getTokenEmailActivate();
             String massage = "You are just in the middle of setting up your new email address. \n Please confirm your new email address.";
 
             emailSenderService.sendMailWithAttachment(newEmailOb.getNewEmail(), buildEmail(username, massage, link), "New Mail Confirmation");
@@ -245,7 +245,7 @@ public class UserServiceImpl implements UserService {
 
     private void sendEmail(User user, String token) throws MessagingException {
         String username = user.getUsername();
-        String link = "http://localhost:3000/newPassword?token=" + token;
+        String link = "https://moviepocket.projektstudencki.pl/newPassword?token=" + token;
         String massage = "You are just in the middle of having your new password. \n Please confirm your email address by going by the link.";
         emailSenderService.sendMailWithAttachment(user.getEmail(), buildEmail(username, massage, link), "Password Recovery");
 
