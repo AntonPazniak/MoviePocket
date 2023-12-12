@@ -125,7 +125,8 @@ public class UserEditController {
     @ApiOperation("Set a new avatar")
     @ApiResponses({
             @ApiResponse(code = 200, message = "Successfully set the new avatar"),
-            @ApiResponse(code = 400, message = "Bad request")
+            @ApiResponse(code = 400, message = "Image size is exceeded (1MB)"),
+            @ApiResponse(code = 401, message = "User is not authorized")
     })
     public ResponseEntity<Void> setNewAvatar(@RequestParam("file") MultipartFile file) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

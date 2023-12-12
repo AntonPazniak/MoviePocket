@@ -126,7 +126,9 @@ public class UserServiceImpl implements UserService {
 
         if (user == null)
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        else {
+        else if (file.getSize() > 1048576) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } else {
             if (user.getAvatar() != null)
                 lastImage = user.getAvatar();
             ImageEntity imageEntity = imageService.resizeImage(file);
