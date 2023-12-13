@@ -71,7 +71,6 @@ public class Movie {
     @Column(columnDefinition = "TEXT")
     private String overview;
 
-
     @ManyToMany(mappedBy = "movies")
     @JsonBackReference
     private transient List<ListMovie> lists;

@@ -1,5 +1,6 @@
 package com.moviePocket.service.impl.list;
 
+import com.moviePocket.controller.dto.UserPostDto;
 import com.moviePocket.entities.image.ImageEntity;
 import com.moviePocket.entities.list.ListGenres;
 import com.moviePocket.entities.list.ListMovie;
@@ -200,7 +201,7 @@ public class MovieListServiceImpl implements MovieListService {
                 genres,
                 listMovie.getMovies(),
                 likeAndDis,
-                listMovie.getUser().getUsername(),
+                new UserPostDto(listMovie.getUser().getUsername(), listMovie.getUser().getAvatar().getId()),
                 listMovie.getCreated(),
                 listMovie.getUpdated()
         );
@@ -222,7 +223,7 @@ public class MovieListServiceImpl implements MovieListService {
                 genres,
                 null,
                 likeAndDis,
-                list.getUser().getUsername(),
+                new UserPostDto(list.getUser().getUsername(), list.getUser().getAvatar().getId()),
                 list.getCreated(),
                 list.getUpdated()
         );

@@ -1,5 +1,6 @@
 package com.moviePocket.service.impl.review;
 
+import com.moviePocket.controller.dto.UserPostDto;
 import com.moviePocket.entities.list.ListMovie;
 import com.moviePocket.entities.movie.Movie;
 import com.moviePocket.entities.post.Post;
@@ -176,7 +177,7 @@ public class ReviewServiceImpl implements ReviewService {
             return ResponseEntity.ok(new ParsReview(
                     review.getTitle(),
                     review.getContent(),
-                    review.getUser().getUsername(),
+                    new UserPostDto(review.getUser().getUsername(), review.getUser().getAvatar().getId()),
                     review.getCreated(),
                     review.getUpdated(),
                     review.getId(),
@@ -237,7 +238,7 @@ public class ReviewServiceImpl implements ReviewService {
             reviewList.add(new ParsReview(
                     movieReview.getTitle(),
                     movieReview.getContent(),
-                    movieReview.getUser().getUsername(),
+                    new UserPostDto(movieReview.getUser().getUsername(), movieReview.getUser().getAvatar().getId()),
                     movieReview.getCreated(),
                     movieReview.getUpdated(),
                     movieReview.getId(),

@@ -1,5 +1,6 @@
 package com.moviePocket.entities.review;
 
+import com.moviePocket.controller.dto.UserPostDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,7 +16,7 @@ public class ParsReview {
 
     private String title;
     private String content;
-    private String username;
+    private UserPostDto user;
     private Date dataCreated;
     private Date dataUpdated;
     private Long id;

@@ -1,5 +1,6 @@
 package com.moviePocket.service.impl.post;
 
+import com.moviePocket.controller.dto.UserPostDto;
 import com.moviePocket.entities.list.ListMovie;
 import com.moviePocket.entities.movie.Movie;
 import com.moviePocket.entities.post.*;
@@ -236,7 +237,7 @@ public class PostServiceImpl implements PostService {
                     post.getTitle(),
                     post.getContent(),
                     likeAndDis,
-                    post.getUser().getUsername(),
+                    new UserPostDto(post.getUser().getUsername(), post.getUser().getAvatar().getId()),
                     post.getCreated(),
                     post.getUpdated()
             );
