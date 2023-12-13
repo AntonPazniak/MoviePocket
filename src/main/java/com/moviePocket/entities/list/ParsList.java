@@ -1,5 +1,6 @@
 package com.moviePocket.entities.list;
 
+import com.moviePocket.controller.dto.UserPostDto;
 import com.moviePocket.entities.movie.Genre;
 import com.moviePocket.entities.movie.Movie;
 import lombok.AllArgsConstructor;
@@ -23,7 +24,7 @@ public class ParsList {
     private List<Genre> genres;
     private List<Movie> movies;
     private int[] likeOrDis;
-    private String username;
+    private UserPostDto user;
     private Date create;
     private Date update;
 

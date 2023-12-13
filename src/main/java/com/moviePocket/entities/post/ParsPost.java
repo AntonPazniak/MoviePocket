@@ -1,5 +1,6 @@
 package com.moviePocket.entities.post;
 
+import com.moviePocket.controller.dto.UserPostDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,7 +17,7 @@ public class ParsPost {
     private String title;
     private String content;
     private int[] likeOrDis;
-    private String username;
+    private UserPostDto user;
     private Date create;
     private Date update;
     private Long idMovie;
@@ -24,12 +25,12 @@ public class ParsPost {
     private Long idList;
 
 
-    public ParsPost(Long id, String title, String content, int[] likeOrDis, String username, Date create, Date update) {
+    public ParsPost(Long id, String title, String content, int[] likeOrDis, UserPostDto user, Date create, Date update) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.likeOrDis = likeOrDis;
-        this.username = username;
+        this.user = user;
         this.create = create;
         this.update = update;
     }
