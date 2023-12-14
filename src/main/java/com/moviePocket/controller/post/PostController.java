@@ -32,15 +32,15 @@ public class PostController {
     })
     @PostMapping("/list/set")
     public ResponseEntity<?> setNewPostList(@RequestParam("title") String title,
-                                            @RequestParam("content") String content,
-                                            @RequestParam("idList") Long idList) {
+                                            @RequestParam("idList") Long idList,
+                                            @RequestBody String content) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return postService.creatPostList(authentication.getName(), title, content, idList);
     }
 
     @PostMapping("/movie/set")
     public ResponseEntity<?> setNewPostMovie(@RequestParam("title") String title,
-                                             @RequestParam("content") String content,
+                                             @RequestBody String content,
                                              @RequestParam("idPerson") Long idMovie) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return postService.creatPostMovie(authentication.getName(), title, content, idMovie);
@@ -48,7 +48,7 @@ public class PostController {
 
     @PostMapping("/person/set")
     public ResponseEntity<?> setNewPostPersom(@RequestParam("title") String title,
-                                              @RequestParam("content") String content,
+                                              @RequestBody String content,
                                               @RequestParam("idPerson") Long idPerson) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return postService.creatPostMovie(authentication.getName(), title, content, idPerson);
@@ -65,7 +65,7 @@ public class PostController {
     @PostMapping("/up")
     public ResponseEntity<Void> setUpdatePostTitle(@RequestParam("idPost") Long idPost,
                                                    @RequestParam("title") String title,
-                                                   @RequestParam("content") String content) {
+                                                   @RequestBody String content) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return postService.updatePost(authentication.getName(), idPost, title, content);
     }
