@@ -170,7 +170,7 @@ public class ImageServiceImpl implements ImageService {
             g2d.setClip(new Ellipse2D.Float(0, 0, diameter, diameter));
             g2d.drawImage(originalImage, 0, 0, diameter, diameter, null);
 
-            g2d.setColor(Color.WHITE); // Set border color
+            g2d.setColor(Color.BLACK); // Set border color
             g2d.setStroke(new BasicStroke(borderWidth));
             g2d.draw(new Ellipse2D.Float(borderWidth / 2, borderWidth / 2, diameter - borderWidth, diameter - borderWidth));
 
