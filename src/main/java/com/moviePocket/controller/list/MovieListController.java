@@ -37,7 +37,7 @@ public class MovieListController {
     })
     @PostMapping("/set")
     public ResponseEntity<?> setNewMovieList(@RequestParam("title") String title,
-                                             @RequestParam("content") String content) {
+                                             @RequestBody String content) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return movieListService.setList(authentication.getName(), title, content);
     }
@@ -52,7 +52,7 @@ public class MovieListController {
     @PostMapping("/up")
     public ResponseEntity<Void> setUpdateMovieListTitle(@RequestParam("idMovieList") Long idMovieList,
                                                         @RequestParam("title") String title,
-                                                        @RequestParam("content") String content) {
+                                                        @RequestBody String content) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return movieListService.updateList(authentication.getName(), idMovieList, title, content);
     }
