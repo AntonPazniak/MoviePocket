@@ -26,15 +26,16 @@ public class ReviewController {
     @PostMapping("/movie/set")
     public ResponseEntity<Void> setMovieReview(@RequestParam("idMovie") Long idMovie,
                                                @RequestParam("title") String title,
-                                               @RequestParam("content") String content) {
+                                               @RequestBody String content) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return reviewService.createMovieReview(authentication.getName(), idMovie, title, content);
     }
 
+
     @PostMapping("/list/set")
     public ResponseEntity<Void> setListReview(@RequestParam("idList") Long idList,
                                               @RequestParam("title") String title,
-                                              @RequestParam("content") String content) {
+                                              @RequestBody String content) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return reviewService.createListReview(authentication.getName(), idList, title, content);
     }
@@ -42,7 +43,7 @@ public class ReviewController {
     @PostMapping("/post/set")
     public ResponseEntity<Void> setPostReview(@RequestParam("idPost") Long idPost,
                                               @RequestParam("title") String title,
-                                              @RequestParam("content") String content) {
+                                              @RequestBody String content) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return reviewService.createPostReview(authentication.getName(), idPost, title, content);
     }
@@ -50,7 +51,7 @@ public class ReviewController {
     @PostMapping("/up")
     public ResponseEntity<Void> setUpdateReview(@RequestParam("idReview") Long idReview,
                                                      @RequestParam("title") String title,
-                                                     @RequestParam("content") String content) {
+                                                @RequestBody String content) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return reviewService.updateReview(idReview, authentication.getName(), title, content);
     }
