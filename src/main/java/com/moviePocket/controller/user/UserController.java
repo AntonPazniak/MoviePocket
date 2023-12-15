@@ -59,6 +59,7 @@ public class UserController {
             idAvatar = user.getAvatar().getId();
         ParsUserPage parsUserPage = new ParsUserPage(
                 new UserPostDto(user.getUsername(), idAvatar),
+                user.getCreated(),
                 movieListService.getAllMyList(user.getEmail()).getBody(),
                 favoriteMovieService.getAllUserFavoriteMovies(user.getEmail()).getBody(),
                 dislikedMovieService.getAllUserDislikedMovie(user.getEmail()).getBody(),

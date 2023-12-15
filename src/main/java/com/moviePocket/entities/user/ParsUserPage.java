@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -18,6 +19,7 @@ import java.util.List;
 public class ParsUserPage {
 
     private UserPostDto user;
+    private Date created;
     private List<ParsList> lists;
     private List<Movie> likeMovie;
     private List<Movie> dislikeMovie;
