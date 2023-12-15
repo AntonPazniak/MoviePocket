@@ -1,6 +1,5 @@
 package com.moviePocket.controller.user;
 
-import com.moviePocket.controller.dto.UserPostDto;
 import com.moviePocket.entities.user.ParsUserPage;
 import com.moviePocket.entities.user.User;
 import com.moviePocket.service.inter.list.MovieListService;
@@ -58,8 +57,10 @@ public class UserController {
         if (user.getAvatar() != null)
             idAvatar = user.getAvatar().getId();
         ParsUserPage parsUserPage = new ParsUserPage(
-                new UserPostDto(user.getUsername(), idAvatar),
+                user.getUsername(),
+                user.getBio(),
                 user.getCreated(),
+                idAvatar,
                 movieListService.getAllMyList(user.getEmail()).getBody(),
                 favoriteMovieService.getAllUserFavoriteMovies(user.getEmail()).getBody(),
                 dislikedMovieService.getAllUserDislikedMovie(user.getEmail()).getBody(),
