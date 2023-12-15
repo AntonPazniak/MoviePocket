@@ -193,11 +193,15 @@ public class MovieListServiceImpl implements MovieListService {
 
         int[] likeAndDis = new int[]{likeListRepository.countByMovieReviewAndLickOrDisIsTrue(listMovie),
                 likeListRepository.countByMovieReviewAndLickOrDisIsFalse(listMovie)};
+
+        Long poster = null;
+        if (listMovie.getImageEntity() != null)
+            poster = listMovie.getImageEntity().getId();
         return new ParsList(
                 listMovie.getId(),
                 listMovie.getTitle(),
                 listMovie.getContent(),
-                listMovie.getImageEntity().getId(),
+                poster,
                 genres,
                 listMovie.getMovies(),
                 likeAndDis,
@@ -215,11 +219,14 @@ public class MovieListServiceImpl implements MovieListService {
         for (ListGenres g : ListGenres) {
             genres.add(g.getGenre());
         }
+        Long poster = null;
+        if (list.getImageEntity() != null)
+            poster = list.getImageEntity().getId();
         return new ParsList(
                 list.getId(),
                 list.getTitle(),
                 list.getContent(),
-                list.getImageEntity().getId(),
+                poster,
                 genres,
                 null,
                 likeAndDis,
