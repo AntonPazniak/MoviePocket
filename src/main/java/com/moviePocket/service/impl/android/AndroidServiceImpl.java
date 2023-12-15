@@ -1,14 +1,10 @@
 package com.moviePocket.service.impl.android;
 
 import com.moviePocket.service.inter.android.AndroidService;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
-
-import java.io.IOException;
+import org.springframework.web.client.RestTemplate;
 
 @Service
 public class AndroidServiceImpl implements AndroidService {
@@ -17,21 +13,21 @@ public class AndroidServiceImpl implements AndroidService {
     private String apiKey;
 
     public ResponseEntity<String> get(String url) {
-        OkHttpClient client = new OkHttpClient();
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
 
-        Request request = new Request.Builder()
-                .url(url + apiKey)
-                .get()
-                .build();
-        try {
-            Response response = client.newCall(request).execute();
-            if (response.isSuccessful()) {
-                assert response.body() != null;
-                return ResponseEntity.ok(response.body().string());
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
+        // Добавление API-ключа в URL (предполагается, что apiKey - это поле класса)
+        url += apiKey;
+
+        HttpEntity<String> requestEntity = new HttpEntity<>(headers);
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        return restTemplate.exchange(
+                url,
+                HttpMethod.GET,
+                requestEntity,
+                String.class
+        );
     }
 }
