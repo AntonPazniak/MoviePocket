@@ -136,7 +136,8 @@ public class MovieListServiceImpl implements MovieListService {
                     movieList.setImageEntity(imageService.createMoviePoster(strings, movieList.getTitle() + ".jpg"));
                 }
                 movieListRepository.save(movieList);
-                imageService.delImage(image);
+                if (image != null)
+                    imageService.delImage(image);
                 return new ResponseEntity<>(HttpStatus.OK);
             }
         }
