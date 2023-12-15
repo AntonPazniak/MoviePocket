@@ -1,6 +1,5 @@
 package com.moviePocket.entities.user;
 
-import com.moviePocket.controller.dto.UserPostDto;
 import com.moviePocket.entities.list.ParsList;
 import com.moviePocket.entities.movie.Movie;
 import com.moviePocket.entities.rating.Rating;
@@ -18,8 +17,10 @@ import java.util.List;
 @AllArgsConstructor
 public class ParsUserPage {
 
-    private UserPostDto user;
+    private String username;
+    private String bio;
     private Date created;
+    private Long avatar;
     private List<ParsList> lists;
     private List<Movie> likeMovie;
     private List<Movie> dislikeMovie;
