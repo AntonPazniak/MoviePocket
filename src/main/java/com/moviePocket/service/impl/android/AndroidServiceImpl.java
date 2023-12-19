@@ -1,5 +1,6 @@
 package com.moviePocket.service.impl.android;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.moviePocket.service.inter.android.AndroidService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,7 +18,7 @@ public class AndroidServiceImpl implements AndroidService {
         this.apiKey = apiKey;
     }
 
-    public ResponseEntity<String> getData(String url) {
+    public ResponseEntity<JsonNode> getData(String url) {
         HttpHeaders headers = new HttpHeaders();
         headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
 
@@ -34,7 +35,7 @@ public class AndroidServiceImpl implements AndroidService {
                 url,
                 HttpMethod.GET,
                 requestEntity,
-                String.class
+                JsonNode.class
         );
     }
 }
