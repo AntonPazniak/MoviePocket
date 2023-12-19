@@ -21,14 +21,9 @@ public class AndroidServiceImpl implements AndroidService {
     public ResponseEntity<JSONObject> getData(String url) {
         HttpHeaders headers = new HttpHeaders();
         headers.set(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-
-        // Добавление API-ключа в URL
         url += apiKey;
 
-        System.out.println(url);
-
         HttpEntity<String> requestEntity = new HttpEntity<>(headers);
-
         RestTemplate restTemplate = new RestTemplate();
 
         return restTemplate.exchange(
