@@ -22,6 +22,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
+import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
@@ -255,5 +256,15 @@ public class MovieListServiceImpl implements MovieListService {
         return ResponseEntity.ok(parsLists);
     }
 
+    public ResponseEntity<Boolean> authorshipCheck(Long idList, String username) {
+        try {
+            User user = userRepository.findByEmail(username);
+            ListMovie list = movieListRepository.getById(idList);
+            return ResponseEntity.ok(list.getUser().equals(user));
+        } catch (EntityNotFoundException e) {
+            System.out.println(e);
+        }
+        return ResponseEntity.ok(false);
+    }
 
 }

@@ -25,4 +25,6 @@ public interface MovieListService {
 
     ResponseEntity<Void> addOrDelItemLIst(String email, Long idList, Long idMovie);
 
+    ResponseEntity<Boolean> authorshipCheck(Long idList, String username);
+
 }

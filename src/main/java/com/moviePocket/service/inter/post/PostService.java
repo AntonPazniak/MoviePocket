@@ -32,4 +32,6 @@ public interface PostService {
 
     ResponseEntity<List<ParsPost>> getOldestPosts();
 
+    ResponseEntity<Boolean> authorshipCheck(Long idPost, String username);
+
 }

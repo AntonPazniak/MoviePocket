@@ -134,6 +134,17 @@ public class PostController {
         return likePostService.setLikeOrDisOrDel(authentication.getName(), idPost, like);
     }
 
+    @ApiOperation(value = "Get boolean true/false if you are post author", notes = "Returns bolean true if you are")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "You are author of the post "),
+            @ApiResponse(code = 404, message = "User not found")
+    })
+    @GetMapping("/authorship")
+    public ResponseEntity<Boolean> getAuthorshipByIdPost(@RequestParam("idPost") Long idPost) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return postService.authorshipCheck(idPost, authentication.getName());
+    }
+
 //    @ApiOperation(value = "Get all my posts", notes = "Returns a list of all posts for the authenticated user")
 //    @ApiResponses(value = {
 //            @ApiResponse(code = 200, message = "Successfully retrieved all posts for authenticated user"),

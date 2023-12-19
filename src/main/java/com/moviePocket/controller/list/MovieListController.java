@@ -168,4 +168,15 @@ public class MovieListController {
     }
 
 
+    @ApiOperation(value = "Get boolean true/false if you are list author", notes = "Returns bolean true if you are")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "You are author of the list "),
+            @ApiResponse(code = 404, message = "User not found")
+    })
+    @GetMapping("/authorship")
+    public ResponseEntity<Boolean> getAuthorshipByIdMovie(@RequestParam("idList") Long idList) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return movieListService.authorshipCheck(idList, authentication.getName());
+    }
+
 }
