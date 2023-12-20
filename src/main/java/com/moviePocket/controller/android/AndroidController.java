@@ -1,7 +1,7 @@
 package com.moviePocket.controller.android;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.moviePocket.service.inter.android.AndroidService;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,7 +21,7 @@ public class AndroidController {
     }
 
     @GetMapping(path = "/")
-    public ResponseEntity<JSONObject> existTracingByIdMovie(@RequestParam("url") String url) {
+    public ResponseEntity<JsonNode> existTracingByIdMovie(@RequestParam("url") String url) {
         return androidService.getData(url);
     }
 }

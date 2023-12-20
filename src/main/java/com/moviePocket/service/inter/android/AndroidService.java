@@ -1,9 +1,9 @@
 package com.moviePocket.service.inter.android;
 
-import org.json.JSONObject;
+import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.http.ResponseEntity;
 
 public interface AndroidService {
-    ResponseEntity<JSONObject> getData(String url);
+    ResponseEntity<JsonNode> getData(String url);
 
 }
