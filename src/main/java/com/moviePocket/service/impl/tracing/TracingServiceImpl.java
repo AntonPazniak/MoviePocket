@@ -17,6 +17,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import static com.moviePocket.util.BuildMailReleased.buildEmailReleased;
+
 
 import javax.mail.MessagingException;
 import java.time.LocalDate;
@@ -79,10 +81,8 @@ public class TracingServiceImpl implements TracingService {
         return trackingRepository.countAllByMovie_id(idMovie);
     }
 
-    @Scheduled(cron = "0 00 20 * * *", zone = "Europe/Warsaw") // Каждый день в 21:20 по польскому времени
+    @Scheduled(cron = "0 00 20 * * *", zone = "Europe/Warsaw") // every day at 21:20 PL
     public void sendDailyMessages() throws MessagingException {
-        System.out.println("Рассылка сообщений...");
-
 
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DAY_OF_MONTH, 1);
@@ -96,8 +96,10 @@ public class TracingServiceImpl implements TracingService {
         List<Tracking> trackings = trackingRepository.findByDateRelease(tomorrowDate);
         if (trackingRepository != null) {
             for (Tracking t : trackings) {
+                String username = t.getUser().getUsername();
                 MovieTMDB movie = TMDBApi.getInfoMovie(t.getMovie().getId());
-                emailSenderService.sendMailWithAttachment(t.getUser().getEmail(), "\"" + movie.getTitle() + "\n" + movie.getOverview()
+                String link = "https://moviepocket.projektstudencki.pl/film/" + t.getMovie().getId();
+                emailSenderService.sendMailWithAttachment(t.getUser().getEmail(), buildEmailReleased(username, movie.getTitle(), movie.getOverview(), link)
                         , "Movie release tomorrow " + movie.getTitle());
             }
             trackingRepository.deleteAll(trackings);
