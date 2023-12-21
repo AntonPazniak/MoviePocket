@@ -87,7 +87,7 @@ public class MovieListController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully retrieved movie list"),
     })
-    @GetMapping("/getByTitle")
+    @GetMapping("/get/title")
     public ResponseEntity<?> getMovieListByTitle(@RequestParam("idMovieList") String title) {
         return movieListService.getAllByTitle(title);
     }
@@ -99,7 +99,7 @@ public class MovieListController {
             @ApiResponse(code = 401, message = "Forbidden - user is not authenticated"),
             @ApiResponse(code = 404, message = "Movie list or movie not found")
     })
-    @PostMapping("/setMovie")
+    @PostMapping("/movie/set")
     public ResponseEntity<Void> setOrDelMovieInMovieList(@RequestParam("idList") Long idList, @RequestParam("idMovie") Long idMovie) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return movieListService.addOrDelItemLIst(authentication.getName(), idList, idMovie);
@@ -158,13 +158,8 @@ public class MovieListController {
     public ResponseEntity<List<ParsList>> getAllUsername(@RequestParam("username") String username) {
         return movieListService.getAllByUsernameList(username);
     }
-    @ApiOperation(value = "Get num of likes by movie list", notes = "Returns list of Integers")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully retrieved num of likes "),
-            @ApiResponse(code = 404, message = "User not found")
-    })
 
-    @GetMapping("/getAllListsContainingMovie")
+    @GetMapping("/movie/containing")
     public ResponseEntity<List<ParsList>> getAllListsContainingMovie(@RequestParam("idMovie") Long idMovie) {
         return movieListService.getAllListsContainingMovie(idMovie);
     }
