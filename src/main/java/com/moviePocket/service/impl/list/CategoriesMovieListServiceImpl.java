@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Service
 public class CategoriesMovieListServiceImpl implements CategoriesMovieListService {
@@ -52,5 +53,8 @@ public class CategoriesMovieListServiceImpl implements CategoriesMovieListServic
         }
     }
 
+    public ResponseEntity<List<Genre>> getAll() {
+        return ResponseEntity.ok(genreRepository.findAll());
+    }
 
 }

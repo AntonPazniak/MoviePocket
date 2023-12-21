@@ -2,6 +2,7 @@ package com.moviePocket.controller.list;
 
 
 import com.moviePocket.entities.list.ParsList;
+import com.moviePocket.entities.movie.Genre;
 import com.moviePocket.service.inter.list.CategoriesMovieListService;
 import com.moviePocket.service.inter.list.LikeListService;
 import com.moviePocket.service.inter.list.MovieListService;
@@ -111,10 +112,16 @@ public class MovieListController {
             @ApiResponse(code = 401, message = "Forbidden - user is not authenticated"),
             @ApiResponse(code = 404, message = "Movie list not found")
     })
-    @PostMapping("/setLike")
+    @PostMapping("/like/set")
     public ResponseEntity<Void> setLikeOrDesMovieList(@RequestParam("idList") Long idList, @RequestParam("like") Boolean like) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return likeListService.setLikeOrDisOrDel(authentication.getName(), idList, like);
+    }
+
+    @GetMapping("/like/get")
+    public ResponseEntity<Boolean> setLikeOrDesMovieList(@RequestParam("idList") Long idList) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return likeListService.getLikeOrDis(authentication.getName(), idList);
     }
 
     @ApiOperation(value = "Set or delete category(tag)", notes = "Sets  or delete the category for the specified movie list that it can be searched by after")
@@ -124,7 +131,7 @@ public class MovieListController {
             @ApiResponse(code = 401, message = "Forbidden - user is not authenticated"),
             @ApiResponse(code = 404, message = "Movie list or category not found")
     })
-    @PostMapping("/setOrDeleteGenre")
+    @PostMapping("/genre/set")
     public ResponseEntity<?> setOrDelCategoryMovieList(@RequestParam("idList") Long idList, @RequestParam("idCategory") Long idCategory) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return categoriesMovieListService.setOrDelCategoryList(authentication.getName(), idList, idCategory);
@@ -135,7 +142,7 @@ public class MovieListController {
             @ApiResponse(code = 200, message = "Successfully retrieved all movie lists for authenticated user"),
             @ApiResponse(code = 401, message = "User not authenticated")
     })
-    @GetMapping("/getAllMyLists")
+    @GetMapping("/user/my")
     public ResponseEntity<List<ParsList>> getAllMyLists() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return movieListService.getAllMyList(authentication.getName());
@@ -147,7 +154,7 @@ public class MovieListController {
             @ApiResponse(code = 400, message = "Invalid username"),
             @ApiResponse(code = 404, message = "User not found")
     })
-    @GetMapping("/getAllUserLists")
+    @GetMapping("/user/all")
     public ResponseEntity<List<ParsList>> getAllUsername(@RequestParam("username") String username) {
         return movieListService.getAllByUsernameList(username);
     }
@@ -156,11 +163,6 @@ public class MovieListController {
             @ApiResponse(code = 200, message = "Successfully retrieved num of likes "),
             @ApiResponse(code = 404, message = "User not found")
     })
-
-    @GetMapping("/getAllLikes")
-    public ResponseEntity<Integer[]> getAllLikePostsByIdMovie(@RequestParam("idMovieList") Long idMovieList) {
-        return likeListService.getAllLikeAndDisByIdMovieList(idMovieList);
-    }
 
     @GetMapping("/getAllListsContainingMovie")
     public ResponseEntity<List<ParsList>> getAllListsContainingMovie(@RequestParam("idMovie") Long idMovie) {
@@ -179,4 +181,8 @@ public class MovieListController {
         return movieListService.authorshipCheck(idList, authentication.getName());
     }
 
+    @GetMapping("/genre/all")
+    public ResponseEntity<List<Genre>> getAllGenre() {
+        return categoriesMovieListService.getAll();
+    }
 }
