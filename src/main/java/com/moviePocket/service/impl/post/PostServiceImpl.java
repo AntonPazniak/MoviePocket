@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -255,5 +256,16 @@ public class PostServiceImpl implements PostService {
             parsPostLL.add(parsPost);
         }
         return parsPostLL;
+    }
+
+    public ResponseEntity<Boolean> authorshipCheck(Long idPost, String username) {
+        try {
+            User user = userRepository.findByEmail(username);
+            Post post = postRepository.getById(idPost);
+            return ResponseEntity.ok(post.getUser().equals(user));
+        } catch (EntityNotFoundException e) {
+            System.out.println(e);
+        }
+        return ResponseEntity.ok(false);
     }
 }

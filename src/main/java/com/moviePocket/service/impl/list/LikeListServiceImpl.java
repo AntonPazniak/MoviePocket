@@ -45,7 +45,7 @@ public class LikeListServiceImpl implements LikeListService {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    public ResponseEntity<boolean[]> getLikeOrDis(String username, Long id) {
+    public ResponseEntity<Boolean> getLikeOrDis(String username, Long id) {
         ListMovie movieList = movieListRepository.getById(id);
         User user = userRepository.findByEmail(username);
         LikeList likeList = likeListRepository.getByUserAndMovieList(user, movieList);
@@ -54,9 +54,9 @@ public class LikeListServiceImpl implements LikeListService {
         if (movieList == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         if (likeList != null) {
-            return ResponseEntity.ok(new boolean[]{likeList.isLickOrDis()});
+            return ResponseEntity.ok(likeList.isLickOrDis());
         } else {
-            return ResponseEntity.ok(new boolean[]{});
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
