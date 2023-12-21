@@ -4,7 +4,7 @@ import com.moviePocket.entities.tracking.Tracking;
 import com.moviePocket.entities.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 public interface TrackingRepository extends JpaRepository<Tracking, Long> {
@@ -13,7 +13,7 @@ public interface TrackingRepository extends JpaRepository<Tracking, Long> {
 
     Tracking findByUserAndMovie_Id(User user, long idMovie);
 
-    List<Tracking> findByDateRelease(Date dateRelease);
+    List<Tracking> findByDateRelease(LocalDate date);
 
     List<Tracking> findAllByUser(User user);
 
