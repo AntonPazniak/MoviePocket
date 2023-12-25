@@ -27,21 +27,21 @@ jobs:
       - name: Build with Maven
         run: mvn clean install
 
-    - name: Debug
-      run: |
-        echo "SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}"
-        echo "SSH_USER: ${{ secrets.SSH_USER }}"
-        echo "SSH_HOST: ${{ secrets.SSH_HOST }}"
-        echo "WORK_DIR: ${{ secrets.WORK_DIR }}"
-        echo "DEV_BRANCH: ${{ secrets.DEV_BRANCH }}"
+      - name: Debug
+        run: |
+          echo "SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}"
+          echo "SSH_USER: ${{ secrets.SSH_USER }}"
+          echo "SSH_HOST: ${{ secrets.SSH_HOST }}"
+          echo "WORK_DIR: ${{ secrets.WORK_DIR }}"
+          echo "DEV_BRANCH: ${{ secrets.DEV_BRANCH }}"
 
 
-        - name: install ssh keys
-          run: |
-            install -m 600 -D /dev/null ~/.ssh/id_rsa
-            echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-            ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
-        - name: connect and pull
-          run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.WORK_DIR }} && sudo git checkout ${{ secrets.MAIN_BRANCH }} && sudo git pull && exit"
-        - name: cleanup
+          - name: install ssh keys
+            run: |
+              install -m 600 -D /dev/null ~/.ssh/id_rsa
+              echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+              ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
+          - name: connect and pull
+            run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.WORK_DIR }} && sudo git checkout ${{ secrets.MAIN_BRANCH }} && sudo git pull && exit"
+          - name: cleanup
           run: rm -rf ~/.ssh
