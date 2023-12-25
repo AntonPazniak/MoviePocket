@@ -44,4 +44,4 @@ jobs:
           - name: connect and pull
             run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.WORK_DIR }} && sudo git checkout ${{ secrets.MAIN_BRANCH }} && sudo git pull && exit"
           - name: cleanup
-          run: rm -rf ~/.ssh
+            run: rm -rf ~/.ssh
