@@ -33,7 +33,7 @@ jobs:
           echo "SSH_USER: ${{ secrets.SSH_USER }}"
           echo "SSH_HOST: ${{ secrets.SSH_HOST }}"
           echo "WORK_DIR: ${{ secrets.WORK_DIR }}"
-          echo "DEV_BRANCH: ${{ secrets.DEV_BRANCH }}"
+          echo "DEV_BRANCH: ${{ secrets.MAIN_BRANCH }}"
 
 
           - name: install ssh keys
