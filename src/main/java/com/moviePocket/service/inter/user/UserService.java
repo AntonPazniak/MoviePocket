@@ -11,6 +11,8 @@ import javax.mail.MessagingException;
 public interface UserService extends UserDetailsService {
     void save(UserRegistrationDto registrationDto) throws MessagingException;
 
+    void cleanSave(User user);
+
     User findById(Long id);
 
     User findUserByEmail(String email);
