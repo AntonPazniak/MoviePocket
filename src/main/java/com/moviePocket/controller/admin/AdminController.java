@@ -76,8 +76,14 @@ public class AdminController {
     }
 
     @PostMapping("/delReview")
-    public ResponseEntity<Void> delMovieReview(@RequestParam("idReview") Long idReview) {
+    public ResponseEntity<Void> delReview(@RequestParam("idReview") Long idReview) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return blockedUserService.delAdminReview(idReview, authentication.getName());
+    }
+
+    @PostMapping("/delPost")
+    public ResponseEntity<Void> delPost(@RequestParam("idPost") Long idPost) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return blockedUserService.deletePost(authentication.getName(), idPost);
     }
 }

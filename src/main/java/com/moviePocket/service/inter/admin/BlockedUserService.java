@@ -15,4 +15,6 @@ public interface BlockedUserService {
     BlockedUser findById(Long userId);
 
     ResponseEntity<Void> delAdminReview(Long idReview, String username);
+
+    ResponseEntity<Void> deletePost(String name, Long idPost);
 }
