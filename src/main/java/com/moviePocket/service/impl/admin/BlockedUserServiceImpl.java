@@ -40,8 +40,8 @@ public class BlockedUserServiceImpl implements BlockedUserService {
         return blockedUserRepository.findAll();
     }
 
-    public BlockedUser findById(Long blockedUserId) {
-        return blockedUserRepository.findById(blockedUserId).orElse(null);
+    public BlockedUser findById(Long userId) {
+        return blockedUserRepository.findByUser_Id(userId);
     }
 
     @Override
@@ -58,7 +58,8 @@ public class BlockedUserServiceImpl implements BlockedUserService {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } else if (review == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } else if (!user.getRoles().equals("ROLE_ADMIN")) {
+        }
+        if (user.getRoles().stream().noneMatch(role -> role.getName().equals("ROLE_ADMIN"))) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         } else {
             ReviewMovie reviewMovie = reviewMovieRepository.findByReview(review);

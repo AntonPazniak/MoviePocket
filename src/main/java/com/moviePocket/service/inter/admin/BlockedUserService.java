@@ -12,7 +12,7 @@ public interface BlockedUserService {
 
     void delete(BlockedUser blockedUser);
 
-    BlockedUser findById(Long blockedUserId);
+    BlockedUser findById(Long userId);
 
     ResponseEntity<Void> delAdminReview(Long idReview, String username);
 }

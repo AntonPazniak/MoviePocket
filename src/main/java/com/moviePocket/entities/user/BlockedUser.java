@@ -16,7 +16,7 @@ import javax.persistence.*;
 @Table(name = "blocked_users")
 public class BlockedUser extends BaseEntity {
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
 

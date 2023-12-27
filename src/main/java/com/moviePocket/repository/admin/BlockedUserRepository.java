@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface BlockedUserRepository extends JpaRepository<BlockedUser, Long> {
+    BlockedUser findByUser_Id(Long userId);
 }

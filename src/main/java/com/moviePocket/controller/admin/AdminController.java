@@ -26,11 +26,12 @@ public class AdminController {
     public ResponseEntity<Void> banUser(@PathVariable Long userId, @RequestParam String comment) {
         User admin = userService.findUserByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
         User user = userService.findById(userId);
-        if (!admin.getRoles().equals("ROLE_ADMIN"))
+        if (admin.getRoles().stream().noneMatch(role -> role.getName().equals("ROLE_ADMIN"))) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-
-        if (user == null) {
+        } else if (user == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else if (blockedUserService.findById(userId) != null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } else {
             user.setAccountActive(false);
             userService.cleanSave(user);
@@ -49,10 +50,9 @@ public class AdminController {
         User user = userService.findById(userId);
         User admin = userService.findUserByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
 
-        if (!admin.getRoles().equals("ROLE_ADMIN"))
+        if (admin.getRoles().stream().noneMatch(role -> role.getName().equals("ROLE_ADMIN"))) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-
-        if (user == null) {
+        } else if (user == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else {
             user.setAccountActive(true);
