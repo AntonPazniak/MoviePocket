@@ -17,7 +17,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/movies/post")
+@RequestMapping("/post")
 @Api(value = "Post Controller", description = "Controller related to the post manipulations")
 public class PostController {
 

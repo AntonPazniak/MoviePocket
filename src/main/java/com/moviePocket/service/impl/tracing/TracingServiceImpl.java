@@ -20,9 +20,9 @@ import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
 import java.time.LocalDate;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
+
+import static com.moviePocket.util.BuildMailReleased.buildEmailReleased;
 
 @Service
 @AllArgsConstructor
@@ -79,25 +79,19 @@ public class TracingServiceImpl implements TracingService {
         return trackingRepository.countAllByMovie_id(idMovie);
     }
 
-    @Scheduled(cron = "0 00 20 * * *", zone = "Europe/Warsaw") // Каждый день в 21:20 по польскому времени
+    @Scheduled(cron = "0 00 20 * * *", zone = "Europe/Warsaw") // every day at 21:20 PL
     public void sendDailyMessages() throws MessagingException {
-        System.out.println("Рассылка сообщений...");
 
+        LocalDate today = LocalDate.now();
+        LocalDate tomorrow = today.plusDays(1);
 
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DAY_OF_MONTH, 1);
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-
-        Date tomorrowDate = calendar.getTime();
-
-        List<Tracking> trackings = trackingRepository.findByDateRelease(tomorrowDate);
+        List<Tracking> trackings = trackingRepository.findByDateRelease(tomorrow);
         if (trackingRepository != null) {
             for (Tracking t : trackings) {
+                String username = t.getUser().getUsername();
                 MovieTMDB movie = TMDBApi.getInfoMovie(t.getMovie().getId());
-                emailSenderService.sendMailWithAttachment(t.getUser().getEmail(), "\"" + movie.getTitle() + "\n" + movie.getOverview()
+                String link = "https://moviepocket.projektstudencki.pl/film/" + t.getMovie().getId();
+                emailSenderService.sendMailWithAttachment(t.getUser().getEmail(), buildEmailReleased(username, movie.getTitle(), movie.getOverview(), link)
                         , "Movie release tomorrow " + movie.getTitle());
             }
             trackingRepository.deleteAll(trackings);
