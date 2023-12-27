@@ -41,7 +41,7 @@ public class PostController {
     @PostMapping("/movie/set")
     public ResponseEntity<?> setNewPostMovie(@RequestParam("title") String title,
                                              @RequestBody String content,
-                                             @RequestParam("idPerson") Long idMovie) {
+                                             @RequestParam("idMovie") Long idMovie) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return postService.creatPostMovie(authentication.getName(), title, content, idMovie);
     }
