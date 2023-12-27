@@ -69,6 +69,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         "/swagger-ui.html",
                         "/webjars/**",
                         "/android/**",
+                        "/post/**",
                         "/images/**").permitAll()
                 .antMatchers("/registration/**", "/login/**").permitAll()
                 .antMatchers("/activate/**", "/lostpassword/**").permitAll()
