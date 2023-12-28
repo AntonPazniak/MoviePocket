@@ -49,7 +49,7 @@ public class LikePostServiceImpl implements LikePostService {
     }
 
     @Override
-    public ResponseEntity<boolean[]> getLikeOrDis(String username, Long id) {
+    public ResponseEntity<Boolean> getLikeOrDis(String username, Long id) {
         Post post = postRepository.getById(id);
         User user = userRepository.findByEmail(username);
         LikePost likePost = likePostRepository.getByUserAndPost(user, post);
@@ -58,9 +58,9 @@ public class LikePostServiceImpl implements LikePostService {
         if (post == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         if (likePost != null) {
-            return ResponseEntity.ok(new boolean[]{likePost.isLickOrDis()});
+            return ResponseEntity.ok(likePost.isLickOrDis());
         } else {
-            return ResponseEntity.ok(new boolean[]{});
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 

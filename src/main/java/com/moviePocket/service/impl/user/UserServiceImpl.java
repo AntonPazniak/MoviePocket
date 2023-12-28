@@ -62,6 +62,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void cleanSave(User user) {
+        userRepository.save(user);
+    }
+
+    @Override
     public ResponseEntity<Void> deleteUser(String email, String pas) {
         User user = findUserByEmail(email);
         if (user == null)

@@ -8,7 +8,7 @@ import java.util.List;
 public interface LikePostService {
     ResponseEntity<Void> setLikeOrDisOrDel(String username, Long id, boolean likeOrDis);
 
-    ResponseEntity<boolean[]> getLikeOrDis(String username, Long id);
+    ResponseEntity<Boolean> getLikeOrDis(String username, Long id);
 
     ResponseEntity<Integer[]> getAllLikeAndDisByIdPost(Long idPost);
 
