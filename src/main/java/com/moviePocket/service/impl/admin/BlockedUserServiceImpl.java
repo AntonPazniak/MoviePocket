@@ -1,5 +1,6 @@
 package com.moviePocket.service.impl.admin;
 
+import com.moviePocket.controller.dto.UserPostDto;
 import com.moviePocket.entities.post.Post;
 import com.moviePocket.entities.post.PostList;
 import com.moviePocket.entities.post.PostMovie;
@@ -9,6 +10,7 @@ import com.moviePocket.entities.review.ReviewList;
 import com.moviePocket.entities.review.ReviewMovie;
 import com.moviePocket.entities.review.ReviewPost;
 import com.moviePocket.entities.user.BlockedUser;
+import com.moviePocket.entities.user.ParsBlockedUser;
 import com.moviePocket.entities.user.User;
 import com.moviePocket.repository.admin.BlockedUserRepository;
 import com.moviePocket.repository.post.PostListRepository;
@@ -21,9 +23,12 @@ import com.moviePocket.service.inter.admin.BlockedUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -48,8 +53,33 @@ public class BlockedUserServiceImpl implements BlockedUserService {
         return blockedUserRepository.save(blockedUser);
     }
 
-    public List<BlockedUser> getAllBlockedUsers() {
-        return blockedUserRepository.findAll();
+    public ResponseEntity<List<ParsBlockedUser>> getAllBlockedUsers() {
+        List<BlockedUser> blockedUsers = blockedUserRepository.findAll();
+        return ResponseEntity.ok(parsBlockedUserList(blockedUsers));
+    }
+
+    private List<ParsBlockedUser> parsBlockedUserList(List<BlockedUser> blockedUsers) {
+        List<ParsBlockedUser> parsBlockedUsers = new ArrayList<>();
+        for (BlockedUser blockedUser : blockedUsers) {
+            parsBlockedUsers.add(parsBlockedUser(blockedUser));
+        }
+
+        return parsBlockedUsers;
+    }
+
+    private ParsBlockedUser parsBlockedUser(BlockedUser blockedUser) {
+        User user = userRepository.findByEmail(blockedUser.getUser().getEmail());
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Long idAvatar = null;
+        if (user.getAvatar() != null)
+            idAvatar = user.getAvatar().getId();
+
+        return new ParsBlockedUser(
+                new UserPostDto(user.getUsername(), idAvatar),
+                user.getUpdated(),
+                new UserPostDto(authentication.getName(), idAvatar),
+                blockedUser.getComment()
+        );
     }
 
     public BlockedUser findById(Long userId) {
