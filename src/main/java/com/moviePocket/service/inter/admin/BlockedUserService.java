@@ -1,6 +1,7 @@
 package com.moviePocket.service.inter.admin;
 
 import com.moviePocket.entities.user.BlockedUser;
+import com.moviePocket.entities.user.ParsBlockedUser;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -8,7 +9,7 @@ import java.util.List;
 public interface BlockedUserService {
     BlockedUser saveBlockedUser(BlockedUser blockedUser);
 
-    List<BlockedUser> getAllBlockedUsers();
+    ResponseEntity<List<ParsBlockedUser>> getAllBlockedUsers();
 
     void delete(BlockedUser blockedUser);
 
