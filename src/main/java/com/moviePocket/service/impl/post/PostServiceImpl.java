@@ -181,12 +181,12 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public ResponseEntity<List<ParsPost>> getPost(Long idPost) {
+    public ResponseEntity<ParsPost> getPost(Long idPost) {
         if (postRepository.existsById(idPost)) {
             Post post = postRepository.getById(idPost);
             List<Post> posts = new ArrayList<>();
             posts.add(post);
-            return ResponseEntity.ok(parsPost(posts));
+            return ResponseEntity.ok(parsPost(posts).get(0));
         }
         return ResponseEntity.notFound().build();
     }

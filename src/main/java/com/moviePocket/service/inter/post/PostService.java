@@ -22,7 +22,7 @@ public interface PostService {
     ResponseEntity<List<ParsPost>> getAllByIdList(Long idList);
     ResponseEntity<List<ParsPost>> getAllByTitle(String title);
 
-    ResponseEntity<List<ParsPost>> getPost(Long idPost);
+    ResponseEntity<ParsPost> getPost(Long idPost);
 
     ResponseEntity<List<ParsPost>> getAllMyPosts(String email);
 
