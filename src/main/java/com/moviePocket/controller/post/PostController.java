@@ -93,7 +93,7 @@ public class PostController {
             @ApiResponse(code = 404, message = "Post not found")
     })
     @GetMapping("/get")
-    public ResponseEntity<List<ParsPost>> getPost(@RequestParam("idPost") Long idPost) {
+    public ResponseEntity<ParsPost> getPost(@RequestParam("idPost") Long idPost) {
         return postService.getPost(idPost);
     }
 
