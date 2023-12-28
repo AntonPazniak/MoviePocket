@@ -231,6 +231,12 @@ public class PostServiceImpl implements PostService {
     public List<ParsPost> parsPost(List<Post> posts) {
         List<ParsPost> parsPostLL = new ArrayList<>();
         for (Post post : posts) {
+
+            Long idAvatar = null;
+
+            if (post.getUser().getAvatar() != null)
+                idAvatar = post.getUser().getAvatar().getId();
+
             int[] likeAndDis = new int[]{likePostRepository.countByPostAndLickOrDisIsTrue(post),
                     likePostRepository.countByPostAndLickOrDisIsFalse(post)};
             ParsPost parsPost = new ParsPost(
@@ -238,7 +244,7 @@ public class PostServiceImpl implements PostService {
                     post.getTitle(),
                     post.getContent(),
                     likeAndDis,
-                    new UserPostDto(post.getUser().getUsername(), post.getUser().getAvatar().getId()),
+                    new UserPostDto(post.getUser().getUsername(), idAvatar),
                     post.getCreated(),
                     post.getUpdated()
             );

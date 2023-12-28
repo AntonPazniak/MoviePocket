@@ -199,6 +199,9 @@ public class MovieListServiceImpl implements MovieListService {
         Long poster = null;
         if (listMovie.getImageEntity() != null)
             poster = listMovie.getImageEntity().getId();
+        Long idAvatar = null;
+        if (listMovie.getUser().getAvatar() != null)
+            idAvatar = listMovie.getUser().getAvatar().getId();
         return new ParsList(
                 listMovie.getId(),
                 listMovie.getTitle(),
@@ -207,7 +210,7 @@ public class MovieListServiceImpl implements MovieListService {
                 genres,
                 listMovie.getMovies(),
                 likeAndDis,
-                new UserPostDto(listMovie.getUser().getUsername(), listMovie.getUser().getAvatar().getId()),
+                new UserPostDto(listMovie.getUser().getUsername(), idAvatar),
                 listMovie.getCreated(),
                 listMovie.getUpdated()
         );
@@ -224,6 +227,9 @@ public class MovieListServiceImpl implements MovieListService {
         Long poster = null;
         if (list.getImageEntity() != null)
             poster = list.getImageEntity().getId();
+        Long idAvatar = null;
+        if (list.getUser().getAvatar() != null)
+            idAvatar = list.getUser().getAvatar().getId();
         return new ParsList(
                 list.getId(),
                 list.getTitle(),
@@ -232,7 +238,7 @@ public class MovieListServiceImpl implements MovieListService {
                 genres,
                 null,
                 likeAndDis,
-                new UserPostDto(list.getUser().getUsername(), list.getUser().getAvatar().getId()),
+                new UserPostDto(list.getUser().getUsername(), idAvatar),
                 list.getCreated(),
                 list.getUpdated()
         );

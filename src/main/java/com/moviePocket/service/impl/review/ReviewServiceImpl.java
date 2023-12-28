@@ -235,10 +235,13 @@ public class ReviewServiceImpl implements ReviewService {
     private List<ParsReview> parsMovieReview(List<Review> movieReviewList) {
         List<ParsReview> reviewList = new ArrayList<>();
         for (Review movieReview : movieReviewList) {
+            Long idAvatar = null;
+            if (movieReview.getUser().getAvatar() != null)
+                idAvatar = movieReview.getUser().getAvatar().getId();
             reviewList.add(new ParsReview(
                     movieReview.getTitle(),
                     movieReview.getContent(),
-                    new UserPostDto(movieReview.getUser().getUsername(), movieReview.getUser().getAvatar().getId()),
+                    new UserPostDto(movieReview.getUser().getUsername(), idAvatar),
                     movieReview.getCreated(),
                     movieReview.getUpdated(),
                     movieReview.getId(),
