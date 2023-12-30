@@ -8,7 +8,6 @@ import com.moviePocket.repository.rating.RatingMovieRepository;
 import com.moviePocket.repository.user.UserRepository;
 import com.moviePocket.service.impl.movie.MovieServiceImpl;
 import com.moviePocket.service.inter.rating.RatingMovieService;
-import com.moviePocket.service.inter.rating.WatchedMovieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,8 +27,6 @@ public class RatingMovieServiceImpl implements RatingMovieService {
     private UserRepository userRepository;
     @Autowired
     private MovieServiceImpl movieService;
-    @Autowired
-    private WatchedMovieService watchedMovieService;
 
     @Transactional
     public ResponseEntity<Void> setNewRatingMovie(String email, Long idMovie, int rating) {
@@ -42,7 +39,6 @@ public class RatingMovieServiceImpl implements RatingMovieService {
                 RatingMovie ratingMovie = ratingMovieRepository.findByUserAndMovie_id(user, idMovie);
                 if (ratingMovie == null) {
                     ratingMovie = new RatingMovie(user, movie, rating);
-                    watchedMovieService.setOrDeleteNewWatched(email, idMovie);
                 } else {
                     ratingMovie.setRating(rating);
                 }

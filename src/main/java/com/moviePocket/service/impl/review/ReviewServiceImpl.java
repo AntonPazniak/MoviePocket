@@ -174,10 +174,13 @@ public class ReviewServiceImpl implements ReviewService {
     public ResponseEntity<ParsReview> getByIdReview(Long idReview) {
         try {
             Review review = reviewRepository.getById(idReview);
+            Long idAvatar = null;
+            if (review.getUser().getAvatar() != null)
+                idAvatar = review.getUser().getAvatar().getId();
             return ResponseEntity.ok(new ParsReview(
                     review.getTitle(),
                     review.getContent(),
-                    new UserPostDto(review.getUser().getUsername(), review.getUser().getAvatar().getId()),
+                    new UserPostDto(review.getUser().getUsername(), idAvatar),
                     review.getCreated(),
                     review.getUpdated(),
                     review.getId(),
