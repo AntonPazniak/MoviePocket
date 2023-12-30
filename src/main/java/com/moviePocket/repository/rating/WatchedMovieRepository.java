@@ -12,7 +12,7 @@ import java.util.List;
 
 
 @Repository
-public interface WatchedMovieRepository extends JpaRepository<WatchedMovie, Long>{
+public interface WatchedMovieRepository extends JpaRepository<WatchedMovie, Long> {
 
     WatchedMovie findByUserAndMovie_Id(User user, Long idMovie);
 
@@ -21,5 +21,6 @@ public interface WatchedMovieRepository extends JpaRepository<WatchedMovie, Long
     @Query("SELECT COUNT(u) FROM WatchedMovie u WHERE u.movie.id = :movieId")
     int getAllCountByIdMovie(@Param("movieId") Long idMovie);
 
-
+    @Query("SELECT COUNT(wm) FROM WatchedMovie wm WHERE wm.user = :user AND wm.movie.id IN (SELECT m.id FROM ListMovie lm JOIN lm.movies m WHERE lm.id = :listMovieId)")
+    int getCountWatchedFromList(@Param("user") User user, @Param("listMovieId") Long listMovieId);
 }

@@ -1,8 +1,10 @@
 package com.moviePocket.service.impl.rating;
 
+import com.moviePocket.entities.list.ListMovie;
 import com.moviePocket.entities.movie.Movie;
 import com.moviePocket.entities.rating.WatchedMovie;
 import com.moviePocket.entities.user.User;
+import com.moviePocket.repository.list.MovieListRepository;
 import com.moviePocket.repository.rating.WatchedMovieRepository;
 import com.moviePocket.repository.user.UserRepository;
 import com.moviePocket.service.impl.movie.MovieServiceImpl;
@@ -24,6 +26,7 @@ public class WatchedMovieServiceImpl implements WatchedMovieService {
     private final WatchedMovieRepository watchedMovieRepository;
     private final UserRepository userRepository;
     private final MovieServiceImpl movieService;
+    private final MovieListRepository movieListRepository;
 
     @Transactional
     public ResponseEntity<Void> setOrDeleteNewWatched(String email, Long idMovie) {
@@ -68,6 +71,19 @@ public class WatchedMovieServiceImpl implements WatchedMovieService {
 
     public ResponseEntity<Integer> getAllCountByIdMovie(Long idMovie) {
         int count = watchedMovieRepository.getAllCountByIdMovie(idMovie);
+        return ResponseEntity.ok(count);
+    }
+
+    public ResponseEntity<Integer> getCountWatchedFromList(String email, Long idMovieList) {
+        User user = userRepository.findByEmail(email);
+        if (user == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+        ListMovie movieList = movieListRepository.getById(idMovieList);
+        if (movieList == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        int count = watchedMovieRepository.getCountWatchedFromList(user, idMovieList);
         return ResponseEntity.ok(count);
     }
 }

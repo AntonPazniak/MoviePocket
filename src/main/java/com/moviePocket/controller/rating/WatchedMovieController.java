@@ -72,4 +72,18 @@ public class WatchedMovieController {
     public ResponseEntity<Integer> getAllCountWatchedByIdMovie(@RequestParam("idMovie") Long id) {
         return watchedMovieService.getAllCountByIdMovie(id);
     }
+
+    @ApiOperation(value = "Get the number of movies added to the watched list from a specific movie list")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully retrieved the count"),
+            @ApiResponse(code = 400, message = "Invalid movie list ID"),
+            @ApiResponse(code = 401, message = "Unauthorized"),
+            @ApiResponse(code = 500, message = "Internal Server Error")
+    })
+    @GetMapping("/count/watched/fromList")
+    public ResponseEntity<Integer> getCountWatchedFromList(
+            @RequestParam("idMovieList") Long idMovieList) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return watchedMovieService.getCountWatchedFromList(authentication.getName(), idMovieList);
+    }
 }

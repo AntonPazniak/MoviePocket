@@ -15,4 +15,6 @@ public interface WatchedMovieService {
 
     ResponseEntity<Integer> getAllCountByIdMovie(Long idMovie);
 
+    ResponseEntity<Integer> getCountWatchedFromList(String email, Long idMovieList);
+
 }
