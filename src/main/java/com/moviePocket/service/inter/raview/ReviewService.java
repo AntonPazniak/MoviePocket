@@ -33,5 +33,7 @@ public interface ReviewService {
 
     ResponseEntity<Void> createPostReview(String email, Long idPost, String title, String content);
 
+    ResponseEntity<Integer> getCountByUser(String email);
+
 
 }

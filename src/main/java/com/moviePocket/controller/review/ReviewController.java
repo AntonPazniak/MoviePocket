@@ -50,7 +50,7 @@ public class ReviewController {
 
     @PostMapping("/up")
     public ResponseEntity<Void> setUpdateReview(@RequestParam("idReview") Long idReview,
-                                                     @RequestParam("title") String title,
+                                                @RequestParam("title") String title,
                                                 @RequestBody String content) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return reviewService.updateReview(idReview, authentication.getName(), title, content);
@@ -59,6 +59,12 @@ public class ReviewController {
     @GetMapping("/get")
     public ResponseEntity<ParsReview> getByIdReview(@RequestParam("idReview") Long idReview) {
         return reviewService.getByIdReview(idReview);
+    }
+
+    @GetMapping("/count/user")
+    public ResponseEntity<Integer> allUserReviews() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return reviewService.getCountByUser(authentication.getName());
     }
 
     @GetMapping("/movie/all")
