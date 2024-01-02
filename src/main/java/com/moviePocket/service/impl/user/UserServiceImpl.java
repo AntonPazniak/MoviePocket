@@ -116,8 +116,6 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByEmail(email);
         if (user == null)
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        if (bio.isEmpty())
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         else {
             user.setBio(bio);
             userRepository.save(user);

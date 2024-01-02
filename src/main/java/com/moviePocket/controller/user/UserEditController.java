@@ -111,8 +111,7 @@ public class UserEditController {
 
     @ApiOperation(value = "Set a new bio", notes = "username should be not empty")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "Successfully set the new username"),
-            @ApiResponse(code = 400, message = "Bad request")
+            @ApiResponse(code = 200, message = "Successfully set the new username")
     })
     @PostMapping("/newBio")
     public ResponseEntity<Void> newSetNewBio(@RequestParam("bio") String bio) {
