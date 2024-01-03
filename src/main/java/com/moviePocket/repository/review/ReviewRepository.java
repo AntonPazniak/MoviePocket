@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Transactional
 @Repository
@@ -17,5 +18,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     @Query("SELECT COUNT(r) FROM Review r WHERE r.user = :user")
     int countReviewsByUser(@Param("user") User user);
+
+    List<Review> findAllByUser(User user);
 
 }

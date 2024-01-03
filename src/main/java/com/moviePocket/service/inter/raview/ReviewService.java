@@ -35,5 +35,5 @@ public interface ReviewService {
 
     ResponseEntity<Integer> getCountByUser(String email);
 
-
+    ResponseEntity<List<ParsReview>> getAllReviewsByUser(String email);
 }

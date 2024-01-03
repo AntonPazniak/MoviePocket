@@ -231,6 +231,16 @@ public class ReviewServiceImpl implements ReviewService {
         return ResponseEntity.ok(parsMovieReview(reviews));
     }
 
+    public ResponseEntity<List<ParsReview>> getAllReviewsByUser(String email) {
+        User user = userRepository.findByEmail(email);
+        if (user == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        List<Review> reviewList = reviewRepository.findAllByUser(user);
+        if (reviewList.isEmpty())
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return ResponseEntity.ok(parsMovieReview(reviewList));
+    }
+
     public ResponseEntity<Integer> getCountByIdPost(Long idList) {
         return ResponseEntity.ok(reviewPostRepository.countByPost_Id(idList));
     }

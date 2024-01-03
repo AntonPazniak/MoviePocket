@@ -66,6 +66,7 @@ public class UserController {
                 dislikedMovieService.getAllUserDislikedMovie(user.getEmail()).getBody(),
                 watchedMovieService.getAllUserWatched(user.getEmail()).getBody(),
                 toWatchMovieService.getAllUserToWatch(user.getEmail()).getBody(),
+                reviewService.getAllReviewsByUser(user.getEmail()).getBody(),
                 ratingMovieService.getAllUserRatingMovie(user.getEmail()).getBody()
         );
         return new ResponseEntity<>(parsUserPage, HttpStatus.OK);
