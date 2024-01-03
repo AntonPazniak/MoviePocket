@@ -1,7 +1,6 @@
 package com.moviePocket.controller.post;
 
 import com.moviePocket.entities.post.ParsPost;
-import com.moviePocket.entities.post.PostList;
 import com.moviePocket.service.inter.post.LikePostService;
 import com.moviePocket.service.inter.post.PostService;
 import io.swagger.annotations.Api;
@@ -32,7 +31,7 @@ public class PostController {
             @ApiResponse(code = 401, message = "Forbidden - user is not authenticated")
     })
     @PostMapping("/list/set")
-    public ResponseEntity<PostList> setNewPostList(@RequestParam("title") String title,
+    public ResponseEntity<ParsPost> setNewPostList(@RequestParam("title") String title,
                                                    @RequestParam("idList") Long idList,
                                                    @RequestBody String content) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -40,7 +39,7 @@ public class PostController {
     }
 
     @PostMapping("/movie/set")
-    public ResponseEntity<?> setNewPostMovie(@RequestParam("title") String title,
+    public ResponseEntity<ParsPost> setNewPostMovie(@RequestParam("title") String title,
                                              @RequestBody String content,
                                              @RequestParam("idMovie") Long idMovie) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -48,7 +47,7 @@ public class PostController {
     }
 
     @PostMapping("/person/set")
-    public ResponseEntity<?> setNewPostPerson(@RequestParam("title") String title,
+    public ResponseEntity<ParsPost> setNewPostPerson(@RequestParam("title") String title,
                                               @RequestBody String content,
                                               @RequestParam("idPerson") Long idPerson) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

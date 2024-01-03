@@ -1,19 +1,16 @@
 package com.moviePocket.service.inter.post;
 
 import com.moviePocket.entities.post.ParsPost;
-import com.moviePocket.entities.post.PostList;
-import com.moviePocket.entities.post.PostMovie;
-import com.moviePocket.entities.post.PostPerson;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
 public interface PostService {
-    ResponseEntity<PostList> createPostList(String email, String title, String content, Long idList);
+    ResponseEntity<ParsPost> createPostList(String email, String title, String content, Long idList);
 
-    ResponseEntity<PostMovie> createPostMovie(String email, String title, String content, Long idMovie);
+    ResponseEntity<ParsPost> createPostMovie(String email, String title, String content, Long idMovie);
 
-    ResponseEntity<PostPerson> createPostPerson(String email, String title, String content, Long idPerson);
+    ResponseEntity<ParsPost> createPostPerson(String email, String title, String content, Long idPerson);
 
     ResponseEntity<Void> updatePost(String email, Long idPost, String title, String content);
     ResponseEntity<Void> deletePost(String email, Long idPost);

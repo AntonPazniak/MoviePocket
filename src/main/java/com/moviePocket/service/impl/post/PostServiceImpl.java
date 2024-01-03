@@ -36,7 +36,7 @@ public class PostServiceImpl implements PostService {
 
     private final MovieServiceImpl movieService;
 
-    public ResponseEntity<PostList> createPostList(String email, String title, String content, Long idList) {
+    public ResponseEntity<ParsPost> createPostList(String email, String title, String content, Long idList) {
         ListMovie movieList = movieListRepository.getById(idList);
         if (movieList != null) {
             Post post = createPost(email, title, content);
@@ -45,13 +45,13 @@ public class PostServiceImpl implements PostService {
             else {
                 PostList postList = new PostList(movieList, post);
                 postListRepository.save(postList);
-                return ResponseEntity.ok(postList);
+                return ResponseEntity.ok(parsOnePost(post));
             }
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    public ResponseEntity<PostMovie> createPostMovie(String email, String title, String content, Long idMovie) {
+    public ResponseEntity<ParsPost> createPostMovie(String email, String title, String content, Long idMovie) {
         Post post = createPost(email, title, content);
         if (post == null)
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -61,18 +61,18 @@ public class PostServiceImpl implements PostService {
         else {
             PostMovie postMovie = new PostMovie(movie, post);
             postMovieRepository.save(postMovie);
-            return ResponseEntity.ok(postMovie);
+            return ResponseEntity.ok(parsOnePost(post));
         }
     }
 
-    public ResponseEntity<PostPerson> createPostPerson(String email, String title, String content, Long idPerson) {
+    public ResponseEntity<ParsPost> createPostPerson(String email, String title, String content, Long idPerson) {
         Post post = createPost(email, title, content);
         if (post == null)
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         else {
             PostPerson postPerson = new PostPerson(idPerson, post);
             postPersonRepository.save(postPerson);
-            return ResponseEntity.ok(postPerson);
+            return ResponseEntity.ok(parsOnePost(post));
         }
     }
 
@@ -231,37 +231,40 @@ public class PostServiceImpl implements PostService {
     public List<ParsPost> parsPost(List<Post> posts) {
         List<ParsPost> parsPostLL = new ArrayList<>();
         for (Post post : posts) {
-
-            Long idAvatar = null;
-
-            if (post.getUser().getAvatar() != null)
-                idAvatar = post.getUser().getAvatar().getId();
-
-            int[] likeAndDis = new int[]{likePostRepository.countByPostAndLickOrDisIsTrue(post),
-                    likePostRepository.countByPostAndLickOrDisIsFalse(post)};
-            ParsPost parsPost = new ParsPost(
-                    post.getId(),
-                    post.getTitle(),
-                    post.getContent(),
-                    likeAndDis,
-                    new UserPostDto(post.getUser().getUsername(), idAvatar),
-                    post.getCreated(),
-                    post.getUpdated()
-            );
-            PostList postList = postListRepository.findByPost(post);
-            PostMovie postMovie = postMovieRepository.findByPost(post);
-            PostPerson postPerson = postPersonRepository.findByPost(post);
-            if (postList != null) {
-                parsPost.setIdList(postList.getMovieList().getId());
-            } else if (postMovie != null) {
-                parsPost.setIdMovie(postMovie.getMovie().getId());
-            } else if (postPerson != null) {
-                parsPost.setIdPerson(postPerson.getIdPerson());
-            }
-
-            parsPostLL.add(parsPost);
+            parsPostLL.add(parsOnePost(post));
         }
         return parsPostLL;
+    }
+
+    public ParsPost parsOnePost(Post post) {
+        Long idAvatar = null;
+
+        if (post.getUser().getAvatar() != null)
+            idAvatar = post.getUser().getAvatar().getId();
+
+        int[] likeAndDis = new int[]{likePostRepository.countByPostAndLickOrDisIsTrue(post),
+                likePostRepository.countByPostAndLickOrDisIsFalse(post)};
+        ParsPost parsPost = new ParsPost(
+                post.getId(),
+                post.getTitle(),
+                post.getContent(),
+                likeAndDis,
+                new UserPostDto(post.getUser().getUsername(), idAvatar),
+                post.getCreated(),
+                post.getUpdated()
+        );
+        PostList postList = postListRepository.findByPost(post);
+        PostMovie postMovie = postMovieRepository.findByPost(post);
+        PostPerson postPerson = postPersonRepository.findByPost(post);
+        if (postList != null) {
+            parsPost.setIdList(postList.getMovieList().getId());
+        } else if (postMovie != null) {
+            parsPost.setIdMovie(postMovie.getMovie().getId());
+        } else if (postPerson != null) {
+            parsPost.setIdPerson(postPerson.getIdPerson());
+        }
+
+        return parsPost;
     }
 
     public ResponseEntity<Boolean> authorshipCheck(Long idPost, String username) {
