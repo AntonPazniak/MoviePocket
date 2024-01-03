@@ -1,6 +1,7 @@
 package com.moviePocket.controller.list;
 
 
+import com.moviePocket.entities.list.ListMovie;
 import com.moviePocket.entities.list.ParsList;
 import com.moviePocket.entities.movie.Genre;
 import com.moviePocket.service.inter.list.CategoriesMovieListService;
@@ -37,8 +38,8 @@ public class MovieListController {
             @ApiResponse(code = 401, message = "Forbidden - user is not authenticated")
     })
     @PostMapping("/set")
-    public ResponseEntity<?> setNewMovieList(@RequestParam("title") String title,
-                                             @RequestBody String content) {
+    public ResponseEntity<ListMovie> setNewMovieList(@RequestParam("title") String title,
+                                                     @RequestBody String content) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return movieListService.setList(authentication.getName(), title, content);
     }

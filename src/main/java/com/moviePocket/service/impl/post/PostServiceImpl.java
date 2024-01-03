@@ -36,7 +36,7 @@ public class PostServiceImpl implements PostService {
 
     private final MovieServiceImpl movieService;
 
-    public ResponseEntity<Void> creatPostList(String email, String title, String content, Long idList) {
+    public ResponseEntity<PostList> createPostList(String email, String title, String content, Long idList) {
         ListMovie movieList = movieListRepository.getById(idList);
         if (movieList != null) {
             Post post = createPost(email, title, content);
@@ -45,13 +45,13 @@ public class PostServiceImpl implements PostService {
             else {
                 PostList postList = new PostList(movieList, post);
                 postListRepository.save(postList);
-                return new ResponseEntity<>(HttpStatus.OK);
+                return ResponseEntity.ok(postList);
             }
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    public ResponseEntity<Void> creatPostMovie(String email, String title, String content, Long idMovie) {
+    public ResponseEntity<PostMovie> createPostMovie(String email, String title, String content, Long idMovie) {
         Post post = createPost(email, title, content);
         if (post == null)
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -61,18 +61,18 @@ public class PostServiceImpl implements PostService {
         else {
             PostMovie postMovie = new PostMovie(movie, post);
             postMovieRepository.save(postMovie);
-            return new ResponseEntity<>(HttpStatus.OK);
+            return ResponseEntity.ok(postMovie);
         }
     }
 
-    public ResponseEntity<Void> creatPostPerson(String email, String title, String content, Long idPerson) {
+    public ResponseEntity<PostPerson> createPostPerson(String email, String title, String content, Long idPerson) {
         Post post = createPost(email, title, content);
         if (post == null)
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         else {
             PostPerson postPerson = new PostPerson(idPerson, post);
             postPersonRepository.save(postPerson);
-            return new ResponseEntity<>(HttpStatus.OK);
+            return ResponseEntity.ok(postPerson);
         }
     }
 

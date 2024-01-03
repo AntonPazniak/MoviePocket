@@ -1,6 +1,7 @@
 package com.moviePocket.controller.post;
 
 import com.moviePocket.entities.post.ParsPost;
+import com.moviePocket.entities.post.PostList;
 import com.moviePocket.service.inter.post.LikePostService;
 import com.moviePocket.service.inter.post.PostService;
 import io.swagger.annotations.Api;
@@ -31,11 +32,11 @@ public class PostController {
             @ApiResponse(code = 401, message = "Forbidden - user is not authenticated")
     })
     @PostMapping("/list/set")
-    public ResponseEntity<?> setNewPostList(@RequestParam("title") String title,
-                                            @RequestParam("idList") Long idList,
-                                            @RequestBody String content) {
+    public ResponseEntity<PostList> setNewPostList(@RequestParam("title") String title,
+                                                   @RequestParam("idList") Long idList,
+                                                   @RequestBody String content) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return postService.creatPostList(authentication.getName(), title, content, idList);
+        return postService.createPostList(authentication.getName(), title, content, idList);
     }
 
     @PostMapping("/movie/set")
@@ -43,15 +44,15 @@ public class PostController {
                                              @RequestBody String content,
                                              @RequestParam("idMovie") Long idMovie) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return postService.creatPostMovie(authentication.getName(), title, content, idMovie);
+        return postService.createPostMovie(authentication.getName(), title, content, idMovie);
     }
 
     @PostMapping("/person/set")
-    public ResponseEntity<?> setNewPostPersom(@RequestParam("title") String title,
+    public ResponseEntity<?> setNewPostPerson(@RequestParam("title") String title,
                                               @RequestBody String content,
                                               @RequestParam("idPerson") Long idPerson) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return postService.creatPostMovie(authentication.getName(), title, content, idPerson);
+        return postService.createPostPerson(authentication.getName(), title, content, idPerson);
     }
 
 
