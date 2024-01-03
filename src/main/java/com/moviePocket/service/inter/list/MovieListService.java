@@ -1,6 +1,5 @@
 package com.moviePocket.service.inter.list;
 
-import com.moviePocket.entities.list.ListMovie;
 import com.moviePocket.entities.list.ParsList;
 import org.springframework.http.ResponseEntity;
 
@@ -8,7 +7,7 @@ import java.util.List;
 
 public interface MovieListService {
 
-    ResponseEntity<ListMovie> setList(String email, String title, String content);
+    ResponseEntity<ParsList> setList(String email, String title, String content);
 
     ResponseEntity<Void> updateList(String email, Long idMovieList, String title, String content);
 

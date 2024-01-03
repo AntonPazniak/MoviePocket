@@ -45,13 +45,13 @@ public class MovieListServiceImpl implements MovieListService {
     private final ImageServiceImpl imageService;
 
     @Transactional
-    public ResponseEntity<ListMovie> setList(String email, String title, String content) throws NotFoundException {
+    public ResponseEntity<ParsList> setList(String email, String title, String content) throws NotFoundException {
         User user = userRepository.findByEmail(email);
         if (user == null)
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         ListMovie movieList = new ListMovie(title, content, user);
         movieListRepository.save(movieList);
-        return ResponseEntity.ok(movieList);
+        return ResponseEntity.ok(parsListWithMovies(movieList));
     }
 
     @Transactional
