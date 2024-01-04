@@ -13,8 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -55,10 +55,10 @@ public class ToWatchMovieServiceImpl implements ToWatchMovieService {
     public ResponseEntity<List<Movie>> getAllUserToWatch(String email) {
         List<ToWatchMovie> toWatchList = toWatchMovieRepository.findAllByUser(
                 userRepository.findByEmail(email));
-        List<Movie> movies = new ArrayList<>();
-        for (ToWatchMovie toWatch : toWatchList) {
-            movies.add(toWatch.getMovie());
-        }
+        List<Movie> movies = toWatchList.stream()
+                .map(ToWatchMovie::getMovie)
+                .collect(Collectors.toList());
+
         if (movies.isEmpty())
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         return ResponseEntity.ok(movies);

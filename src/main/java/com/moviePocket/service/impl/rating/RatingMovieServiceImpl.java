@@ -63,10 +63,14 @@ public class RatingMovieServiceImpl implements RatingMovieService {
     }
 
     public ResponseEntity<Integer> getFromRatingMovie(String email, Long idMovie) {
-        RatingMovie ratingMovie = ratingMovieRepository.findByUserAndMovie_id(
-                userRepository.findByEmail(email), idMovie);
+        User user = userRepository.findByEmail(email);
+        if (user == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+        RatingMovie ratingMovie = ratingMovieRepository.findByUserAndMovie_id(user, idMovie);
         if (ratingMovie == null)
             return ResponseEntity.ok(0);
+
         return ResponseEntity.ok(ratingMovie.getRating());
     }
 
