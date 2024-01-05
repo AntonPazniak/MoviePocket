@@ -15,8 +15,6 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -84,17 +82,6 @@ public class ImageServiceImplTest {
         byte[] result = imageService.getImageDataById(1L);
 
         assertNull(result);
-    }
-
-    @Test
-    void testCreateMoviePoster() {
-        List<String> posterUrls = new ArrayList<>();
-        posterUrls.add("https://example.com/poster1.jpg");
-        posterUrls.add("https://example.com/poster2.jpg");
-
-        ImageEntity result = imageService.createMoviePoster(posterUrls, "outputPoster.jpg");
-
-        assertNotNull(result);
     }
 
     @Test

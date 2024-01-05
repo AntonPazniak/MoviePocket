@@ -88,7 +88,7 @@ public class MovieListController {
             @ApiResponse(code = 200, message = "Successfully retrieved movie list"),
     })
     @GetMapping("/get/title")
-    public ResponseEntity<?> getMovieListByTitle(@RequestParam("idMovieList") String title) {
+    public ResponseEntity<?> getMovieListByTitle(@RequestParam("title") String title) {
         return movieListService.getAllByTitle(title);
     }
 
