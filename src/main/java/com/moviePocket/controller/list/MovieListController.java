@@ -180,4 +180,15 @@ public class MovieListController {
     public ResponseEntity<List<Genre>> getAllGenre() {
         return categoriesMovieListService.getAll();
     }
+
+    @GetMapping("/get/last")
+    public ResponseEntity<List<ParsList>> getLast() {
+        return movieListService.getTop10LatestLists();
+    }
+
+    @GetMapping("/get/top")
+    public ResponseEntity<List<ParsList>> getTop() {
+        return movieListService.getTop10LikedLists();
+    }
+
 }

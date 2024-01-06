@@ -273,4 +273,21 @@ public class MovieListServiceImpl implements MovieListService {
         return ResponseEntity.ok(false);
     }
 
+    public ResponseEntity<List<ParsList>> getTop10LatestLists() {
+        List<ListMovie> list = movieListRepository.findTop10LatestLists();
+        if (!list.isEmpty())
+            return ResponseEntity.ok(parsLists(list));
+        else
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+
+    public ResponseEntity<List<ParsList>> getTop10LikedLists() {
+        List<ListMovie> list = movieListRepository.findTop10LikedLists();
+        if (!list.isEmpty())
+            return ResponseEntity.ok(parsLists(list));
+        else
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
 }
