@@ -178,6 +178,20 @@ public class MovieListServiceImpl implements MovieListService {
         return ResponseEntity.ok(parsLists(movieLists));
     }
 
+    @Override
+    public ResponseEntity<Boolean> isMovieInList(Long idMovieList, Long idMovie) {
+        ListMovie list = movieListRepository.getById(idMovieList);
+        if (list == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        if (list.getMovies().stream().anyMatch(movie -> movie.getId().equals(idMovie))) {
+            return ResponseEntity.ok(true);
+        } else {
+            return ResponseEntity.ok(false);
+        }
+    }
+
     private List<ParsList> parsLists(List<ListMovie> movieList) {
         List<ParsList> parsMovieLL = new ArrayList<>();
         for (ListMovie listMovie : movieList) {

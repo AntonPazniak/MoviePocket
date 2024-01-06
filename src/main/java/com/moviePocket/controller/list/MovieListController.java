@@ -71,6 +71,16 @@ public class MovieListController {
         return movieListService.deleteList(authentication.getName(), idMovieList);
     }
 
+    @ApiOperation(value = "Return boolean saying whether movie is already in list of not", notes = "Return Boolean true if it is")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Movie is in list"),
+            @ApiResponse(code = 404, message = "List is not found")
+    })
+    @GetMapping("/isInList")
+    public ResponseEntity<Boolean> isMovieInList(@RequestParam("idList") Long idList, @RequestParam("idMovie") Long idMovie) {
+        return movieListService.isMovieInList(idList, idMovie);
+    }
+
 
     @ApiOperation(value = "Get movie list", notes = "Returns a list of movies for the given movie list ID")
     @ApiResponses(value = {

@@ -27,6 +27,8 @@ public interface MovieListService {
 
     ResponseEntity<Boolean> authorshipCheck(Long idList, String username);
 
+    ResponseEntity<Boolean> isMovieInList(Long idMovieList, Long idMovie);
+
     ResponseEntity<List<ParsList>> getTop10LatestLists();
 
     ResponseEntity<List<ParsList>> getTop10LikedLists();
