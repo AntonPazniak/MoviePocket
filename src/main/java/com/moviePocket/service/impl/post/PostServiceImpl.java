@@ -277,4 +277,21 @@ public class PostServiceImpl implements PostService {
         }
         return ResponseEntity.ok(false);
     }
+
+    public ResponseEntity<List<ParsPost>> getTop10LatestPosts() {
+        List<Post> posts = postRepository.findTop10LatestPosts();
+        if (!posts.isEmpty())
+            return ResponseEntity.ok(parsPost(posts));
+        else
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    public ResponseEntity<List<ParsPost>> getTop10LikedPosts() {
+        List<Post> posts = postRepository.findTop10LikedPosts();
+        if (!posts.isEmpty())
+            return ResponseEntity.ok(parsPost(posts));
+        else
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
 }

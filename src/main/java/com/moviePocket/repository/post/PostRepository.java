@@ -19,4 +19,15 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query("Select m from Post m where m.title like :title%")
     List<Post> findAllByTitle(String title);
 
+    @Query("SELECT p FROM Post p ORDER BY p.created DESC")
+    List<Post> findTop10LatestPosts();
+
+    @Query("SELECT ll.post, COUNT(ll) as likeCount " +
+            "FROM LikePost ll " +
+            "WHERE ll.lickOrDis = true " +
+            "GROUP BY ll.post " +
+            "HAVING COUNT(ll) > 0 " +
+            "ORDER BY likeCount DESC")
+    List<Post> findTop10LikedPosts();
+
 }

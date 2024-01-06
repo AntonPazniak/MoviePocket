@@ -217,4 +217,14 @@ public ResponseEntity<Boolean> getAllLikePostsByIdMovie(@RequestParam("idPost") 
 //    public ResponseEntity<List<ParsPost>> getLeastLikedPosts() {
 //        return likePostService.getLeastLikedPosts();
 //    }
+
+    @GetMapping("/get/last")
+    public ResponseEntity<List<ParsPost>> getLast() {
+        return postService.getTop10LatestPosts();
+    }
+
+    @GetMapping("/get/top")
+    public ResponseEntity<List<ParsPost>> getTop() {
+        return postService.getTop10LikedPosts();
+    }
 }

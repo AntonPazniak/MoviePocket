@@ -34,4 +34,9 @@ public interface PostService {
 
     ResponseEntity<Boolean> authorshipCheck(Long idPost, String username);
 
+    ResponseEntity<List<ParsPost>> getTop10LatestPosts();
+
+    ResponseEntity<List<ParsPost>> getTop10LikedPosts();
+
+
 }
