@@ -20,5 +20,4 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     int countReviewsByUser(@Param("user") User user);
 
     List<Review> findAllByUser(User user);
-
 }

@@ -4,9 +4,14 @@ import com.moviePocket.controller.dto.UserPostDto;
 import com.moviePocket.entities.list.ListMovie;
 import com.moviePocket.entities.movie.Movie;
 import com.moviePocket.entities.post.*;
+import com.moviePocket.entities.review.Review;
+import com.moviePocket.entities.review.ReviewPost;
 import com.moviePocket.entities.user.User;
 import com.moviePocket.repository.list.MovieListRepository;
 import com.moviePocket.repository.post.*;
+import com.moviePocket.repository.review.LikeReviewRepository;
+import com.moviePocket.repository.review.ReviewPostRepository;
+import com.moviePocket.repository.review.ReviewRepository;
 import com.moviePocket.repository.user.UserRepository;
 import com.moviePocket.service.impl.movie.MovieServiceImpl;
 import com.moviePocket.service.inter.post.PostService;
@@ -35,6 +40,9 @@ public class PostServiceImpl implements PostService {
     private final PostPersonRepository postPersonRepository;
 
     private final MovieServiceImpl movieService;
+    private final ReviewPostRepository reviewPostRepository;
+    private final LikeReviewRepository likeReviewRepository;
+    private final ReviewRepository reviewRepository;
 
     public ResponseEntity<ParsPost> createPostList(String email, String title, String content, Long idList) {
         ListMovie movieList = movieListRepository.getById(idList);
@@ -108,6 +116,9 @@ public class PostServiceImpl implements PostService {
     public ResponseEntity<Void> deletePost(String email, Long idPost) {
         User user = userRepository.findByEmail(email);
         Post post = postRepository.getById(idPost);
+        List<Review> reviewsPost = reviewPostRepository.findReviewsByPost(post);
+
+
         if (user == null)
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         else if (post == null)
@@ -115,6 +126,17 @@ public class PostServiceImpl implements PostService {
         else if (post.getUser() != user) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
+
+        for (Review review : reviewsPost) {
+            ReviewPost reviewPostEntity = reviewPostRepository.findByReview(review);
+
+            if (reviewPostEntity != null)
+                reviewPostRepository.delete(reviewPostEntity);
+
+            likeReviewRepository.deleteAllByReview(review);
+            reviewRepository.delete(review);
+        }
+
         PostList postList = postListRepository.findByPost(post);
         if (postList != null) {
             postListRepository.delete(postList);
