@@ -112,6 +112,12 @@ public class PostController {
         return postService.getAllByIdPerson(idPerson);
     }
 
+    @GetMapping("/user")
+    public ResponseEntity<List<ParsPost>> getAllPostByUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return postService.getAllByUser(authentication.getName());
+    }
+
 
     //    @ApiOperation(value = "Get post by title", notes = "Returns a post that matches the title if it doesn't match it's empty post")
 //    @ApiResponses(value = {

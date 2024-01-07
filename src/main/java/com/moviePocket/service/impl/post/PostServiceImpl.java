@@ -183,6 +183,15 @@ public class PostServiceImpl implements PostService {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
+    public ResponseEntity<List<ParsPost>> getAllByUser(String email) {
+        User user = userRepository.findByEmail(email);
+        List<Post> posts = postRepository.findAllByUser(user);
+        if (posts != null) {
+            return ResponseEntity.ok(parsPost(posts));
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
     public ResponseEntity<List<ParsPost>> getAllByIdList(Long idList) {
         List<PostList> list = postListRepository.findAllByMovieList_Id(idList);
         if (list != null) {

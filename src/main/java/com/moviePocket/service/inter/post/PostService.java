@@ -13,13 +13,17 @@ public interface PostService {
     ResponseEntity<ParsPost> createPostPerson(String email, String title, String content, Long idPerson);
 
     ResponseEntity<Void> updatePost(String email, Long idPost, String title, String content);
+
     ResponseEntity<Void> deletePost(String email, Long idPost);
 
     ResponseEntity<List<ParsPost>> getAllByIdMovie(Long idMovie);
 
     ResponseEntity<List<ParsPost>> getAllByIdPerson(Long idPerson);
 
+    ResponseEntity<List<ParsPost>> getAllByUser(String email);
+
     ResponseEntity<List<ParsPost>> getAllByIdList(Long idList);
+
     ResponseEntity<List<ParsPost>> getAllByTitle(String title);
 
     ResponseEntity<ParsPost> getPost(Long idPost);
