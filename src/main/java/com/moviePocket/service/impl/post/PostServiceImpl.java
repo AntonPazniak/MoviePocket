@@ -127,15 +127,20 @@ public class PostServiceImpl implements PostService {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
-        for (Review review : reviewsPost) {
-            ReviewPost reviewPostEntity = reviewPostRepository.findByReview(review);
+        if (reviewsPost != null) {
+            for (Review review : reviewsPost) {
+                ReviewPost reviewPostEntity = reviewPostRepository.findByReview(review);
 
-            if (reviewPostEntity != null)
-                reviewPostRepository.delete(reviewPostEntity);
-
-            likeReviewRepository.deleteAllByReview(review);
-            reviewRepository.delete(review);
+                if (reviewPostEntity != null) {
+                    reviewPostRepository.delete(reviewPostEntity);
+                    likeReviewRepository.deleteAllByReview(review);
+                    reviewRepository.delete(review);
+                }
+            }
         }
+
+
+        likePostRepository.deleteAllByPost(post);
 
         PostList postList = postListRepository.findByPost(post);
         if (postList != null) {
@@ -144,6 +149,7 @@ public class PostServiceImpl implements PostService {
             return new ResponseEntity<>(HttpStatus.OK);
         }
         PostMovie postMovie = postMovieRepository.findByPost(post);
+
         if (postMovie != null) {
             postMovieRepository.delete(postMovie);
             postRepository.delete(post);
