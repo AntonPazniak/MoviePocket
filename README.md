@@ -1,46 +1,28 @@
-<img src="src/main/frontend/src/images/logo.png"  width="200" height="300" />
-
-
 # MoviePocket
 
-## Getting started
+## Introduction
 
 MoviePocket is movie management system that will help you to orginize your movie collection and share it with other
-movie lovers.
-The more percise description of the service you can find in Documentation/ section:)
+movie lovers. The more percise description of the service you can find in Documentation/ section:)
 
-
-Explore world of movies with MoviePocket and create your personal unforgettable experience collecting sharing movies between users.
-
-## Short user manual
-
-### Join MoviePocket by creating your account
-
-![Register](https://github.com/prymakD/MoviePocket/assets/54550596/c7252056-e857-4bd0-b290-8ff4b25476fd)
-
-### Explore the upcoming movies on the main page 
-
-![main_screen](https://github.com/prymakD/MoviePocket/assets/54550596/45864288-ad11-49d9-9b66-5b60c6b427c0)
-
-###  Leave a review and share what you think about particular movie with others
-
-![Review](https://github.com/prymakD/MoviePocket/assets/54550596/3f77fa8f-8bc8-4503-b9bb-0c3812b08718)
-
-### Mark movie as wathced or add it to your favourites list
-
-![Like_and_watched](https://github.com/prymakD/MoviePocket/assets/54550596/0b591513-dd3c-4106-857c-865410e18a82)
-
-
+Explore world of movies with MoviePocket and create your personal unforgettable experience collecting sharing movies
+between users.
 
 ## To start develop
 
-### You will need on your machine installed:
+## Backend(Java Spring)
+
+### You will need:
 
 - [Java(at least 1.8)](https://www.oracle.com/java/technologies/downloads/), **Spring boot** version at least 2.7.10 and
   Spring 5.X bounded with Maven for backend
     - Cookie based authentication by [Spring Security](https://spring.io/projects/spring-security) 2.7
     - ORM: Hibernate v 5. + JPA
-- [Node.js](https://nodejs.org/en) >= 18.15.0 and **npm** >= 9.5.0 for frontend
+
+### [ 1 ]
+
+    - port 8080
+
 - [MySql](https://www.mysql.com/) for Database
 
 _Note_: to connect to the current DB you need to have UAM ip address as the DB is from UAM mysql server for now. To do
@@ -54,7 +36,7 @@ WITHOUT IT BACKEND WILL NOT RUN!
 Frontend and the whole service is run on http://localhost:3000
 http://localhost:8080 for backend
 
-REST API documentation is Swagger2 generated and available on  http://localhost:8080/swagger-ui.html
+REST API documentation is Swagger2 generated and available on {hostname}/swagger-ui.html
 
 Some example api request urls:
 
@@ -62,7 +44,195 @@ Some example api request urls:
 
 **Project vision** and **project requirements** documents are available in documents/ section of source
 
-## Extra
+## Deployment
 
-With help of spring-boot-maven-plugin you can generate by ```mvn compile``` a compatible JAR file which will take care
-of installing the appropriate ver for front and back dependencies 
+The service, both React and Java run on Linux remote server which Host URL: https://moviepocket.projektstudencki.pl
+
+## Frontend
+
+### You will need on your machine installed:
+
+- [Node.js](https://nodejs.org/en) >= 18.15.0 and **npm** >= 9.5.0 for frontend
+
+### General info
+
+    - port 3000
+
+## Android
+
+### You will need on your machine installed:
+- 
+
+# MoviePocket Documentation
+
+# Project Documentation
+
+1. [Introduction](#introduction)
+2. [Backend (Java Spring)](#backend)
+    - [To start](#you-will-need)
+    - [API Documentation](#api-documentation)
+    - [Database Schema](#database-schema)
+    - [Authentication](#authentication)
+    - [Error Handling](#error-handling)
+3. [Frontend (React.js)](#frontend)
+    - [Project Structure](#project-structure)
+    - [Component Documentation](#component-documentation)
+    - [State Management](#state-management)
+    - [Routing](#routing)
+    - [API Integration](#api-integration)
+4. [Mobile App (Java Android)](#mobile-app)
+    - [Architecture](#architecture)
+    - [Activity and Fragment Documentation](#activity-and-fragment-documentation)
+    - [Network Requests](#network-requests)
+    - [Data Persistence](#data-persistence)
+    - [Authentication](#authentication)
+    - [Deployment](#deployment)
+        - [Backend Deployment](#backend-deployment)
+        - [Frontend Deployment](#frontend-deployment)
+        - [Mobile App Deployment](#mobile-app-deployment)
+5. [Contributing](#contributing)
+    - [Code Style Guidelines](#code-style-guidelines)
+    - [Version Control](#version-control)
+    - [Testing](#testing)
+    - [Changelog](#changelog)
+    - [Support](#support)
+6. [License](#license)
+
+![main_screen](https://github.com/prymakD/MoviePocket/assets/54550596/45864288-ad11-49d9-9b66-5b60c6b427c0)
+
+## Introduction <a name="introduction"></a>
+
+MoviePocket is movie management system that will help you to orginize your movie collection and share it with other
+movie lovers. The more percise description of the service you can find in Documentation/ section:)
+
+Explore world of movies with MoviePocket and create your personal unforgettable experience collecting sharing movies
+between users.
+
+## Backend (Java Spring) <a name="backend"></a>
+
+### You will need: <a name="you-will-need"></a>
+
+- [Java(at least 1.8)](https://www.oracle.com/java/technologies/downloads/), **Spring boot** version at least 2.7.10 and
+  Spring 5.X bounded with Maven for backend
+    - Cookie based authentication by [Spring Security](https://spring.io/projects/spring-security) 2.7
+    - ORM: Hibernate v 5. + JPA
+    - port used _8080_
+
+### API Documentation <a name="api-documentation"></a>
+
+Info about API endpoints, request/response examples, and any required headers generated by Swageer UI and can be found
+by
+***{hostname}/swagger-ui.html***
+
+### Database Schema <a name="database-schema"></a>
+
+MySql is used. DB srcript can be found in Documentation/DB_and_UI_prototypes/DbScript
+
+DB schema
+<img src="Documentation/DB_and_UI_prototypes/DB_MoviePocket.png" />
+
+### Authentication <a name="authentication"></a>
+
+Explain the authentication mechanism used in the backend, such as OAuth, JWT, etc.
+
+### Error Handling <a name="error-handling"></a>
+
+Document how errors are handled, including error codes, messages, and possible solutions.
+
+## Frontend (React.js) <a name="frontend"></a>
+
+### Project Structure <a name="project-structure"></a>
+
+Describe the project directory structure and organization.
+
+### Component Documentation <a name="component-documentation"></a>
+
+Document each React component, including its purpose, props, and usage.
+
+- Component A
+    - Purpose:
+    - Props:
+    - Usage:
+- Component B
+    - ...
+
+### State Management <a name="state-management"></a>
+
+Explain how state is managed in the frontend, whether through local state, Redux, or other state management tools.
+
+### Routing <a name="routing"></a>
+
+Document how routing is implemented in the React app.
+
+### API Integration <a name="api-integration"></a>
+
+Provide details on how the frontend integrates with backend APIs, including example API calls.
+
+## Mobile App (Java Android) <a name="mobile-app"></a>
+
+### Architecture <a name="architecture"></a>
+
+Explain the overall architecture of the Android app, including activities, fragments, and any architectural patterns
+used (e.g., MVVM, MVP).
+
+### Activity and Fragment Documentation <a name="activity-and-fragment-documentation"></a>
+
+Document each Android activity and fragment, explaining their roles and interactions.
+
+- Activity A
+    - Roles:
+    - Interactions:
+- Fragment B
+    - ...
+
+### Network Requests <a name="network-requests"></a>
+
+Describe how the app handles network requests, including API calls and handling responses.
+
+### Data Persistence <a name="data-persistence"></a>
+
+Document how data is persisted locally on the mobile device.
+
+### Authentication <a name="authentication"></a>
+
+Explain the authentication flow on the mobile app.
+
+### Deployment <a name="deployment"></a>
+
+#### Backend Deployment <a name="backend-deployment"></a>
+
+Provide instructions on how to deploy the Java Spring backend.
+
+#### Frontend Deployment <a name="frontend-deployment"></a>
+
+Explain the process of deploying the React.js frontend.
+
+#### Mobile App Deployment <a name="mobile-app-deployment"></a>
+
+Provide guidelines for packaging and distributing the Android mobile app.
+
+## Contributing <a name="contributing"></a>
+
+### Code Style Guidelines <a name="code-style-guidelines"></a>
+
+Specify the coding style guidelines for backend, frontend, and mobile app development.
+
+### Version Control <a name="version-control"></a>
+
+Explain the version control practices followed (e.g., Git workflow).
+
+### Testing <a name="testing"></a>
+
+Document the testing strategy for backend, frontend, and mobile app components.
+
+### Changelog <a name="changelog"></a>
+
+Maintain a changelog to track changes and updates to the project.
+
+### Support <a name="support"></a>
+
+Provide contact information for obtaining support or reporting issues.
+
+## License <a name="license"></a>
+
+Specify the project's license.
