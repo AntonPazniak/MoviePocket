@@ -98,14 +98,16 @@ public class MovieListServiceImpl implements MovieListService {
         } else if (!Objects.equals(movieList.getUser(), user)) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         } else {
-            for (Review review : reviewList) {
-                ReviewList reviewListEntity = reviewListRepository.findByReview(review);
+            if (reviewList != null) {
+                for (Review review : reviewList) {
+                    ReviewList reviewListEntity = reviewListRepository.findByReview(review);
 
-                if (reviewListEntity != null)
-                    reviewListRepository.delete(reviewListEntity);
+                    if (reviewListEntity != null)
+                        reviewListRepository.delete(reviewListEntity);
 
-                likeReviewRepository.deleteAllByReview(review);
-                reviewRepository.delete(review);
+                    likeReviewRepository.deleteAllByReview(review);
+                    reviewRepository.delete(review);
+                }
             }
 
             likeListRepository.deleteAllByMovieList(movieList);
