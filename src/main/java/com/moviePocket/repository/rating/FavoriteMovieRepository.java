@@ -11,11 +11,12 @@ import java.util.List;
 public interface FavoriteMovieRepository extends JpaRepository<FavoriteMovie,Long> {
 
     FavoriteMovie findByUserAndMovie_id(User user, Long idMovie);
-    List<FavoriteMovie> findAllByUser(User user);
+
+    @Query("SELECT u FROM FavoriteMovie u WHERE u.user = :user ORDER BY u.created ASC")
+    List<FavoriteMovie> findAllByUserOrderByCreatedAsc(@Param("user") User user);
 
     @Query("SELECT COUNT(u) FROM FavoriteMovie u WHERE u.movie.id = :movieId")
     int getAllCountByIdMovie(@Param("movieId") Long idMovie);
-
 
 
 }
