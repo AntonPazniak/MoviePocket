@@ -53,7 +53,7 @@ public class ToWatchMovieServiceImpl implements ToWatchMovieService {
     }
 
     public ResponseEntity<List<Movie>> getAllUserToWatch(String email) {
-        List<ToWatchMovie> toWatchList = toWatchMovieRepository.findAllByUser(
+        List<ToWatchMovie> toWatchList = toWatchMovieRepository.findAllByUserOrderByCreatedAsc(
                 userRepository.findByEmail(email));
         List<Movie> movies = new ArrayList<>();
         for (ToWatchMovie toWatch : toWatchList) {

@@ -16,7 +16,9 @@ public interface WatchedMovieRepository extends JpaRepository<WatchedMovie, Long
 
     WatchedMovie findByUserAndMovie_Id(User user, Long idMovie);
 
-    List<WatchedMovie> findAllByUser(User user);
+    @Query("SELECT u FROM WatchedMovie u WHERE u.user = :user ORDER BY u.created ASC")
+    List<WatchedMovie> findAllByUserOrderByCreatedAsc(@Param("user") User user);
+
 
     @Query("SELECT COUNT(u) FROM WatchedMovie u WHERE u.movie.id = :movieId")
     int getAllCountByIdMovie(@Param("movieId") Long idMovie);
