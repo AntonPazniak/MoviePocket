@@ -98,22 +98,22 @@ public class PostController {
     }
 
     @GetMapping("/movie")
-    public ResponseEntity<List<ParsPost>> getAllPostByIdMovie(@RequestParam("idMovie") Long idMovie) {
+    public ResponseEntity<List<ParsPost>> getAllPostsByIdMovie(@RequestParam("idMovie") Long idMovie) {
         return postService.getAllByIdMovie(idMovie);
     }
 
     @GetMapping("/list")
-    public ResponseEntity<List<ParsPost>> getAllPostByIdList(@RequestParam("idList") Long idList) {
+    public ResponseEntity<List<ParsPost>> getAllPostsByIdList(@RequestParam("idList") Long idList) {
         return postService.getAllByIdList(idList);
     }
 
     @GetMapping("/person")
-    public ResponseEntity<List<ParsPost>> getAllPostByIdPerson(@RequestParam("idPerson") Long idPerson) {
+    public ResponseEntity<List<ParsPost>> getAllPostsByIdPerson(@RequestParam("idPerson") Long idPerson) {
         return postService.getAllByIdPerson(idPerson);
     }
 
     @GetMapping("/user")
-    public ResponseEntity<List<ParsPost>> getAllPostByUser() {
+    public ResponseEntity<List<ParsPost>> getAllMyPosts() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return postService.getAllByUser(authentication.getName());
     }
@@ -162,17 +162,17 @@ public class PostController {
 //        return postService.getAllMyPosts(authentication.getName());
 //    }
 //
-//    @ApiOperation(value = "Get all posts of user", notes = "Returns a list of all posts for the specified username")
-//    @ApiResponses(value = {
-//            @ApiResponse(code = 200, message = "Successfully retrieved all posts for specified username"),
-//            @ApiResponse(code = 400, message = "Invalid username"),
-//            @ApiResponse(code = 404, message = "User not found")
-//    })
-//    @GetMapping("/getAllUserPosts")
-//    public ResponseEntity<List<ParsPost>> getAllUsername(@RequestParam("username") String username) {
-//        return postService.getAllByUsernamePosts(username);
-//    }
-//
+@ApiOperation(value = "Get all posts of user", notes = "Returns a list of all posts for the specified username")
+@ApiResponses(value = {
+        @ApiResponse(code = 200, message = "Successfully retrieved all posts for specified username"),
+        @ApiResponse(code = 401, message = "Invalid username")
+})
+@GetMapping("/someUser")
+public ResponseEntity<List<ParsPost>> getAllByUsername(@RequestParam("username") String username) {
+    return postService.getAllByUsernamePosts(username);
+}
+
+    //
 //    @ApiOperation(value = "Get the most recent posts", notes = "Returns a sorted list of posts from newest to oldest")
 //    @ApiResponses(value = {
 //            @ApiResponse(code = 200, message = "Successfully retrieved all posts "),
@@ -224,13 +224,23 @@ public ResponseEntity<Boolean> getAllLikePostsByIdMovie(@RequestParam("idPost") 
 //        return likePostService.getLeastLikedPosts();
 //    }
 
-    @GetMapping("/get/last")
-    public ResponseEntity<List<ParsPost>> getLast() {
-        return postService.getTop10LatestPosts();
-    }
-
-    @GetMapping("/get/top")
-    public ResponseEntity<List<ParsPost>> getTop() {
-        return postService.getTop10LikedPosts();
-    }
+//    @ApiOperation(value = "Get the least liked(popular) posts", notes = "Returns a sorted list of posts from most least to liked")
+//    @ApiResponses(value = {
+//            @ApiResponse(code = 200, message = "Successfully retrieved all posts "),
+//            @ApiResponse(code = 404, message = "Not found")
+//    })
+//    @GetMapping("/getLeastLikedPosts")
+//    public ResponseEntity<List<ParsPost>> getLeastLikedPosts() {
+//        return likePostService.getLeastLikedPosts();
+//    }
+//
+//    @GetMapping("/get/latest3Posts")
+//    public ResponseEntity<List<ParsPost>> getLatest3Posts() {
+//        return postService.getTop10LatestPosts();
+//    }
+//
+//    @GetMapping("/get/top3Liked")
+//    public ResponseEntity<List<ParsPost>> getTop3LikedPosts() {
+//        return postService.getTop3LikedPosts();
+//    }
 }
