@@ -234,13 +234,13 @@ public ResponseEntity<Boolean> getAllLikePostsByIdMovie(@RequestParam("idPost") 
 //        return likePostService.getLeastLikedPosts();
 //    }
 //
-//    @GetMapping("/get/latest3Posts")
-//    public ResponseEntity<List<ParsPost>> getLatest3Posts() {
-//        return postService.getTop10LatestPosts();
-//    }
-//
-//    @GetMapping("/get/top3Liked")
-//    public ResponseEntity<List<ParsPost>> getTop3LikedPosts() {
-//        return postService.getTop3LikedPosts();
-//    }
+@GetMapping("/get/last")
+public ResponseEntity<List<ParsPost>> getLast() {
+    return postService.getTop10LatestPosts();
+}
+
+    @GetMapping("/get/top")
+    public ResponseEntity<List<ParsPost>> getTop() {
+        return postService.getTop10LikedPosts();
+    }
 }
