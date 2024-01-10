@@ -201,9 +201,17 @@ public class MovieListServiceImpl implements MovieListService {
         }
     }
 
-    public ResponseEntity<List<ParsList>> getAllByTitle(String title) {
-        List<ListMovie> movieLists = movieListRepository.findAllByTitle(title);
-        return ResponseEntity.ok(parsLists(movieLists));
+    public ResponseEntity<List<ParsList>> getAllByPartialTitle(String title) {
+        if (title.equals(""))
+            return ResponseEntity.ok(null);
+        List<ListMovie> movieLists = movieListRepository.findAllByPartialTitle(title);
+        List<ParsList> parsLists = new ArrayList<>();
+        for (ListMovie list : movieLists) {
+            parsLists.add(parsListWithMovies(list));
+        }
+        if (movieLists == null )
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return ResponseEntity.ok(parsLists);
     }
 
     @Override

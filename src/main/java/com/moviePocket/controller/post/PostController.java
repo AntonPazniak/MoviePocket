@@ -119,14 +119,14 @@ public class PostController {
     }
 
 
-    //    @ApiOperation(value = "Get post by title", notes = "Returns a post that matches the title if it doesn't match it's empty post")
-//    @ApiResponses(value = {
-//            @ApiResponse(code = 200, message = "Successfully retrieved post"),
-//    })
-//    @GetMapping("/getByTitle")
-//    public ResponseEntity<?> getPostByTitle(@RequestParam("title") String title) {
-//        return postService.getAllByTitle(title);
-//    }
+        @ApiOperation(value = "Get post by title", notes = "Returns a post that matches the title")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successfully retrieved post"),
+    })
+    @GetMapping("/get/title")
+    public ResponseEntity<?> getPostByPartialTitle(@RequestParam("title") String title) {
+        return postService.getAllByPartialTitle(title);
+    }
     @ApiOperation(value = "Like or dislike post", notes = "Likes or dislikes the specified post")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully liked or disliked post"),

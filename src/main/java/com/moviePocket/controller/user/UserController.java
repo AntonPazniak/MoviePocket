@@ -1,5 +1,6 @@
 package com.moviePocket.controller.user;
 
+import com.moviePocket.controller.dto.UserPostDto;
 import com.moviePocket.entities.user.ParsUserPage;
 import com.moviePocket.entities.user.User;
 import com.moviePocket.service.inter.list.MovieListService;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -70,5 +73,10 @@ public class UserController {
                 ratingMovieService.getAllUserRatingMovie(user.getEmail()).getBody()
         );
         return new ResponseEntity<>(parsUserPage, HttpStatus.OK);
+    }
+
+    @GetMapping("/{partialUsername}")
+    public ResponseEntity<List<UserPostDto>> getUsersByPartialUsername(@PathVariable String username) {
+        return userService.findByPartialUsername(username);
     }
 }

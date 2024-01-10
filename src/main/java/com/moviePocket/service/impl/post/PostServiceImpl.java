@@ -218,6 +218,16 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public ResponseEntity<List<ParsPost>> getAllByPartialTitle(String title) {
+        if (title.equals(""))
+            return ResponseEntity.ok(null);
+        List<Post> posts = postRepository.findAllByPartialTitle(title);
+        if (posts == null )
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return ResponseEntity.ok(parsPost(posts));
+    }
+
+    @Override
     public ResponseEntity<ParsPost> getPost(Long idPost) {
         if (postRepository.existsById(idPost)) {
             Post post = postRepository.getById(idPost);

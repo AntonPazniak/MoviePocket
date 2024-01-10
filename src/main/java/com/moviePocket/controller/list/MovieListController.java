@@ -93,13 +93,13 @@ public class MovieListController {
         return movieListService.getList(idMovieList);
     }
 
-    @ApiOperation(value = "Get movie list by title", notes = "Returns a list of movies that matches the title if it doesn't match it's empty list")
+    @ApiOperation(value = "Get movie list by partial title", notes = "Returns a list of movies that matches the title if it doesn't match it's empty list")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully retrieved movie list"),
     })
     @GetMapping("/get/title")
-    public ResponseEntity<?> getMovieListByTitle(@RequestParam("idMovieList") String title) {
-        return movieListService.getAllByTitle(title);
+    public ResponseEntity<?> getMovieListByPartialTitle(@RequestParam("idMovieList") String title) {
+        return movieListService.getAllByPartialTitle(title);
     }
 
     @ApiOperation(value = "Add or delete movie from list", notes = "Adds or deletes a movie from the specified movie list")

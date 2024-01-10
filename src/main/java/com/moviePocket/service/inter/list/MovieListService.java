@@ -13,7 +13,7 @@ public interface MovieListService {
 
     ResponseEntity<Void> deleteList(String email, Long idMovieList);
 
-    ResponseEntity<List<ParsList>> getAllByTitle(String title);
+    ResponseEntity<List<ParsList>> getAllByPartialTitle(String title);
 
     ResponseEntity<ParsList> getList(Long idMovieList);
 

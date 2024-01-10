@@ -18,7 +18,7 @@ public interface MovieListRepository extends JpaRepository<ListMovie, Long> {
     List<ListMovie> findAllByUser(User user);
 
     @Query("SELECT m FROM ListMovie m WHERE m.title LIKE :title%")
-    List<ListMovie> findAllByTitle(String title);
+    List<ListMovie> findAllByPartialTitle(String title);
 
     @Query("SELECT lm FROM ListMovie lm JOIN lm.movies movie WHERE movie.id = :idMovie")
     List<ListMovie> findAllByidMovie(@Param("idMovie") Long idMovie);

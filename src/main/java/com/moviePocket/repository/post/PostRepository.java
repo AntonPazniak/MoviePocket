@@ -4,6 +4,7 @@ import com.moviePocket.entities.post.Post;
 import com.moviePocket.entities.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
@@ -30,4 +31,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             "ORDER BY likeCount DESC")
     List<Post> findTop10LikedPosts();
 
+    @Query("SELECT u FROM Post u WHERE u.title LIKE :partialTitle%")
+    List<Post> findAllByPartialTitle(@Param("partialTitle") String partialTitle);
 }

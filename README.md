@@ -56,6 +56,8 @@ Info about API endpoints, request/response examples, and any required headers ge
 by ```{hostname}/swagger-ui.html ```
 
 MVP pattern is used.
+
+![Swagger.png](Documentation%2FSwagger.png)
 ### Database Schema
 
 MySql is used. DB script can be found in [DbScript](Documentation/DB_and_UI_prototypes/DbScript) 

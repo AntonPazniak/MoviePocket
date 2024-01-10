@@ -42,5 +42,7 @@ public interface PostService {
 
     ResponseEntity<List<ParsPost>> getTop10LikedPosts();
 
+    ResponseEntity<List<ParsPost>> getAllByPartialTitle(String title);
+
 
 }
