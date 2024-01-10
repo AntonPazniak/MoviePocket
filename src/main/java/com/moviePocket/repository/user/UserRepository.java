@@ -10,10 +10,16 @@ import java.util.List;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
+
     User findByEmail(String mail);
+
     boolean existsByUsername(String username);
+
     boolean existsByEmail(String email);
+
     User findByUsernameAndAccountActive(String username, boolean isActive);
+
+    User findByUsername(String username);
 
     @Query("SELECT u FROM User u WHERE u.username LIKE :partialUsername%")
     List<User> findByPartialUsername(@Param("partialUsername") String partialUsername);
