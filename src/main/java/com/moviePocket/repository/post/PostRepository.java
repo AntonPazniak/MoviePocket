@@ -31,6 +31,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             "ORDER BY likeCount DESC")
     List<Post> findTop10LikedPosts();
 
-    @Query("SELECT u FROM Post u WHERE u.title LIKE :partialTitle%")
+    @Query("SELECT lm FROM Post lm WHERE LOWER(lm.title) LIKE LOWER(CONCAT('%', :partialTitle, '%'))")
     List<Post> findAllByPartialTitle(@Param("partialTitle") String partialTitle);
 }

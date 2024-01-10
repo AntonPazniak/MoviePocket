@@ -252,7 +252,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity<List<UserPostDto>> findByPartialUsername(String username) {
-        if (username.equals(""))
+        if (username.isEmpty())
             return ResponseEntity.ok(null);
         List<User> users = userRepository.findByPartialUsername(username);
         if (users == null)

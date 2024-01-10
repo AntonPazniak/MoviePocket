@@ -202,14 +202,14 @@ public class MovieListServiceImpl implements MovieListService {
     }
 
     public ResponseEntity<List<ParsList>> getAllByPartialTitle(String title) {
-        if (title.equals(""))
+        if (title.isEmpty())
             return ResponseEntity.ok(null);
         List<ListMovie> movieLists = movieListRepository.findAllByPartialTitle(title);
         if (movieLists == null )
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         List<ParsList> parsLists = new ArrayList<>();
         for (ListMovie list : movieLists) {
-            parsLists.add(parsListWithMovies(list));
+            parsLists.add(parsListWithoutMovies(list));
         }
 
         return ResponseEntity.ok(parsLists);

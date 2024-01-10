@@ -21,6 +21,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     User findByUsername(String username);
 
-    @Query("SELECT u FROM User u WHERE u.username LIKE :partialUsername%")
+    @Query("SELECT u FROM User u WHERE LOWER(u.username) LIKE LOWER(CONCAT('%', :partialUsername, '%'))")
     List<User> findByPartialUsername(@Param("partialUsername") String partialUsername);
+
 }
