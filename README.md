@@ -174,7 +174,11 @@ Both front and back end are deployed on remote linux server provided by [UAM WMI
 Server information and connection credentials can be found [Here](Documentation%2FDeploy%2FNowa_maszyna_wirtualna_Helpdesk_WMI_Biuro_Obs%3Fugi_Klienta.pdf)
 #### Mobile App Deployment
 
-Android app is deployed to [Google Play](https://play.google.com/store/apps?hl=en&gl=US&pli=1)
+Android app is deployed to [Google Play](https://play.google.com/store/apps/details?id=com.moviepocket)
+
+Deployment provider: [Schizo Cat](https://play.google.com/store/apps/dev?id=6707405097009647771)
+
+Contact: goggigameproduction@gmail.com
 
 ## Contributing
 
@@ -188,7 +192,10 @@ Android: https://github.com/AntonPazniak/MoviePocketAndroid/tree/master
 
 ### Testing
 
-Document the testing strategy for backend, frontend, and mobile app components.
+[JUnit5](https://junit.org/junit5/) and [Mockito](https://site.mockito.org/) libraries are used for backend testing
+[Jacoco](https://github.com/jacoco/jacoco) for static code coverage analysis 
+
+![TestCodeCoverageBackend.png](Documentation%2FDeploy%2FTestCodeCoverageBackend.png)
 
 ### Changelog
 
