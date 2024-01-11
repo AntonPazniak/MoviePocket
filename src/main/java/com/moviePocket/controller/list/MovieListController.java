@@ -71,6 +71,16 @@ public class MovieListController {
         return movieListService.deleteList(authentication.getName(), idMovieList);
     }
 
+    @ApiOperation(value = "Return boolean saying whether movie is already in list of not", notes = "Return Boolean true if it is")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Movie is in list"),
+            @ApiResponse(code = 404, message = "List is not found")
+    })
+    @GetMapping("/isInList")
+    public ResponseEntity<Boolean> isMovieInList(@RequestParam("idList") Long idList, @RequestParam("idMovie") Long idMovie) {
+        return movieListService.isMovieInList(idList, idMovie);
+    }
+
 
     @ApiOperation(value = "Get movie list", notes = "Returns a list of movies for the given movie list ID")
     @ApiResponses(value = {
@@ -83,13 +93,13 @@ public class MovieListController {
         return movieListService.getList(idMovieList);
     }
 
-    @ApiOperation(value = "Get movie list by title", notes = "Returns a list of movies that matches the title if it doesn't match it's empty list")
+    @ApiOperation(value = "Get movie list by partial title", notes = "Returns a list of movies that matches the title if it doesn't match it's empty list")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully retrieved movie list"),
     })
     @GetMapping("/get/title")
-    public ResponseEntity<?> getMovieListByTitle(@RequestParam("title") String title) {
-        return movieListService.getAllByTitle(title);
+    public ResponseEntity<?> getMovieListByPartialTitle(@RequestParam("title") String title) {
+        return movieListService.getAllByPartialTitle(title);
     }
 
     @ApiOperation(value = "Add or delete movie from list", notes = "Adds or deletes a movie from the specified movie list")
@@ -180,4 +190,15 @@ public class MovieListController {
     public ResponseEntity<List<Genre>> getAllGenre() {
         return categoriesMovieListService.getAll();
     }
+
+    @GetMapping("/get/last")
+    public ResponseEntity<List<ParsList>> getLast() {
+        return movieListService.getTop10LatestLists();
+    }
+
+    @GetMapping("/get/top")
+    public ResponseEntity<List<ParsList>> getTop() {
+        return movieListService.getTop10LikedLists();
+    }
+
 }

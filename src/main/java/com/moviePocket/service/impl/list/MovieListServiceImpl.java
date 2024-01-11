@@ -7,10 +7,15 @@ import com.moviePocket.entities.list.ListMovie;
 import com.moviePocket.entities.list.ParsList;
 import com.moviePocket.entities.movie.Genre;
 import com.moviePocket.entities.movie.Movie;
+import com.moviePocket.entities.review.Review;
+import com.moviePocket.entities.review.ReviewList;
 import com.moviePocket.entities.user.User;
 import com.moviePocket.repository.list.LikeListRepository;
 import com.moviePocket.repository.list.ListGenreRepository;
 import com.moviePocket.repository.list.MovieListRepository;
+import com.moviePocket.repository.review.LikeReviewRepository;
+import com.moviePocket.repository.review.ReviewListRepository;
+import com.moviePocket.repository.review.ReviewRepository;
 import com.moviePocket.repository.user.UserRepository;
 import com.moviePocket.service.impl.image.ImageServiceImpl;
 import com.moviePocket.service.impl.movie.MovieServiceImpl;
@@ -26,6 +31,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 @Service
@@ -42,7 +48,14 @@ public class MovieListServiceImpl implements MovieListService {
     private final ListGenreRepository listGenreRepository;
 
     private final MovieServiceImpl movieService;
+
     private final ImageServiceImpl imageService;
+
+    private final ReviewRepository reviewRepository;
+
+    private final LikeReviewRepository likeReviewRepository;
+
+    private final ReviewListRepository reviewListRepository;
 
     @Transactional
     public ResponseEntity<ParsList> setList(String email, String title, String content) throws NotFoundException {
@@ -76,16 +89,31 @@ public class MovieListServiceImpl implements MovieListService {
     public ResponseEntity<Void> deleteList(String email, Long idMovieList) {
         User user = userRepository.findByEmail(email);
         ListMovie movieList = movieListRepository.getById(idMovieList);
-        if (user == null)
+        List<Review> reviewList = reviewListRepository.findReviewsByMovieList(movieList);
+
+        if (user == null) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        else if (movieList == null)
+        } else if (movieList == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        else if (movieList.getUser() != user) {
+        } else if (!Objects.equals(movieList.getUser(), user)) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         } else {
+            if (reviewList != null) {
+                for (Review review : reviewList) {
+                    ReviewList reviewListEntity = reviewListRepository.findByReview(review);
+
+                    if (reviewListEntity != null)
+                        reviewListRepository.delete(reviewListEntity);
+
+                    likeReviewRepository.deleteAllByReview(review);
+                    reviewRepository.delete(review);
+                }
+            }
+
             likeListRepository.deleteAllByMovieList(movieList);
             listGenreRepository.deleteAllByMovieList(movieList);
             movieListRepository.delete(movieList);
+
             return new ResponseEntity<>(HttpStatus.OK);
         }
     }
@@ -173,9 +201,32 @@ public class MovieListServiceImpl implements MovieListService {
         }
     }
 
-    public ResponseEntity<List<ParsList>> getAllByTitle(String title) {
-        List<ListMovie> movieLists = movieListRepository.findAllByTitle(title);
-        return ResponseEntity.ok(parsLists(movieLists));
+    public ResponseEntity<List<ParsList>> getAllByPartialTitle(String title) {
+        if (title.isEmpty())
+            return ResponseEntity.ok(null);
+        List<ListMovie> movieLists = movieListRepository.findAllByPartialTitle(title);
+        if (movieLists == null )
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        List<ParsList> parsLists = new ArrayList<>();
+        for (ListMovie list : movieLists) {
+            parsLists.add(parsListWithoutMovies(list));
+        }
+
+        return ResponseEntity.ok(parsLists);
+    }
+
+    @Override
+    public ResponseEntity<Boolean> isMovieInList(Long idMovieList, Long idMovie) {
+        ListMovie list = movieListRepository.getById(idMovieList);
+        if (list == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        if (list.getMovies().stream().anyMatch(movie -> movie.getId().equals(idMovie))) {
+            return ResponseEntity.ok(true);
+        } else {
+            return ResponseEntity.ok(false);
+        }
     }
 
     private List<ParsList> parsLists(List<ListMovie> movieList) {
@@ -271,6 +322,23 @@ public class MovieListServiceImpl implements MovieListService {
             System.out.println(e);
         }
         return ResponseEntity.ok(false);
+    }
+
+    public ResponseEntity<List<ParsList>> getTop10LatestLists() {
+        List<ListMovie> list = movieListRepository.findTop10LatestLists();
+        if (!list.isEmpty())
+            return ResponseEntity.ok(parsLists(list));
+        else
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+
+    public ResponseEntity<List<ParsList>> getTop10LikedLists() {
+        List<ListMovie> list = movieListRepository.findTop10LikedLists();
+        if (!list.isEmpty())
+            return ResponseEntity.ok(parsLists(list));
+        else
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
 }

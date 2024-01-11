@@ -58,7 +58,7 @@ public class WatchedMovieServiceImpl implements WatchedMovieService {
     }
 
     public ResponseEntity<List<Movie>> getAllUserWatched(String email) {
-        List<WatchedMovie> watchedList = watchedMovieRepository.findAllByUser(
+        List<WatchedMovie> watchedList = watchedMovieRepository.findAllByUserOrderByCreatedAsc(
                 userRepository.findByEmail(email));
         List<Movie> movies = watchedList.stream()
                 .map(WatchedMovie::getMovie)

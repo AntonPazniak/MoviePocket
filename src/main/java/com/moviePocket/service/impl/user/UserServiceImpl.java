@@ -1,5 +1,6 @@
 package com.moviePocket.service.impl.user;
 
+import com.moviePocket.controller.dto.UserPostDto;
 import com.moviePocket.controller.dto.UserRegistrationDto;
 import com.moviePocket.entities.image.ImageEntity;
 import com.moviePocket.entities.user.*;
@@ -21,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.mail.MessagingException;
 import javax.transaction.Transactional;
 import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -129,7 +131,7 @@ public class UserServiceImpl implements UserService {
 
         if (user == null)
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        else if (file.getSize() > 1048576) {
+        else if (file.getSize() > 7340032) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } else {
             if (user.getAvatar() != null)
@@ -246,6 +248,19 @@ public class UserServiceImpl implements UserService {
             forgotPasswordRepository.deleteAllByUser(user);
             return new ResponseEntity<>(HttpStatus.OK);
         }
+    }
+
+    @Override
+    public ResponseEntity<List<UserPostDto>> findByPartialUsername(String username) {
+        if (username.isEmpty())
+            return ResponseEntity.ok(null);
+        List<User> users = userRepository.findByPartialUsername(username);
+        if (users == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        List<UserPostDto> userPostDtos = users.stream()
+                .map(user -> new UserPostDto(user.getUsername(), user.getAvatar() != null ? user.getAvatar().getId() : null))
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(userPostDtos);
     }
 
     private void sendEmail(User user, String token) throws MessagingException {

@@ -4,9 +4,14 @@ import com.moviePocket.controller.dto.UserPostDto;
 import com.moviePocket.entities.list.ListMovie;
 import com.moviePocket.entities.movie.Movie;
 import com.moviePocket.entities.post.*;
+import com.moviePocket.entities.review.Review;
+import com.moviePocket.entities.review.ReviewPost;
 import com.moviePocket.entities.user.User;
 import com.moviePocket.repository.list.MovieListRepository;
 import com.moviePocket.repository.post.*;
+import com.moviePocket.repository.review.LikeReviewRepository;
+import com.moviePocket.repository.review.ReviewPostRepository;
+import com.moviePocket.repository.review.ReviewRepository;
 import com.moviePocket.repository.user.UserRepository;
 import com.moviePocket.service.impl.movie.MovieServiceImpl;
 import com.moviePocket.service.inter.post.PostService;
@@ -35,6 +40,9 @@ public class PostServiceImpl implements PostService {
     private final PostPersonRepository postPersonRepository;
 
     private final MovieServiceImpl movieService;
+    private final ReviewPostRepository reviewPostRepository;
+    private final LikeReviewRepository likeReviewRepository;
+    private final ReviewRepository reviewRepository;
 
     public ResponseEntity<ParsPost> createPostList(String email, String title, String content, Long idList) {
         ListMovie movieList = movieListRepository.getById(idList);
@@ -108,6 +116,9 @@ public class PostServiceImpl implements PostService {
     public ResponseEntity<Void> deletePost(String email, Long idPost) {
         User user = userRepository.findByEmail(email);
         Post post = postRepository.getById(idPost);
+        List<Review> reviewsPost = reviewPostRepository.findReviewsByPost(post);
+
+
         if (user == null)
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         else if (post == null)
@@ -115,6 +126,22 @@ public class PostServiceImpl implements PostService {
         else if (post.getUser() != user) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
+
+        if (reviewsPost != null) {
+            for (Review review : reviewsPost) {
+                ReviewPost reviewPostEntity = reviewPostRepository.findByReview(review);
+
+                if (reviewPostEntity != null) {
+                    reviewPostRepository.delete(reviewPostEntity);
+                    likeReviewRepository.deleteAllByReview(review);
+                    reviewRepository.delete(review);
+                }
+            }
+        }
+
+
+        likePostRepository.deleteAllByPost(post);
+
         PostList postList = postListRepository.findByPost(post);
         if (postList != null) {
             postListRepository.delete(postList);
@@ -122,6 +149,7 @@ public class PostServiceImpl implements PostService {
             return new ResponseEntity<>(HttpStatus.OK);
         }
         PostMovie postMovie = postMovieRepository.findByPost(post);
+
         if (postMovie != null) {
             postMovieRepository.delete(postMovie);
             postRepository.delete(post);
@@ -161,6 +189,15 @@ public class PostServiceImpl implements PostService {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
+    public ResponseEntity<List<ParsPost>> getAllByUser(String email) {
+        User user = userRepository.findByEmail(email);
+        List<Post> posts = postRepository.findAllByUser(user);
+        if (posts != null) {
+            return ResponseEntity.ok(parsPost(posts));
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
     public ResponseEntity<List<ParsPost>> getAllByIdList(Long idList) {
         List<PostList> list = postListRepository.findAllByMovieList_Id(idList);
         if (list != null) {
@@ -177,6 +214,16 @@ public class PostServiceImpl implements PostService {
     @Override
     public ResponseEntity<List<ParsPost>> getAllByTitle(String title) {
         List<Post> posts = postRepository.findAllByTitle(title);
+        return ResponseEntity.ok(parsPost(posts));
+    }
+
+    @Override
+    public ResponseEntity<List<ParsPost>> getAllByPartialTitle(String title) {
+        if (title.equals(""))
+            return ResponseEntity.ok(null);
+        List<Post> posts = postRepository.findAllByPartialTitle(title);
+        if (posts == null )
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         return ResponseEntity.ok(parsPost(posts));
     }
 
@@ -277,4 +324,21 @@ public class PostServiceImpl implements PostService {
         }
         return ResponseEntity.ok(false);
     }
+
+    public ResponseEntity<List<ParsPost>> getTop10LatestPosts() {
+        List<Post> posts = postRepository.findTop10LatestPosts();
+        if (!posts.isEmpty())
+            return ResponseEntity.ok(parsPost(posts));
+        else
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    public ResponseEntity<List<ParsPost>> getTop10LikedPosts() {
+        List<Post> posts = postRepository.findTop10LikedPosts();
+        if (!posts.isEmpty())
+            return ResponseEntity.ok(parsPost(posts));
+        else
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
 }

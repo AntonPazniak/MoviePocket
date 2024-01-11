@@ -145,7 +145,7 @@ public class ImageServiceImpl implements ImageService {
     public ImageEntity resizeImage(MultipartFile file) {
         try {
 
-            if (file.getSize() > 1048576) {
+            if (file.getSize() > 7340032) {
                 // You can handle the case where the file size is too large, for example, throw an exception or return null
                 throw new IllegalArgumentException("File size exceeds the maximum allowed size (1 MB).");
             }

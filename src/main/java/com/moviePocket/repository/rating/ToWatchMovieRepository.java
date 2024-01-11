@@ -14,10 +14,12 @@ public interface ToWatchMovieRepository extends JpaRepository<ToWatchMovie,Long>
 
     ToWatchMovie findByUserAndMovie_Id(User user, Long idMovie);
 
-    List<ToWatchMovie> findAllByUser(User user);
-
     @Query("SELECT COUNT(u) FROM ToWatchMovie u WHERE u.movie.id = :movieId")
     int getAllCountByIdMovie(@Param("movieId") Long idMovie);
+
+    @Query("SELECT u FROM ToWatchMovie u WHERE u.user = :user ORDER BY u.created ASC")
+    List<ToWatchMovie> findAllByUserOrderByCreatedAsc(@Param("user") User user);
+
 
 
 }

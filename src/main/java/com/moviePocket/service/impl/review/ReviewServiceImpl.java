@@ -116,32 +116,30 @@ public class ReviewServiceImpl implements ReviewService {
 
         if (user == null) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        } else if (review == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } else if (!Objects.equals(review.getUser(), user)) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        } else {
-            ReviewMovie reviewMovie = reviewMovieRepository.findByReview(review);
-            if (reviewMovie != null) {
-                reviewMovieRepository.delete(reviewMovie);
-                likeReviewRepository.deleteAllByReview(review);
-                reviewRepository.delete(review);
-                return new ResponseEntity<>(HttpStatus.OK);
-            }
-            ReviewList reviewList = reviewListRepository.findByReview(review);
-            if (reviewList != null) {
-                reviewListRepository.delete(reviewList);
-                likeReviewRepository.deleteAllByReview(review);
-                reviewRepository.delete(review);
-                return new ResponseEntity<>(HttpStatus.OK);
-            }
-            ReviewPost reviewPost = reviewPostRepository.findByReview(review);
-            if (reviewPost != null) {
-                reviewPostRepository.delete(reviewPost);
-                likeReviewRepository.deleteAllByReview(review);
-                reviewRepository.delete(review);
-            }
         }
+
+        if (review == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        if (!Objects.equals(review.getUser(), user)) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
+        ReviewMovie reviewMovie = reviewMovieRepository.findByReview(review);
+        ReviewList reviewList = reviewListRepository.findByReview(review);
+        ReviewPost reviewPost = reviewPostRepository.findByReview(review);
+
+        if (reviewMovie != null) {
+            reviewMovieRepository.delete(reviewMovie);
+        } else if (reviewList != null) {
+            reviewListRepository.delete(reviewList);
+        } else if (reviewPost != null) {
+            reviewPostRepository.delete(reviewPost);
+        }
+
+        likeReviewRepository.deleteAllByReview(review);
+        reviewRepository.delete(review);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

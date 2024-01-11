@@ -54,7 +54,7 @@ public class FavoriteMovieServiceImpl implements FavoriteMovieService {
     }
 
     public ResponseEntity<List<Movie>> getAllUserFavoriteMovies(String email) {
-        List<FavoriteMovie> favoriteMoviesList = favoriteMoviesRepository.findAllByUser(
+        List<FavoriteMovie> favoriteMoviesList = favoriteMoviesRepository.findAllByUserOrderByCreatedAsc(
                 userRepository.findByEmail(email));
         List<Movie> movies = new ArrayList<>();
         for (FavoriteMovie favoriteMovies : favoriteMoviesList) {
