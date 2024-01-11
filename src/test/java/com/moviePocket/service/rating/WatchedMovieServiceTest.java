@@ -61,7 +61,7 @@ class WatchedMovieServiceImplTest {
         List<WatchedMovie> watchedList = new ArrayList<>();
         watchedList.add(new WatchedMovie(user, new Movie()));
 
-        Mockito.when(watchedMovieRepository.findAllByUser(user)).thenReturn(watchedList);
+        Mockito.when(watchedMovieRepository.findAllByUserOrderByCreatedAsc(user)).thenReturn(watchedList);
 
         ResponseEntity<List<Movie>> response = watchedMovieService.getAllUserWatched("test@example.com");
 

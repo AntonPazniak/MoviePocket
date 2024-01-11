@@ -122,7 +122,8 @@ public class FavoriteMovieServiceImplTest {
         List<FavoriteMovie> favoriteMoviesList = new ArrayList<>();
         favoriteMoviesList.add(new FavoriteMovie(user, new Movie()));
 
-        when(favoriteMovieRepository.findAllByUser(user)).thenReturn(favoriteMoviesList);
+        // Mocking behavior for findAllByUser
+        when(favoriteMovieRepository.findAllByUserOrderByCreatedAsc(user)).thenReturn(favoriteMoviesList);
 
         ResponseEntity<List<Movie>> response = favoriteMovieService.getAllUserFavoriteMovies("test@example.com");
 
@@ -134,7 +135,7 @@ public class FavoriteMovieServiceImplTest {
     void testGetAllUserFavoriteMovies_NoFavorites() {
         User user = new User();
         when(userRepository.findByEmail(Mockito.anyString())).thenReturn(user);
-        when(favoriteMovieRepository.findAllByUser(user)).thenReturn(new ArrayList<>());
+        when(favoriteMovieRepository.findAllByUserOrderByCreatedAsc(user)).thenReturn(new ArrayList<>());
 
         ResponseEntity<List<Movie>> response = favoriteMovieService.getAllUserFavoriteMovies("test@example.com");
 

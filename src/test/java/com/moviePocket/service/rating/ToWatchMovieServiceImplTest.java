@@ -131,7 +131,7 @@ class ToWatchMovieServiceImplTest {
     void testGetAllUserToWatch_NoMoviesInToWatch() {
         User user = new User();
         Mockito.when(userRepository.findByEmail(Mockito.anyString())).thenReturn(user);
-        Mockito.when(toWatchMovieRepository.findAllByUser(user)).thenReturn(new ArrayList<>());
+        Mockito.when(toWatchMovieRepository.findAllByUserOrderByCreatedAsc(user)).thenReturn(new ArrayList<>());
 
         ResponseEntity<List<Movie>> response = toWatchMovieService.getAllUserToWatch("test@example.com");
 
@@ -147,7 +147,7 @@ class ToWatchMovieServiceImplTest {
         List<ToWatchMovie> toWatchList = new ArrayList<>();
         toWatchList.add(new ToWatchMovie(user, new Movie()));
 
-        Mockito.when(toWatchMovieRepository.findAllByUser(user)).thenReturn(toWatchList);
+        Mockito.when(toWatchMovieRepository.findAllByUserOrderByCreatedAsc(user)).thenReturn(toWatchList);
 
         ResponseEntity<List<Movie>> response = toWatchMovieService.getAllUserToWatch("test@example.com");
 
