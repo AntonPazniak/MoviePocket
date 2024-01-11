@@ -1,3 +1,12 @@
+/*
+ * ******************************************************
+ *  Copyright (C)  MoviePocket <prymakdn@gmail.com>
+ *  This file is part of MoviePocket.
+ *  MoviePocket can not be copied and/or distributed without the express
+ *  permission of Danila Prymak, Alexander Trafimchyk and Anton Pozniak
+ * *****************************************************
+ */
+
 package com.moviePocket.service.impl.user;
 
 import com.moviePocket.controller.dto.UserPostDto;
@@ -41,6 +50,7 @@ public class UserServiceImpl implements UserService {
     private final NewEmailRepository newEmailRepository;
     private final ForgotPasswordRepository forgotPasswordRepository;
     private final ImageServiceImpl imageService;
+
     @Override
     public void save(UserRegistrationDto userDto) throws MessagingException {
         Role role = roleRepository.findByName(TbConstants.Roles.USER);
@@ -153,7 +163,7 @@ public class UserServiceImpl implements UserService {
         if (user == null)
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         else if (user.getAvatar() == null) {
-           return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         ImageEntity image = user.getAvatar();
 

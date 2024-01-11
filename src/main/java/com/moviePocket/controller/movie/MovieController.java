@@ -1,3 +1,12 @@
+/*
+ * ******************************************************
+ *  Copyright (C)  MoviePocket <prymakdn@gmail.com>
+ *  This file is part of MoviePocket.
+ *  MoviePocket can not be copied and/or distributed without the express
+ *  permission of Danila Prymak, Alexander Trafimchyk and Anton Pozniak
+ * *****************************************************
+ */
+
 package com.moviePocket.controller.movie;
 
 import com.moviePocket.controller.dto.MovieDto;
@@ -28,7 +37,6 @@ public class MovieController {
     private final MovieListService movieListService;
 
 
-
     @GetMapping("/{idMovie}")
     public ResponseEntity<MovieDto> getMovieInfo(@PathVariable("idMovie") Long idMovie) {
         MovieDto movieDto = new MovieDto(
@@ -48,7 +56,6 @@ public class MovieController {
 //        movieService.setMovie(idMovie);
 //        return new ResponseEntity<>(HttpStatus.OK);
 //    }
-
 
 
 }

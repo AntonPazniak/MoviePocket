@@ -1,3 +1,12 @@
+/*
+ * ******************************************************
+ *  Copyright (C)  MoviePocket <prymakdn@gmail.com>
+ *  This file is part of MoviePocket.
+ *  MoviePocket can not be copied and/or distributed without the express
+ *  permission of Danila Prymak, Alexander Trafimchyk and Anton Pozniak
+ * *****************************************************
+ */
+
 package com.moviePocket.controller.post;
 
 import com.moviePocket.entities.post.ParsPost;
@@ -40,16 +49,16 @@ public class PostController {
 
     @PostMapping("/movie/set")
     public ResponseEntity<ParsPost> setNewPostMovie(@RequestParam("title") String title,
-                                             @RequestBody String content,
-                                             @RequestParam("idMovie") Long idMovie) {
+                                                    @RequestBody String content,
+                                                    @RequestParam("idMovie") Long idMovie) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return postService.createPostMovie(authentication.getName(), title, content, idMovie);
     }
 
     @PostMapping("/person/set")
     public ResponseEntity<ParsPost> setNewPostPerson(@RequestParam("title") String title,
-                                              @RequestBody String content,
-                                              @RequestParam("idPerson") Long idPerson) {
+                                                     @RequestBody String content,
+                                                     @RequestParam("idPerson") Long idPerson) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return postService.createPostPerson(authentication.getName(), title, content, idPerson);
     }
@@ -69,7 +78,6 @@ public class PostController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return postService.updatePost(authentication.getName(), idPost, title, content);
     }
-
 
 
     @ApiOperation(value = "Delete post and all that it had(movie lists in it and likes from other 2 tables", notes = "Return Http response Ok")
@@ -119,7 +127,7 @@ public class PostController {
     }
 
 
-        @ApiOperation(value = "Get post by title", notes = "Returns a post that matches the title")
+    @ApiOperation(value = "Get post by title", notes = "Returns a post that matches the title")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully retrieved post"),
     })
@@ -127,6 +135,7 @@ public class PostController {
     public ResponseEntity<?> getPostByPartialTitle(@RequestParam("title") String title) {
         return postService.getAllByPartialTitle(title);
     }
+
     @ApiOperation(value = "Like or dislike post", notes = "Likes or dislikes the specified post")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Successfully liked or disliked post"),
@@ -151,7 +160,7 @@ public class PostController {
         return postService.authorshipCheck(idPost, authentication.getName());
     }
 
-//    @ApiOperation(value = "Get all my posts", notes = "Returns a list of all posts for the authenticated user")
+    //    @ApiOperation(value = "Get all my posts", notes = "Returns a list of all posts for the authenticated user")
 //    @ApiResponses(value = {
 //            @ApiResponse(code = 200, message = "Successfully retrieved all posts for authenticated user"),
 //            @ApiResponse(code = 401, message = "User not authenticated")
@@ -224,7 +233,7 @@ public ResponseEntity<Boolean> getAllLikePostsByIdMovie(@RequestParam("idPost") 
 //        return likePostService.getLeastLikedPosts();
 //    }
 
-//    @ApiOperation(value = "Get the least liked(popular) posts", notes = "Returns a sorted list of posts from most least to liked")
+    //    @ApiOperation(value = "Get the least liked(popular) posts", notes = "Returns a sorted list of posts from most least to liked")
 //    @ApiResponses(value = {
 //            @ApiResponse(code = 200, message = "Successfully retrieved all posts "),
 //            @ApiResponse(code = 404, message = "Not found")

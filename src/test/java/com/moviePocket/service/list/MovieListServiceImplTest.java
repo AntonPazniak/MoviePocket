@@ -1,10 +1,17 @@
+/*
+ * ******************************************************
+ *  Copyright (C)  MoviePocket <prymakdn@gmail.com>
+ *  This file is part of MoviePocket.
+ *  MoviePocket can not be copied and/or distributed without the express
+ *  permission of Danila Prymak, Alexander Trafimchyk and Anton Pozniak
+ * *****************************************************
+ */
+
 package com.moviePocket.service.list;
 
-import com.moviePocket.controller.admin.AdminController;
 import com.moviePocket.entities.list.ListMovie;
 import com.moviePocket.entities.list.ParsList;
 import com.moviePocket.entities.movie.Movie;
-import com.moviePocket.entities.post.Post;
 import com.moviePocket.entities.review.ParsReview;
 import com.moviePocket.entities.review.Review;
 import com.moviePocket.entities.review.ReviewMovie;
@@ -15,17 +22,13 @@ import com.moviePocket.repository.list.MovieListRepository;
 import com.moviePocket.repository.post.PostRepository;
 import com.moviePocket.repository.review.*;
 import com.moviePocket.repository.user.UserRepository;
-import com.moviePocket.service.impl.image.ImageServiceImpl;
 import com.moviePocket.service.impl.list.MovieListServiceImpl;
 import com.moviePocket.service.impl.movie.MovieServiceImpl;
 import com.moviePocket.service.impl.review.ReviewServiceImpl;
-import com.moviePocket.service.inter.raview.ReviewService;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +37,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 

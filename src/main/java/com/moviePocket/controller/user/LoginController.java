@@ -1,3 +1,12 @@
+/*
+ * ******************************************************
+ *  Copyright (C)  MoviePocket <prymakdn@gmail.com>
+ *  This file is part of MoviePocket.
+ *  MoviePocket can not be copied and/or distributed without the express
+ *  permission of Danila Prymak, Alexander Trafimchyk and Anton Pozniak
+ * *****************************************************
+ */
+
 package com.moviePocket.controller.user;
 
 import com.moviePocket.controller.dto.UserRegistrationDto;
@@ -29,6 +38,7 @@ import javax.validation.Valid;
 public class LoginController {
 
     private final UserService userService;
+
     @RequestMapping("/login")
     public String loginForm() {
         return "login";

@@ -1,7 +1,15 @@
+/*
+ * ******************************************************
+ *  Copyright (C)  MoviePocket <prymakdn@gmail.com>
+ *  This file is part of MoviePocket.
+ *  MoviePocket can not be copied and/or distributed without the express
+ *  permission of Danila Prymak, Alexander Trafimchyk and Anton Pozniak
+ * *****************************************************
+ */
+
 package com.moviePocket.service.post;
 
 import com.moviePocket.entities.list.ListMovie;
-import com.moviePocket.entities.movie.Movie;
 import com.moviePocket.entities.post.*;
 import com.moviePocket.entities.user.User;
 import com.moviePocket.repository.list.MovieListRepository;
@@ -12,13 +20,9 @@ import com.moviePocket.repository.review.ReviewPostRepository;
 import com.moviePocket.repository.user.UserRepository;
 import com.moviePocket.service.impl.movie.MovieServiceImpl;
 import com.moviePocket.service.impl.post.PostServiceImpl;
-import com.moviePocket.service.inter.post.PostService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -337,7 +341,7 @@ class PostServiceTest {
         ResponseEntity<ParsPost> response = postService.getPost(idPost);
 
         // Assertions
-         assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
     @Test

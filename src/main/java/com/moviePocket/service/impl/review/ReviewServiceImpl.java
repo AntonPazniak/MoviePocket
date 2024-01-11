@@ -1,3 +1,12 @@
+/*
+ * ******************************************************
+ *  Copyright (C)  MoviePocket <prymakdn@gmail.com>
+ *  This file is part of MoviePocket.
+ *  MoviePocket can not be copied and/or distributed without the express
+ *  permission of Danila Prymak, Alexander Trafimchyk and Anton Pozniak
+ * *****************************************************
+ */
+
 package com.moviePocket.service.impl.review;
 
 import com.moviePocket.controller.dto.UserPostDto;
@@ -143,7 +152,6 @@ public class ReviewServiceImpl implements ReviewService {
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
 
 
     private Review createReview(String email, String title, String content) {
