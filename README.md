@@ -23,15 +23,20 @@ between users.
     - [API Integration](#api-integration)
 4. [Mobile App Android](#mobile-app-android)
     - [General](#general)
+    - [Dependencies](#dependencies)
+    - [Configuration](#configuration)
+    - [Architecture](#architecture)
+    - [Error Handling](#error-handling)
+    - [Networking](#networking)
     - [Authentication](#authentication)
-    - [Deployment](#deployment)
-        - [Backend And Frontend Deployment](#backend-and-frontend-deployment)
-        - [Mobile App Deployment](#mobile-app-deployment)
-5. [Contributing](#contributing)
+5. [Deployment](#deployment)
+    - [Backend And Frontend Deployment](#backend-and-frontend-deployment)
+    - [Mobile App Deployment](#mobile-app-deployment)
+6. [Contributing](#contributing)
     - [Version Control](#version-control)
     - [Testing](#testing)
     - [Changelog](#changelog)
-6. [License](#license)
+7. [License](#license)
 
 ## Introduction
 
@@ -42,6 +47,7 @@ Explore world of movies with MoviePocket and create your personal unforgettable 
 between users.
 
 ## Backend Java [Spring](https://spring.io/)
+
 ### You will need:
 
 - [Java(at least 1.8)](https://www.oracle.com/java/technologies/downloads/), **Spring boot** version at least 2.7.10 and
@@ -58,6 +64,7 @@ by ```{hostname}/swagger-ui.html ```
 MVP pattern is used.
 
 ![Swagger.png](Documentation%2FSwagger.png)
+
 ### Database Schema
 
 MySql is used. DB script can be found in [DbScript](Documentation/DB_and_UI_prototypes/DbScript) 
@@ -151,7 +158,8 @@ This component utilizes the AuthContext to check if the user is logged in before
 
 ### API Integration
 
-Service is using external [TMDB APi](https://developer.themoviedb.org/reference/intro/getting-started) for several operations such as poster and movie info fetching etc.
+Service is using external [TMDB APi](https://developer.themoviedb.org/reference/intro/getting-started) for several
+operations such as poster and movie info fetching etc.
 
 ## Mobile App [Android](https://developer.android.com/)
 
@@ -160,6 +168,216 @@ Service is using external [TMDB APi](https://developer.themoviedb.org/reference/
 Android 10+ should be used for running
 
 App uses mainly MVC pattern and uses both backend api endpoints and TMDB API.
+
+### Dependencies
+
+implementation 'androidx.viewpager2:viewpager2:1.0.0' implementation of 'com.tbuonomo:dotsindicator:4.2' compileOnly '
+org.projectlombok:lombok:1.18.30' annotationProcessor 'org.projectlombok:lombok:1.18.30' implementation of 'jp.wasabeef:
+blurry:4.0.0' implementation of 'com.google.code.gson:gson:2.8.9' implementation of "androidx.viewpager2:viewpager2:
+1.0.0"
+implementation of 'com.google.android.exoplayer:exoplayer:2.19.1' implementation 'com.ms-square:expandableTextView:
+0.1.4' implementation 'com.github.bumptech.glide:glide:4.12.0' implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.4.1' implementation 'androidx.lifecycle:
+lifecycle-viewmodel-ktx:2.4.1' implementation of 'androidx.navigation:navigation-fragment:2.5.2' implementation '
+androidx.navigation:navigation-ui:2.5.2' implementation 'androidx.recyclerview:recyclerview:1.3.2' annotationProcessor '
+com.github.bumptech.glide:compiler:4.12.0' implementation of 'com.squareup.okhttp3:okhttp:4.9.1' implementation '
+androidx.appcompat:appcompat:1.6.1' implementation 'com.google.android.material:material:1.9.0' implementation '
+androidx.constraintlayout:constraintlayout:2.1.4' testImplementation 'junit:junit:4.13.2' androidTestImplementation '
+androidx.test.ext:junit:1.1.5' androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+
+These libraries are used in my Android application for various purposes like ViewPager2 support, adding dots indicator
+to ViewPager, blur support, JSON parsing with Gson library, ExoPlayer media player support, extensible text view,
+loading images with Glide, support for LiveData and ViewModel architecture with Lifecycle, navigation between fragments
+with Navigation, support for RecyclerView scroll list, support for network communication with OkHttp library, UI support
+with AppCompat, Material Design and ConstraintLayout, testing with JUnit and testing user interface using Espresso.
+
+Remember to regularly update your libraries and track their versions to maintain security and compliance with the latest
+standards.
+
+### Configuration
+
+I'm using a Gradle build system for my Android app. Below is the build configuration:
+
+1. Plugins:
+    - 'com.android.application' - Plugin for building Android applications.
+    - 'org.jetbrains.dokka' - Plugin for generating documentation from source code.
+
+2. Android Setup:
+    - namespace - The namespace of the Android application.
+    - compileSdk - The SDK version the application uses.
+    - defaultConfig - Default configuration, including, among others: application ID, minimum and target SDK versions,
+      version code, and version name.
+    - buildTypes - Configuration of build types, e.g. "release" mode with minification and ProGuard files enabled or
+      disabled.
+    - compileOptions - Compilation settings such as source and target code compatibility with Java 11.
+    - buildFeatures - View Binding feature enabled.
+
+3. Plugins version:
+    - 'com.android.application' and 'com.android.library' in version '8.1.4', but they are disabled (apply false).
+
+The above configuration describes how to build, compile and configure Android applications using Gradle.
+
+### Architecture
+
+A general idea of the application architecture:
+
+Your app uses an architectural approach using the Android Navigation Component to manage navigation between fragments.
+The application probably uses a Single Activity approach, where the main activity contains a container for displaying
+fragments and manages their visibility.
+
+Basic components and their interactions:
+
+1. MainActivity:
+    - The main activity of the application, which contains a container for displaying fragments.
+    - Responsible for initialization and management of the Navigation Component.
+
+2. Fragments:
+    - HomeFragment: Displays the home screen and contains links to various fragments such as movieFragment,
+      loginFragment, movieListFragment and listFragment.
+    - SearchFragment: Responsible for displaying the search screen and contains links to various fragments such as
+      movieFragment, personFragment, searchResultsFragment and others.
+    - UserFragment: Displays the user's screen and contains links to various fragments such as movieFragment,
+      movieTokFragment, loginFragment and userEditFragment.
+    - MovieFragment, PersonFragment, MovieTokFragment, LoginFragment and others: Screens to display information about
+      movies, people, reviews, etc.
+    - FeedFragment, FeedListFragment, FeedPostFragment: Screens related to displaying news and its components.
+
+3. Navigation graphics:
+    - Defined in the navigation XML file (res/navigation/mobile_navigation.xml).
+    - Contains fragments and actions to manage navigation between them.
+
+4. adapter: A package containing various adapters for displaying data in lists and other interface components.
+
+    - search: A subpackage with adapters related to search.
+
+5. animation: A package where, presumably, the Animation class is located. It might be related to animations in the
+   application.
+
+6. api: A package containing classes for interacting with external APIs.
+
+    - models: Data models designed for working with external APIs. Here, models for lists of movies, episodes, actors,
+      etc., are presented.
+
+    - MP: A subpackage, possibly related to the internal API of your project. It includes classes for various aspects of
+      the API, such as ratings, authentication, lists, etc.
+
+    - TMDB: A subpackage related to The Movie Database (TMDB) API.
+
+7. ui: A package containing classes for the user interface.
+
+    - dialog: Classes for working with dialogs, including RatingDialog.
+
+    - feed: Classes related to the news feed, including fragments and view models.
+
+    - firstRun: The FirstRunActivity class, associated with the first launch of the application.
+
+    - home: Classes associated with the home screen of the application.
+
+    - list: Fragments and view models for working with various lists.
+
+    - login: Classes related to the login process.
+
+    - lostPassword: Classes related to password recovery.
+
+    - movie: Classes related to displaying information about movies.
+
+    - movieTok: The MovieTokFragment class, possibly associated with some movie-related functionality.
+
+    - person: Classes related to displaying information about individuals.
+
+    - post: Classes related to posts and their editing.
+
+    - registration: Classes related to the registration process.
+
+    - review: Classes related to movie reviews.
+
+    - search: Classes related to search functionality.
+
+    - settings: Classes related to application settings.
+
+    - style: The StyleActivity class, associated with styling the application.
+
+    - user: Classes related to users.
+
+8. utils: Utility classes, such as date conversion, image handling, internet connection checking, and other auxiliary
+   functions.
+
+9. view: A package containing custom widgets or widgets with modified behavior.
+
+    - circularImageView: A widget for circular images.
+
+    - roundedImageView: A widget for images with rounded corners.
+
+10. MainActivity.java: The main class of your application, which is likely the entry point.
+
+11. MainApplication.java: The application class where application initialization and setup occur.
+
+12. MoviePocketApi.java: Possibly a class related to the API of your application.
+
+13. R.java: An automatically generated file containing references to resources.
+
+Gradle:
+
+* Plugins:
+    * com.android.application: Plugin for building Android applications.
+    * org.jetbrains.dokka: Plugin for generating documentation from code.
+
+* Android Settings:
+    * Namespace: Application namespace com.example.moviepocketandroid.
+    * Compile SDK: SDK version for compilation - 33.
+
+* Primary Configuration:
+    * Application ID: Application identifier in the package - com.moviepocket.
+    * Minimum SDK Version: 28.
+    * Target SDK Version: 33.
+    * Application Version: Version code - 2, version name - "2".
+    * Test Runner: Instrumentation runner used for tests - "androidx.test.runner.AndroidJUnitRunner".
+
+* Build Types:
+    * Release:
+        * Optimizations: Disabled (minifyEnabled false).
+        * Proguard: Proguard configuration files for optimization and code protection.
+
+* Language Settings:
+    * Java Language Version: 11.
+    * View Binding: Enabled.
+
+### Error Handling
+
+Handling errors in the application involves the following steps:
+
+IllegalStateException:
+In the event of an IllegalStateException, the application takes the following steps:
+
+Checks if the fragment is added to the activity (isAdded()). Checks if the context is not equal to null (getContext() !=
+null). If both checks pass, corresponding actions are executed. In this case, the onDestroy() method is called to
+perform necessary cleanup or other actions. NullPointerException:
+In the event of a NullPointerException, the application takes the following steps:
+
+Logs an error message containing information about the exception (Log.e(TAG, "NullPointerException occurred: " +
+e.getMessage())). Performs additional error handling according to the application's requirements. This may include
+notifying the user, displaying an error message, etc.
+
+### Networking
+
+Network interactions:
+
+- Details of interactions with backend servers or APIs:
+    - The application communicates with backend servers using two secured protocols: HTTPS (HTTP Secure) to encrypt
+      transmitted data and ensure the security of communication between the client and the server.
+
+- API endpoints and their functionality:
+    - Two APIs are used: The Movie Database (TMDb) and the MoviePocket API. Each of them provides API endpoints with
+      various functionalities, such as obtaining information about videos, searching, updating data, and other
+      operations necessary for the functioning of the application.
+
+- Handling HTTP requests and responses:
+    - All HTTP requests and responses are handled according to security policies. The application sends secured HTTP
+      requests to APIs using HTTPS. Response processing includes checking statuses and processing data for display or
+      further use in the application.
+
+This ensures safe and effective interaction of the application with backend servers through secured data transmission
+protocols.
 
 ### Authentication
 
