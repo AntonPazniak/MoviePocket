@@ -1,7 +1,16 @@
+/*
+ * ******************************************************
+ *  Copyright (C)  MoviePocket <prymakdn@gmail.com>
+ *  This file is part of MoviePocket.
+ *  MoviePocket can not be copied and/or distributed without the express
+ *  permission of Danila Prymak, Alexander Trafimchyk and Anton Pozniak
+ * *****************************************************
+ */
+
 package com.moviePocket.controller.user;
 
 import com.moviePocket.security.validation.ValidPassword;
-import com.moviePocket.service.UserService;
+import com.moviePocket.service.inter.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,12 +32,12 @@ public class LostPasswordController {
 
     @PostMapping("/setEmail")
     public ResponseEntity<Void> setMail(@RequestParam("email") String email) throws MessagingException {
-        return userService.setTokenPassword(email);
+        return userService.createPasswordToken(email);
     }
 
     @PostMapping("/reset")
     public ResponseEntity<Void> resetPassword(@RequestParam("token") String token, @RequestParam("password0") @ValidPassword String password0, @RequestParam("password1") String password1) {
-        return userService.setNewLostPassword(token, password0, password1);
+        return userService.resetPassword(token, password0);
     }
 
 }

@@ -1,3 +1,12 @@
+/*
+ * ******************************************************
+ *  Copyright (C)  MoviePocket <prymakdn@gmail.com>
+ *  This file is part of MoviePocket.
+ *  MoviePocket can not be copied and/or distributed without the express
+ *  permission of Danila Prymak, Alexander Trafimchyk and Anton Pozniak
+ * *****************************************************
+ */
+
 package com.moviePocket.config;
 
 import com.fasterxml.classmate.TypeResolver;
@@ -35,8 +44,7 @@ public class SwaggerConfig {
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder().title("MoviePocket API")
                 .description("MoviePocket API reference for developers")
-                .contact("javainuse@gmail.com").license("MIT License")
-                .licenseUrl("https://opensource.org/license/mit/").version("1.0").build();
+                .contact("danpry@st.amu.edu.pl").version("2.0").build();
     }
 
 }

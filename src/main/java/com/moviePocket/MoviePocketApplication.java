@@ -1,5 +1,13 @@
+/*
+ * ******************************************************
+ *  Copyright (C)  MoviePocket <prymakdn@gmail.com>
+ *  This file is part of MoviePocket.
+ *  MoviePocket can not be copied and/or distributed without the express
+ *  permission of Danila Prymak, Alexander Trafimchyk and Anton Pozniak
+ * *****************************************************
+ */
+
 package com.moviePocket;
-//https://www.youtube.com/watch?v=L9oWG6aj_U8
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -11,12 +19,13 @@ import org.springframework.web.client.RestTemplate;
 @EnableJpaAuditing
 public class MoviePocketApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(MoviePocketApplication.class, args);
-	}
 
-	@Bean
-	public RestTemplate getRestTemplate() {
-		return new RestTemplate();
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(MoviePocketApplication.class, args);
+    }
+
+    @Bean
+    public RestTemplate getRestTemplate() {
+        return new RestTemplate();
+    }
 }

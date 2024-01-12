@@ -1,11 +1,21 @@
+/*
+ * ******************************************************
+ *  Copyright (C)  MoviePocket <prymakdn@gmail.com>
+ *  This file is part of MoviePocket.
+ *  MoviePocket can not be copied and/or distributed without the express
+ *  permission of Danila Prymak, Alexander Trafimchyk and Anton Pozniak
+ * *****************************************************
+ */
+
 package com.moviePocket.service.impl.user;
 
+import com.moviePocket.controller.dto.UserPostDto;
 import com.moviePocket.controller.dto.UserRegistrationDto;
-import com.moviePocket.entities.user.Role;
-import com.moviePocket.entities.user.User;
-import com.moviePocket.repository.user.RoleRepository;
-import com.moviePocket.repository.user.UserRepository;
-import com.moviePocket.service.UserService;
+import com.moviePocket.entities.image.ImageEntity;
+import com.moviePocket.entities.user.*;
+import com.moviePocket.repository.user.*;
+import com.moviePocket.service.impl.image.ImageServiceImpl;
+import com.moviePocket.service.inter.user.UserService;
 import com.moviePocket.util.TbConstants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,11 +26,16 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.mail.MessagingException;
+import javax.transaction.Transactional;
 import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import static com.moviePocket.util.BuildEmail.buildEmail;
 
 @Service
 @RequiredArgsConstructor
@@ -28,12 +43,13 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-
     private final RoleRepository roleRepository;
-
     private final PasswordEncoder passwordEncoder;
-
     private final EmailSenderService emailSenderService;
+    private final AccountActivateRepository accountActivateRepository;
+    private final NewEmailRepository newEmailRepository;
+    private final ForgotPasswordRepository forgotPasswordRepository;
+    private final ImageServiceImpl imageService;
 
     @Override
     public void save(UserRegistrationDto userDto) throws MessagingException {
@@ -42,16 +58,24 @@ public class UserServiceImpl implements UserService {
         if (role == null)
             role = roleRepository.save(new Role(TbConstants.Roles.USER));
         User user = new User(userDto.getUsername(), userDto.getEmail(), passwordEncoder.encode(userDto.getPassword()),
-                Arrays.asList(role), UUID.randomUUID().toString());
+                Arrays.asList(role));
         userRepository.save(user);
 
+        AccountActivate accountActivate = new AccountActivate(user, UUID.randomUUID().toString());
+        accountActivateRepository.save(accountActivate);
+
         String username = user.getUsername();
-        String link = "http://localhost:3000/activateUser?token=" + user.getActivationCode();
+        String link = "https://moviepocket.projektstudencki.pl/activateUser?token=" + accountActivate.getTokenAccountActivate();
         String massage = "Welcome to MoviePocket family. We really hope that you will enjoy being a part of MoviePocket family \n" +
                 " We want to make sure it's really you. To do that please confirm your mail by clicking the link below.";
 
         emailSenderService.sendMailWithAttachment(user.getEmail(), buildEmail(username, massage, link), "Email Verification");
 
+    }
+
+    @Override
+    public void cleanSave(User user) {
+        userRepository.save(user);
     }
 
     @Override
@@ -67,25 +91,6 @@ public class UserServiceImpl implements UserService {
             user.setEmail(user.getEmail() + "not active" + user.getId());
             user.setPassword("");
             user.setUsername(String.valueOf(user.getId()));
-            userRepository.save(user);
-            return new ResponseEntity<>(HttpStatus.OK);
-        }
-    }
-
-    @Override
-    public ResponseEntity<Void> setNewLostPassword(String token, String password1, String password2) {
-        User user = userRepository.findByTokenLostPassword(token);
-        if (user == null)
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        else if (!user.getEmailVerification())
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        else if (!user.getTokenLostPassword().equals(token))
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        else if (!password1.equals(password2) || password1.isEmpty())
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        else {
-            user.setPassword(passwordEncoder.encode(password1));
-            user.setTokenLostPassword(null);
             userRepository.save(user);
             return new ResponseEntity<>(HttpStatus.OK);
         }
@@ -123,8 +128,6 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findByEmail(email);
         if (user == null)
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        if (bio.isEmpty())
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         else {
             user.setBio(bio);
             userRepository.save(user);
@@ -132,19 +135,43 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    public ResponseEntity<Void> setTokenPassword(String mail) throws MessagingException {
-        User user = userRepository.findByEmail(mail);
+    public ResponseEntity<Void> setNewAvatar(String email, MultipartFile file) {
+        User user = userRepository.findByEmail(email);
+        ImageEntity lastImage = null;
+
         if (user == null)
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        else {
-            user.setTokenLostPassword(UUID.randomUUID().toString());
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        else if (file.getSize() > 7340032) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } else {
+            if (user.getAvatar() != null)
+                lastImage = user.getAvatar();
+            ImageEntity imageEntity = imageService.resizeImage(file);
+            user.setAvatar(imageEntity);
             userRepository.save(user);
-            String username = user.getUsername();
-            String link = "http://localhost:3000/newPassword?token=" + user.getTokenLostPassword();
-            String massage = "You are just in the middle of having your new password. \n Please confirm your email address by going by the link.";
-            emailSenderService.sendMailWithAttachment(user.getEmail(), buildEmail(username, massage, link), "Password Recovery");
+
+            if (lastImage != null) {
+                imageService.delImage(lastImage);
+            }
+
             return new ResponseEntity<>(HttpStatus.OK);
         }
+    }
+
+    public ResponseEntity<Void> deleteAvatar(String email, Long imageId) {
+        User user = userRepository.findByEmail(email);
+        if (user == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        else if (user.getAvatar() == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        ImageEntity image = user.getAvatar();
+
+        user.setAvatar(null);
+        userRepository.save(user);
+
+        imageService.deleteImage(image.getId());
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     public ResponseEntity<Void> setTokenEmail(String email, String newEmail) throws MessagingException {
@@ -154,46 +181,104 @@ public class UserServiceImpl implements UserService {
         else if (email.equals(newEmail))
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         else {
-            user.setNewEmail(newEmail);
-            user.setNewEmailToken(UUID.randomUUID().toString());
-            userRepository.save(user);
+            NewEmail newEmailOb = newEmailRepository.findByUser(user);
+            if (newEmailOb == null) {
+                newEmailOb = new NewEmail(user, newEmail, UUID.randomUUID().toString());
+                newEmailRepository.save(newEmailOb);
+            } else {
+                newEmailOb.setNewEmail(newEmail);
+                newEmailRepository.save(newEmailOb);
+            }
 
             String username = user.getUsername();
-            String link = "http://localhost:8080/user/edit/activateNewEmail/" + user.getNewEmailToken();
+            String link = "https://moviepocket.projektstudencki.pl/api/user/edit/activateNewEmail/" + newEmailOb.getTokenEmailActivate();
             String massage = "You are just in the middle of setting up your new email address. \n Please confirm your new email address.";
 
-            emailSenderService.sendMailWithAttachment(user.getNewEmail(), buildEmail(username, massage, link), "New Mail Confirmation");
+            emailSenderService.sendMailWithAttachment(newEmailOb.getNewEmail(), buildEmail(username, massage, link), "New Mail Confirmation");
             return new ResponseEntity<>(HttpStatus.OK);
         }
     }
 
     @Override
     public ResponseEntity<Void> activateNewEmail(String token) {
-        User user = userRepository.findByNewEmailToken(token);
-        if (user == null)
+        NewEmail newEmail = newEmailRepository.findByTokenEmailActivate(token);
+        if (newEmail == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         else {
-            user.setEmail(user.getNewEmail());
-            user.setNewEmail(null);
-            user.setNewEmailToken(null);
+            User user = newEmail.getUser();
+            user.setEmail(newEmail.getNewEmail());
+            newEmailRepository.delete(newEmail);
             userRepository.save(user);
             return ResponseEntity.status(HttpStatus.OK).build();
         }
     }
 
     @Override
-    public ResponseEntity<Void> activateUser(String code) {
-        User user = userRepository.findByActivationCode(code);
-        if (user == null) {
-            System.out.println("fuck");
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<Void> activateUser(String token) {
+        AccountActivate accountActivate = accountActivateRepository.findByTokenAccountActivate(token);
+        if (accountActivate != null) {
+            User user = accountActivate.getUser();
+            if (user == null) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            } else {
+                user.setEmailVerification(Boolean.TRUE);
+                userRepository.save(user);
+                accountActivateRepository.delete(accountActivate);
+                return new ResponseEntity<>(HttpStatus.OK);
+            }
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @Transactional
+    public ResponseEntity<Void> createPasswordToken(String email) throws MessagingException {
+        User user = userRepository.findByEmail(email);
+        if (user != null) {
+            ForgotPassword forgotPassword = forgotPasswordRepository.findByUser(user);
+            if (forgotPassword != null) {
+                forgotPassword.setTokenForgotPassword(UUID.randomUUID().toString());
+            } else {
+                forgotPassword = new ForgotPassword(user, UUID.randomUUID().toString());
+            }
+            forgotPasswordRepository.save(forgotPassword);
+            sendEmail(user, forgotPassword.getTokenForgotPassword());
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Transactional
+    public ResponseEntity<Void> resetPassword(String token, String password) {
+        ForgotPassword forgotPassword = forgotPasswordRepository.findByTokenForgotPassword(token);
+        if (forgotPassword == null) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         } else {
-            System.out.println(user);
-            user.setEmailVerification(Boolean.TRUE);
-            user.setActivationCode(null);
+            User user = forgotPassword.getUser();
+            user.setPassword(passwordEncoder.encode(password));
             userRepository.save(user);
+            forgotPasswordRepository.deleteAllByUser(user);
             return new ResponseEntity<>(HttpStatus.OK);
         }
+    }
+
+    @Override
+    public ResponseEntity<List<UserPostDto>> findByPartialUsername(String username) {
+        if (username.isEmpty())
+            return ResponseEntity.ok(null);
+        List<User> users = userRepository.findByPartialUsername(username);
+        if (users == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        List<UserPostDto> userPostDtos = users.stream()
+                .map(user -> new UserPostDto(user.getUsername(), user.getAvatar() != null ? user.getAvatar().getId() : null))
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(userPostDtos);
+    }
+
+    private void sendEmail(User user, String token) throws MessagingException {
+        String username = user.getUsername();
+        String link = "https://moviepocket.projektstudencki.pl/newPassword?token=" + token;
+        String massage = "You are just in the middle of having your new password. \n Please confirm your email address by going by the link.";
+        emailSenderService.sendMailWithAttachment(user.getEmail(), buildEmail(username, massage, link), "Password Recovery");
+
     }
 
     @Override
@@ -238,74 +323,13 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByUsernameAndAccountActive(username, true);
     }
 
-
-    private String buildEmail(String username, String massage, String link) {
-        return "<div style=\"font-family:Helvetica,Arial,sans-serif;font-size:16px;margin:0;color:#0b0c0c\">\n" +
-                "\n" +
-                "<span style=\"display:none;font-size:1px;color:#fff;max-height:0\"></span>\n" +
-                "\n" +
-                "  <table role=\"presentation\" width=\"100%\" style=\"border-collapse:collapse;min-width:100%;width:100%!important\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\n" +
-                "    <tbody><tr>\n" +
-                "      <td width=\"100%\" height=\"53\" bgcolor=\"#0b0c0c\">\n" +
-                "        \n" +
-                "        <table role=\"presentation\" width=\"100%\" style=\"border-collapse:collapse;max-width:580px\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" align=\"center\">\n" +
-                "          <tbody><tr>\n" +
-                "            <td width=\"70\" bgcolor=\"#0b0c0c\" valign=\"middle\">\n" +
-                "                <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-collapse:collapse\">\n" +
-                "                  <tbody><tr>\n" +
-                "                    <td style=\"padding-left:10px\">\n" +
-                "                  \n" +
-                "                    </td>\n" +
-                "                    <td style=\"font-size:28px;line-height:1.315789474;Margin-top:4px;padding-left:10px\">\n" +
-                "                      <span style=\"font-family:Helvetica,Arial,sans-serif;font-weight:700;color:#ffffff;text-decoration:none;vertical-align:top;display:inline-block\">Confirm your email</span>\n" +
-                "                    </td>\n" +
-                "                  </tr>\n" +
-                "                </tbody></table>\n" +
-                "              </a>\n" +
-                "            </td>\n" +
-                "          </tr>\n" +
-                "        </tbody></table>\n" +
-                "        \n" +
-                "      </td>\n" +
-                "    </tr>\n" +
-                "  </tbody></table>\n" +
-                "  <table role=\"presentation\" class=\"m_-6186904992287805515content\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-collapse:collapse;max-width:580px;width:100%!important\" width=\"100%\">\n" +
-                "    <tbody><tr>\n" +
-                "      <td width=\"10\" height=\"10\" valign=\"middle\"></td>\n" +
-                "      <td>\n" +
-                "        \n" +
-                "                <table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-collapse:collapse\">\n" +
-                "                  <tbody><tr>\n" +
-                "                    <td bgcolor=\"#1D70B8\" width=\"100%\" height=\"10\"></td>\n" +
-                "                  </tr>\n" +
-                "                </tbody></table>\n" +
-                "        \n" +
-                "      </td>\n" +
-                "      <td width=\"10\" valign=\"middle\" height=\"10\"></td>\n" +
-                "    </tr>\n" +
-                "  </tbody></table>\n" +
-                "\n" +
-                "\n" +
-                "\n" +
-                "  <table role=\"presentation\" class=\"m_-6186904992287805515content\" align=\"center\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"border-collapse:collapse;max-width:580px;width:100%!important\" width=\"100%\">\n" +
-                "    <tbody><tr>\n" +
-                "      <td height=\"30\"><br></td>\n" +
-                "    </tr>\n" +
-                "    <tr>\n" +
-                "      <td width=\"10\" valign=\"middle\"><br></td>\n" +
-                "      <td style=\"font-family:Helvetica,Arial,sans-serif;font-size:19px;line-height:1.315789474;max-width:560px\">\n" +
-                "        \n" +
-                "            <p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\">Hello " + username + ",</p><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\">" + massage + "</p><blockquote style=\"Margin:0 0 20px 0;border-left:10px solid #b1b4b6;padding:15px 0 0.1px 15px;font-size:19px;line-height:25px\"><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> <a href=\"" + link + "\">Confirm your email</a> </p></blockquote>\n <p>See you soon</p> \n <p>Best wishes</p> \n <p>MoviePocket team</p>" +
-                "        \n" +
-                "      </td>\n" +
-                "      <td width=\"10\" valign=\"middle\"><br></td>\n" +
-                "    </tr>\n" +
-                "    <tr>\n" +
-                "      <td height=\"30\"><br></td>\n" +
-                "    </tr>\n" +
-                "  </tbody></table><div class=\"yj6qo\"></div><div class=\"adL\">\n" +
-                "\n" +
-                "</div></div>";
+    public ResponseEntity<Boolean> existsByUsername(String username) {
+        return ResponseEntity.ok(userRepository.existsByUsername(username));
     }
+
+    public ResponseEntity<Boolean> existsByEmail(String email) {
+        return ResponseEntity.ok(userRepository.existsByEmail(email));
+    }
+
 
 }

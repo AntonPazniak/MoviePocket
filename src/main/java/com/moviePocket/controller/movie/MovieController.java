@@ -1,10 +1,19 @@
+/*
+ * ******************************************************
+ *  Copyright (C)  MoviePocket <prymakdn@gmail.com>
+ *  This file is part of MoviePocket.
+ *  MoviePocket can not be copied and/or distributed without the express
+ *  permission of Danila Prymak, Alexander Trafimchyk and Anton Pozniak
+ * *****************************************************
+ */
+
 package com.moviePocket.controller.movie;
 
 import com.moviePocket.controller.dto.MovieDto;
 import com.moviePocket.service.impl.movie.MovieServiceImpl;
-import com.moviePocket.service.movie.list.MovieListService;
-import com.moviePocket.service.movie.rating.*;
-import com.moviePocket.service.movie.raview.MovieReviewService;
+import com.moviePocket.service.inter.list.MovieListService;
+import com.moviePocket.service.inter.rating.*;
+import com.moviePocket.service.inter.raview.ReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,8 +21,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/movies")
@@ -26,7 +33,7 @@ public class MovieController {
     private final FavoriteMovieService favoriteMovieService;
     private final WatchedMovieService watchedMovieService;
     private final ToWatchMovieService toWatchMovieService;
-    private final MovieReviewService movieReviewService;
+    private final ReviewService reviewService;
     private final MovieListService movieListService;
 
 
@@ -44,9 +51,11 @@ public class MovieController {
         return new ResponseEntity<>(movieDto, HttpStatus.OK);
     }
 
-    @GetMapping("/search/{query}")
-    public List<MovieDto> getAllSearchedMovies(@PathVariable String query) {
-        return movieService.searchMovie(query);
-    }
+//    @GetMapping("/{idMovie}")
+//    public ResponseEntity<Void> getMovieInfo(@PathVariable("idMovie") Long idMovie) {
+//        movieService.setMovie(idMovie);
+//        return new ResponseEntity<>(HttpStatus.OK);
+//    }
+
 
 }

@@ -1,7 +1,17 @@
+/*
+ * ******************************************************
+ *  Copyright (C)  MoviePocket <prymakdn@gmail.com>
+ *  This file is part of MoviePocket.
+ *  MoviePocket can not be copied and/or distributed without the express
+ *  permission of Danila Prymak, Alexander Trafimchyk and Anton Pozniak
+ * *****************************************************
+ */
+
 package com.moviePocket.entities.user;
 
 
 import com.moviePocket.entities.BaseEntity;
+import com.moviePocket.entities.image.ImageEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -35,20 +45,13 @@ public class User extends BaseEntity {
     @Column(nullable = false)
     private Boolean emailVerification;
 
-    @Column(nullable = true)
-    private String activationCode;
-
     @Column(nullable = false)
     private boolean accountActive;
 
-    @Column(nullable = true)
-    private String newEmail;
+    @OneToOne
+    @JoinColumn(name = "idAvatar", referencedColumnName = "id")
+    private ImageEntity avatar;
 
-    @Column(nullable = true)
-    private String tokenLostPassword;
-
-    @Column(nullable = true)
-    private String newEmailToken;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(
@@ -56,26 +59,15 @@ public class User extends BaseEntity {
             joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")}
     )
-
-
     private List<Role> roles = new ArrayList<>();
 
-
-    public User(String username, String email, String password,  List<Role> roles) {
+    public User(String username, String email, String password, List<Role> roles) {
         this.username = username;
         this.password = password;
         this.email = email;
         this.roles = roles;
-
-    }
-
-    public User(String username, String email, String password,  List<Role> roles, String activationCode) {
-        this.username = username;
-        this.password = password;
-        this.email = email;
-        this.roles = roles;
-        this.activationCode = activationCode;
         this.emailVerification = false;
         this.accountActive = true;
+        this.avatar = null;
     }
 }

@@ -1,5 +1,14 @@
+<!--
+  ~ /*******************************************************
+  ~ * Copyright (C)  MoviePocket <prymakdn@gmail.com>
+  ~ * This file is part of MoviePocket.
+  ~ * MoviePocket can not be copied and/or distributed without the express
+  ~ * permission of Danila Prymak, Alexander Trafimchyk and Anton Pozniak
+  ~ *******************************************************/
+  -->
+
 <!doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1" name="viewport">
@@ -14,7 +23,7 @@
     <div class="row mt-5">
         <div class="col-6 mx-auto">
 
-                <h1>Settings</h1>
+            <h1>Settings</h1>
             <form
                     method="post"
                     role="form"
@@ -63,7 +72,7 @@
                     method="get"
                     role="form"
                     th:action="@{/user/edit/newpas}"
-                >
+            >
                 <div>
                     <button class="btn btn-primary mb-3" type="submit">New password</button>
                 </div>
