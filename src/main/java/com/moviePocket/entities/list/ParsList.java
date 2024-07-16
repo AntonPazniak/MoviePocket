@@ -13,15 +13,13 @@ import com.moviePocket.controller.dto.UserPostDto;
 import com.moviePocket.entities.movie.Genre;
 import com.moviePocket.entities.movie.Movie;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class ParsList {
@@ -34,7 +32,7 @@ public class ParsList {
     private List<Movie> movies;
     private int[] likeOrDis;
     private UserPostDto user;
-    private Date create;
-    private Date update;
+    private LocalDateTime create;
+    private LocalDateTime update;
 
 }

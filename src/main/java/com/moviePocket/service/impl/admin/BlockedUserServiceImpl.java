@@ -29,6 +29,7 @@ import com.moviePocket.repository.post.PostRepository;
 import com.moviePocket.repository.review.*;
 import com.moviePocket.repository.user.UserRepository;
 import com.moviePocket.service.inter.admin.BlockedUserService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,7 +37,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 

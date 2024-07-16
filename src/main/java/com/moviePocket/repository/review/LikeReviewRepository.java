@@ -12,11 +12,10 @@ package com.moviePocket.repository.review;
 import com.moviePocket.entities.review.LikeMovieReview;
 import com.moviePocket.entities.review.Review;
 import com.moviePocket.entities.user.User;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-
-import javax.transaction.Transactional;
 
 @Transactional
 @Repository

@@ -11,19 +11,17 @@ package com.moviePocket.entities.user;
 
 import com.moviePocket.controller.dto.UserPostDto;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class ParsBlockedUser {
     private UserPostDto user;
-    private Date dateBlocked;
+    private LocalDateTime dateBlocked;
     private UserPostDto admin;
     private String comment;
 }

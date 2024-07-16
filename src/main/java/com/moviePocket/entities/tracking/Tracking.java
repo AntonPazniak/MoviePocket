@@ -12,18 +12,16 @@ package com.moviePocket.entities.tracking;
 import com.moviePocket.entities.BaseEntity;
 import com.moviePocket.entities.movie.Movie;
 import com.moviePocket.entities.user.User;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
 @Table(name = "movie_tracking", uniqueConstraints = @UniqueConstraint(columnNames = {"idUser", "idMovie"}))
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Tracking extends BaseEntity {

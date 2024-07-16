@@ -12,18 +12,16 @@ package com.moviePocket.entities.user;
 
 import com.moviePocket.entities.BaseEntity;
 import com.moviePocket.entities.image.ImageEntity;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity

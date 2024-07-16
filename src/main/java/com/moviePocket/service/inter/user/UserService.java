@@ -12,15 +12,15 @@ package com.moviePocket.service.inter.user;
 import com.moviePocket.controller.dto.UserPostDto;
 import com.moviePocket.controller.dto.UserRegistrationDto;
 import com.moviePocket.entities.user.User;
+import jakarta.mail.MessagingException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.mail.MessagingException;
 import java.util.List;
 
 public interface UserService extends UserDetailsService {
-    void save(UserRegistrationDto registrationDto) throws MessagingException;
+    void save(UserRegistrationDto registrationDto) throws MessagingException, MessagingException;
 
     void cleanSave(User user);
 

@@ -11,19 +11,16 @@ package com.moviePocket.entities.user;
 
 import com.moviePocket.controller.dto.UserPostDto;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-import javax.xml.crypto.Data;
+import java.time.LocalDateTime;
 
-@Getter
-@Setter
+@lombok.Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class BlockPars {
     private UserPostDto user;
-    private Data dateBlacked;
+    private LocalDateTime dateBlacked;
     private UserPostDto admin;
     private String comment;
 }

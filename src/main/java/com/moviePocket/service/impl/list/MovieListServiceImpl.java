@@ -30,14 +30,13 @@ import com.moviePocket.service.impl.image.ImageServiceImpl;
 import com.moviePocket.service.impl.movie.MovieServiceImpl;
 import com.moviePocket.service.inter.list.MovieListService;
 import com.moviePocket.util.Utils;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.webjars.NotFoundException;
 
-import javax.persistence.EntityNotFoundException;
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -66,7 +65,6 @@ public class MovieListServiceImpl implements MovieListService {
 
     private final ReviewListRepository reviewListRepository;
 
-    @Transactional
     public ResponseEntity<ParsList> setList(String email, String title, String content) throws NotFoundException {
         User user = userRepository.findByEmail(email);
         if (user == null)
@@ -76,7 +74,6 @@ public class MovieListServiceImpl implements MovieListService {
         return ResponseEntity.ok(parsListWithMovies(movieList));
     }
 
-    @Transactional
     public ResponseEntity<Void> updateList(String email, Long idMovieList, String title, String content) {
         User user = userRepository.findByEmail(email);
         ListMovie movieList = movieListRepository.getById(idMovieList);
@@ -94,7 +91,6 @@ public class MovieListServiceImpl implements MovieListService {
         }
     }
 
-    @Transactional
     public ResponseEntity<Void> deleteList(String email, Long idMovieList) {
         User user = userRepository.findByEmail(email);
         ListMovie movieList = movieListRepository.getById(idMovieList);

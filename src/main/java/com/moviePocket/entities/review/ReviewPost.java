@@ -10,17 +10,16 @@
 package com.moviePocket.entities.review;
 
 import com.moviePocket.entities.post.Post;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-import javax.persistence.*;
 
 @Entity
 @Table(name = "review_post", uniqueConstraints = @UniqueConstraint(columnNames = {"idReview", "idPost"}))
 @Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReviewPost {

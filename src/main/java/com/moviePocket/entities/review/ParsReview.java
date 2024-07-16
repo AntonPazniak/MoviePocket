@@ -11,14 +11,12 @@ package com.moviePocket.entities.review;
 
 import com.moviePocket.controller.dto.UserPostDto;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class ParsReview {
@@ -26,8 +24,8 @@ public class ParsReview {
     private String title;
     private String content;
     private UserPostDto user;
-    private Date dataCreated;
-    private Date dataUpdated;
+    private LocalDateTime dataCreated;
+    private LocalDateTime dataUpdated;
     private Long id;
     private int[] likes;
 

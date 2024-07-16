@@ -12,26 +12,24 @@ package com.moviePocket.entities.movie;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.google.gson.annotations.SerializedName;
 import com.moviePocket.entities.list.ListMovie;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
 
 
-@Getter
-@Setter
-@Entity
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "movie")
+@Entity(name = "movie")
 public class Movie {
 
-    @Id
+
     @SerializedName("id")
+    @Id
     Long id;
 
     @SerializedName("title")

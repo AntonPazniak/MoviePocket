@@ -14,22 +14,20 @@ import com.moviePocket.entities.movie.Movie;
 import com.moviePocket.entities.rating.Rating;
 import com.moviePocket.entities.review.ParsReview;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class ParsUserPage {
 
     private String username;
     private String bio;
-    private Date created;
+    private LocalDateTime created;
     private Long avatar;
     private List<ParsList> lists;
     private List<Movie> likeMovie;

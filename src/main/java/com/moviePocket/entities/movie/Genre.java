@@ -11,14 +11,12 @@ package com.moviePocket.entities.movie;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.google.gson.annotations.SerializedName;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.Data;
 
-import javax.persistence.*;
 import java.util.List;
 
-@Getter
-@Setter
+@Data
 @Entity
 @Table(name = "genre", uniqueConstraints = @UniqueConstraint(columnNames = {"name"}))
 public class Genre {

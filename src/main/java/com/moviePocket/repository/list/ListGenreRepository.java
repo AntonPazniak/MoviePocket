@@ -12,10 +12,10 @@ package com.moviePocket.repository.list;
 import com.moviePocket.entities.list.ListGenres;
 import com.moviePocket.entities.list.ListMovie;
 import com.moviePocket.entities.movie.Genre;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
 @Transactional
