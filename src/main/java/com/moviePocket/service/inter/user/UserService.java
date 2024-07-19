@@ -13,6 +13,7 @@ import com.moviePocket.controller.dto.UserPostDto;
 import com.moviePocket.controller.dto.UserRegistrationDto;
 import com.moviePocket.entities.user.User;
 import jakarta.mail.MessagingException;
+import org.apache.coyote.BadRequestException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,21 +27,21 @@ public interface UserService extends UserDetailsService {
 
     User findById(Long id);
 
-    User findUserByEmail(String email);
+    User chekUserAuntByEmail(String email);
 
     ResponseEntity<Void> activateUser(String code);
 
-    ResponseEntity<Void> setNewPassword(String email, String passwordOld, String passwordNew0, String passwordNew1);
+    void setNewPassword(String email, String passwordOld, String passwordNew0, String passwordNew1) throws BadRequestException;
 
-    ResponseEntity<Void> deleteUser(String email, String pas);
+    void deleteUser(String email, String pas);
 
     ResponseEntity<Void> setTokenEmail(String oldEmail, String newEmail) throws MessagingException;
 
     ResponseEntity<Void> activateNewEmail(String token);
 
-    ResponseEntity<Void> setNewUsername(String email, String username);
+    void setNewUsername(String email, String username);
 
-    ResponseEntity<Void> setNewBio(String email, String bio);
+    void setNewBio(String email, String bio);
 
     ResponseEntity<Void> setNewAvatar(String email, MultipartFile file);
 

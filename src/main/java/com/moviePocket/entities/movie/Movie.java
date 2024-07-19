@@ -12,6 +12,7 @@ package com.moviePocket.entities.movie;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.google.gson.annotations.SerializedName;
 import com.moviePocket.entities.list.ListMovie;
+import com.moviePocket.entities.review.ReviewMovie;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,16 +22,15 @@ import java.time.LocalDate;
 import java.util.List;
 
 
+@Entity(name = "movie")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "movie")
 public class Movie {
 
-
-    @SerializedName("id")
     @Id
-    Long id;
+    @SerializedName("id")
+    private Long id;
 
     @SerializedName("title")
     private String title;
@@ -77,6 +77,10 @@ public class Movie {
     @SerializedName("overview")
     @Column(columnDefinition = "TEXT")
     private String overview;
+
+    @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)
+    @JsonBackReference
+    private List<ReviewMovie> reviews;
 
     @ManyToMany(mappedBy = "movies")
     @JsonBackReference

@@ -15,7 +15,7 @@ import com.moviePocket.entities.rating.RatingMovie;
 import com.moviePocket.entities.user.User;
 import com.moviePocket.repository.rating.RatingMovieRepository;
 import com.moviePocket.repository.user.UserRepository;
-import com.moviePocket.service.impl.movie.MovieServiceImpl;
+import com.moviePocket.service.inter.movie.MovieService;
 import com.moviePocket.service.inter.rating.RatingMovieService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +35,7 @@ public class RatingMovieServiceImpl implements RatingMovieService {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private MovieServiceImpl movieService;
+    private MovieService movieService;
 
     @Transactional
     public ResponseEntity<Void> setNewRatingMovie(String email, Long idMovie, int rating) {
@@ -43,7 +43,7 @@ public class RatingMovieServiceImpl implements RatingMovieService {
             User user = userRepository.findByEmail(email);
             if (user == null)
                 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-            Movie movie = movieService.setMovie(idMovie);
+            Movie movie = movieService.setMovieIfNotExist(idMovie);
             if (movie != null) {
                 RatingMovie ratingMovie = ratingMovieRepository.findByUserAndMovie_id(user, idMovie);
                 if (ratingMovie == null) {

@@ -13,6 +13,8 @@ import com.moviePocket.controller.dto.UserPostDto;
 import com.moviePocket.controller.dto.UserRegistrationDto;
 import com.moviePocket.entities.image.ImageEntity;
 import com.moviePocket.entities.user.*;
+import com.moviePocket.exception.ForbiddenException;
+import com.moviePocket.exception.UnauthorizedException;
 import com.moviePocket.repository.user.*;
 import com.moviePocket.service.impl.image.ImageServiceImpl;
 import com.moviePocket.service.inter.user.UserService;
@@ -21,6 +23,8 @@ import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.BadRequestException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -30,7 +34,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -42,7 +45,8 @@ import static com.moviePocket.util.BuildEmail.buildEmail;
 @Slf4j
 public class UserServiceImpl implements UserService {
 
-    private final UserRepository userRepository;
+    @Autowired
+    private UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final EmailSenderService emailSenderService;
@@ -58,7 +62,7 @@ public class UserServiceImpl implements UserService {
         if (role == null)
             role = roleRepository.save(new Role(TbConstants.Roles.USER));
         User user = new User(userDto.getUsername(), userDto.getEmail(), passwordEncoder.encode(userDto.getPassword()),
-                Arrays.asList(role));
+                List.of(role));
         userRepository.save(user);
 
         AccountActivate accountActivate = new AccountActivate(user, UUID.randomUUID().toString());
@@ -79,61 +83,63 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseEntity<Void> deleteUser(String email, String pas) {
-        User user = findUserByEmail(email);
-        if (user == null)
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        else if (!passwordEncoder.matches(pas, user.getPassword()))
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        else {
+    public void deleteUser(String email, String password) {
+        User user = chekUserAuntByEmail(email);
+        if (user == null) {
+            throw new UnauthorizedException("User with email " + email + " not found.");
+        } else if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new ForbiddenException("Incorrect password.");
+        } else {
             user.setAccountActive(false);
             user.setEmailVerification(false);
-            user.setEmail(user.getEmail() + "not active" + user.getId());
+            user.setEmail(user.getEmail() + " not active " + user.getId());
             user.setPassword("");
             user.setUsername(String.valueOf(user.getId()));
             userRepository.save(user);
-            return new ResponseEntity<>(HttpStatus.OK);
         }
     }
 
-    public ResponseEntity<Void> setNewPassword(String email, String passwordOld, String passwordNew0, String passwordNew1) {
+
+    @Override
+    public void setNewPassword(String email, String passwordOld, String passwordNew0, String passwordNew1) throws BadRequestException {
         User user = userRepository.findByEmail(email);
-        if (user == null)
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        else if (!passwordEncoder.matches(passwordOld, user.getPassword()))
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        else if (!passwordNew0.equals(passwordNew1)) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        if (user == null) {
+            throw new UnauthorizedException("User with email " + email + " not found.");
+        } else if (!passwordEncoder.matches(passwordOld, user.getPassword())) {
+            throw new ForbiddenException("Incorrect password.");
+        } else if (!passwordNew0.equals(passwordNew1)) {
+            throw new BadRequestException("Passwords do not match.");
         } else {
             user.setPassword(passwordEncoder.encode(passwordNew0));
             userRepository.save(user);
-            return new ResponseEntity<>(HttpStatus.OK);
         }
     }
 
-    public ResponseEntity<Void> setNewUsername(String email, String username) {
+    @Override
+    public void setNewUsername(String email, String username) {
         User user = userRepository.findByEmail(email);
         if (user == null) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            throw new UnauthorizedException("User with email " + email + " not found.");
         } else if (userRepository.existsByUsername(username) && user.isAccountActive() || username.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            throw new ForbiddenException("Username " + username + " is already taken or invalid.");
         } else {
             user.setUsername(username);
             userRepository.save(user);
-            return new ResponseEntity<>(HttpStatus.OK);
         }
     }
 
-    public ResponseEntity<Void> setNewBio(String email, String bio) {
+
+    @Override
+    public void setNewBio(String email, String bio) {
         User user = userRepository.findByEmail(email);
-        if (user == null)
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        else {
+        if (user == null) {
+            throw new UnauthorizedException("User with email " + email + " not found.");
+        } else {
             user.setBio(bio);
             userRepository.save(user);
-            return new ResponseEntity<>(HttpStatus.OK);
         }
     }
+
 
     public ResponseEntity<Void> setNewAvatar(String email, MultipartFile file) {
         User user = userRepository.findByEmail(email);
@@ -302,8 +308,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findUserByEmail(String email) {
-        return userRepository.findByEmail(email);
+    public User chekUserAuntByEmail(String email) {
+        return userRepository.findUserAuntByEmail(email).orElseThrow(() -> new UnauthorizedException("You are not logged in"));
     }
 
     @Override

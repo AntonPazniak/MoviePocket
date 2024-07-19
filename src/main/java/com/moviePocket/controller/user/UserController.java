@@ -10,8 +10,6 @@
 package com.moviePocket.controller.user;
 
 import com.moviePocket.controller.dto.UserPostDto;
-import com.moviePocket.entities.user.ParsUserPage;
-import com.moviePocket.entities.user.User;
 import com.moviePocket.service.inter.list.MovieListService;
 import com.moviePocket.service.inter.rating.*;
 import com.moviePocket.service.inter.raview.ReviewService;
@@ -21,7 +19,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -53,33 +54,33 @@ public class UserController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication.getName().equals("anonymousUser"))
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        return new ResponseEntity<>(userService.findUserByEmail(authentication.getName()).getUsername(), HttpStatus.OK);
+        return new ResponseEntity<>(userService.chekUserAuntByEmail(authentication.getName()).getUsername(), HttpStatus.OK);
     }
 
-    @GetMapping("/{username}")
-    public ResponseEntity<ParsUserPage> getUserByUsername(@PathVariable String username) {
-        User user = userService.findUserByUsername(username);
-        if (user == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        Long idAvatar = null;
-        if (user.getAvatar() != null)
-            idAvatar = user.getAvatar().getId();
-        ParsUserPage parsUserPage = new ParsUserPage(
-                user.getUsername(),
-                user.getBio(),
-                user.getCreated(),
-                idAvatar,
-                movieListService.getAllMyList(user.getEmail()).getBody(),
-                favoriteMovieService.getAllUserFavoriteMovies(user.getEmail()).getBody(),
-                dislikedMovieService.getAllUserDislikedMovie(user.getEmail()).getBody(),
-                watchedMovieService.getAllUserWatched(user.getEmail()).getBody(),
-                toWatchMovieService.getAllUserToWatch(user.getEmail()).getBody(),
-                reviewService.getAllReviewsByUser(user.getEmail()).getBody(),
-                ratingMovieService.getAllUserRatingMovie(user.getEmail()).getBody()
-        );
-        return new ResponseEntity<>(parsUserPage, HttpStatus.OK);
-    }
+//    @GetMapping("/{username}")
+//    public ResponseEntity<ParsUserPage> getUserByUsername(@PathVariable String username) {
+//        User user = userService.findUserByUsername(username);
+//        if (user == null) {
+//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//        }
+//        Long idAvatar = null;
+//        if (user.getAvatar() != null)
+//            idAvatar = user.getAvatar().getId();
+//        ParsUserPage parsUserPage = new ParsUserPage(
+//                user.getUsername(),
+//                user.getBio(),
+//                user.getCreated(),
+//                idAvatar,
+//                movieListService.getAllMyList(user.getEmail()).getBody(),
+//                favoriteMovieService.getAllUserFavoriteMovies(user.getEmail()).getBody(),
+//                dislikedMovieService.getAllUserDislikedMovie(user.getEmail()).getBody(),
+//                watchedMovieService.getAllUserWatched(user.getEmail()).getBody(),
+//                toWatchMovieService.getAllUserToWatch(user.getEmail()).getBody(),
+//                reviewService.getAllReviewsByUser(user.getEmail()).getBody(),
+//                ratingMovieService.getAllUserRatingMovie(user.getEmail()).getBody()
+//        );
+//        return new ResponseEntity<>(parsUserPage, HttpStatus.OK);
+//    }
 
     @GetMapping("/search")
     public ResponseEntity<List<UserPostDto>> getUsersByPartialUsername(@RequestParam String username) {

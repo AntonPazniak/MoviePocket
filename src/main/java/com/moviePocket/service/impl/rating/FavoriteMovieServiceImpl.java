@@ -41,7 +41,7 @@ public class FavoriteMovieServiceImpl implements FavoriteMovieService {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         FavoriteMovie favoriteMovie = favoriteMoviesRepository.findByUserAndMovie_id(
                 userRepository.findByEmail(email), idMovie);
-        Movie movie = movieService.setMovie(idMovie);
+        Movie movie = movieService.setMovieIfNotExist(idMovie);
         if (movie != null) {
             if (favoriteMovie == null) {
                 favoriteMoviesRepository.save(new FavoriteMovie(userRepository.findByEmail(email), movie));

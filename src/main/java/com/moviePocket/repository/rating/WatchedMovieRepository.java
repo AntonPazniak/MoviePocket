@@ -23,11 +23,12 @@ import java.util.List;
 @Repository
 public interface WatchedMovieRepository extends JpaRepository<WatchedMovie, Long> {
 
-    WatchedMovie findByUserAndMovie_Id(User user, Long idMovie);
+    WatchedMovie findByUser_EmailAndMovie_Id(String email, Long idMovie);
 
-    @Query("SELECT u FROM WatchedMovie u WHERE u.user = :user ORDER BY u.created ASC")
-    List<WatchedMovie> findAllByUserOrderByCreatedAsc(@Param("user") User user);
+    boolean existsByUser_EmailAndMovie_Id(String email, Long idMovie);
 
+    @Query("SELECT u FROM WatchedMovie u WHERE u.user.email = :email ORDER BY u.created ASC")
+    List<WatchedMovie> findAllByUserOrderByCreatedAsc(@Param("email") String email);
 
     @Query("SELECT COUNT(u) FROM WatchedMovie u WHERE u.movie.id = :movieId")
     int getAllCountByIdMovie(@Param("movieId") Long idMovie);

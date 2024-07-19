@@ -9,5 +9,9 @@
 
 package com.moviePocket.service.inter.movie;
 
+import com.moviePocket.entities.movie.Movie;
+
 public interface MovieService {
+
+    Movie setMovieIfNotExist(Long idMovie);
 }

@@ -40,7 +40,7 @@ public class ToWatchMovieServiceImpl implements ToWatchMovieService {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         ToWatchMovie toWatchMovie = toWatchMovieRepository.findByUserAndMovie_Id(
                 user, idMovie);
-        Movie movie = movieService.setMovie(idMovie);
+        Movie movie = movieService.setMovieIfNotExist(idMovie);
         if (movie != null) {
             if (toWatchMovie == null) {
                 toWatchMovieRepository.save(new ToWatchMovie(userRepository.findByEmail(email), movie));

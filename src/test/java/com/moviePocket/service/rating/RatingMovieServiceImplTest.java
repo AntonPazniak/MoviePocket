@@ -53,7 +53,7 @@ public class RatingMovieServiceImplTest {
         Mockito.when(userRepository.findByEmail(Mockito.anyString())).thenReturn(user);
 
         Movie movie = new Movie();
-        Mockito.when(movieService.setMovie(anyLong())).thenReturn(movie);
+        Mockito.when(movieService.setMovieIfNotExist(anyLong())).thenReturn(movie);
 
         Mockito.when(ratingMovieRepository.findByUserAndMovie_id(user, 1L)).thenReturn(null);
 
@@ -76,7 +76,7 @@ public class RatingMovieServiceImplTest {
         User user = new User();
         Mockito.when(userRepository.findByEmail(Mockito.anyString())).thenReturn(user);
 
-        Mockito.when(movieService.setMovie(anyLong())).thenReturn(null);
+        Mockito.when(movieService.setMovieIfNotExist(anyLong())).thenReturn(null);
 
         ResponseEntity<Void> response = ratingMovieService.setNewRatingMovie("test@example.com", 1L, 8);
 

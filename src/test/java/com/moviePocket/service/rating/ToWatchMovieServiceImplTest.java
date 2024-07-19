@@ -58,7 +58,7 @@ class ToWatchMovieServiceImplTest {
     void testSetOrDeleteToWatch_MovieNotFound() {
         User user = new User();
         Mockito.when(userRepository.findByEmail(Mockito.anyString())).thenReturn(user);
-        Mockito.when(movieService.setMovie(Mockito.anyLong())).thenReturn(null);
+        Mockito.when(movieService.setMovieIfNotExist(Mockito.anyLong())).thenReturn(null);
 
         ResponseEntity<Void> response = toWatchMovieService.setOrDeleteToWatch("test@example.com", 1L);
 
@@ -70,7 +70,7 @@ class ToWatchMovieServiceImplTest {
     void testSetOrDeleteToWatch_AddToWatch() {
         User user = new User();
         Mockito.when(userRepository.findByEmail(Mockito.anyString())).thenReturn(user);
-        Mockito.when(movieService.setMovie(Mockito.anyLong())).thenReturn(new Movie());
+        Mockito.when(movieService.setMovieIfNotExist(Mockito.anyLong())).thenReturn(new Movie());
         Mockito.when(toWatchMovieRepository.findByUserAndMovie_Id(user, 1L)).thenReturn(null);
 
         ResponseEntity<Void> response = toWatchMovieService.setOrDeleteToWatch("test@example.com", 1L);
@@ -83,7 +83,7 @@ class ToWatchMovieServiceImplTest {
     void testSetOrDeleteToWatch_DeleteFromToWatch() {
         User user = new User();
         Mockito.when(userRepository.findByEmail(Mockito.anyString())).thenReturn(user);
-        Mockito.when(movieService.setMovie(Mockito.anyLong())).thenReturn(new Movie());
+        Mockito.when(movieService.setMovieIfNotExist(Mockito.anyLong())).thenReturn(new Movie());
         Mockito.when(toWatchMovieRepository.findByUserAndMovie_Id(user, 1L)).thenReturn(new ToWatchMovie(user, new Movie()));
 
         ResponseEntity<Void> response = toWatchMovieService.setOrDeleteToWatch("test@example.com", 1L);

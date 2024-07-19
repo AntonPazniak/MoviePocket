@@ -87,7 +87,7 @@ class ReviewServiceImplTest {
         Review review = new Review(user, title, content);
 
         when(userRepository.findByEmail(email)).thenReturn(user);
-        when(movieService.setMovie(idMovie)).thenReturn(movie);
+        when(movieService.setMovieIfNotExist(idMovie)).thenReturn(movie);
         when(reviewRepository.save(any(Review.class))).thenReturn(review);
         when(reviewMovieRepository.save(any(ReviewMovie.class))).thenReturn(new ReviewMovie());
 

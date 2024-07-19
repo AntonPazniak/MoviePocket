@@ -133,7 +133,7 @@ public class MovieListServiceImpl implements MovieListService {
         else if (movieList.getUser() != user) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         } else {
-            Movie movie = movieService.setMovie(idMovie);
+            Movie movie = movieService.setMovieIfNotExist(idMovie);
             if (movie != null) {
                 if (movieList.getMovies().contains(movie)) {
                     movieList.getMovies().remove(movie);

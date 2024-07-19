@@ -46,7 +46,7 @@ public class MovieController {
                 dislikedMovieService.getAllCountByIdMovie(idMovie).getBody(),
                 favoriteMovieService.getAllCountByIdMovie(idMovie).getBody(),
                 toWatchMovieService.getAllCountByIdMovie(idMovie).getBody(),
-                watchedMovieService.getAllCountByIdMovie(idMovie).getBody()
+                watchedMovieService.getAllCountByIdMovie(idMovie)
         );
         return new ResponseEntity<>(movieDto, HttpStatus.OK);
     }

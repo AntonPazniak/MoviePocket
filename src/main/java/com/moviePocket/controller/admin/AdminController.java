@@ -43,7 +43,7 @@ public class AdminController {
     })
     @PostMapping("/banUser/{username}")
     public ResponseEntity<Void> banUser(@PathVariable String username, @RequestParam String comment) {
-        User admin = userService.findUserByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+        User admin = userService.chekUserAuntByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
         User user = userService.findUserByUsername(username);
         if (admin.getRoles().stream().noneMatch(role -> role.getName().equals("ROLE_ADMIN"))) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
@@ -74,7 +74,7 @@ public class AdminController {
     @PostMapping("/unbanUser/{username}")
     public ResponseEntity<Void> unbanUser(@PathVariable String username) {
         User user = userService.findUserByUsername(username);
-        User admin = userService.findUserByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+        User admin = userService.chekUserAuntByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
 
         if (admin.getRoles().stream().noneMatch(role -> role.getName().equals("ROLE_ADMIN"))) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);

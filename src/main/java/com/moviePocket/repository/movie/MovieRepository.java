@@ -18,6 +18,5 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public interface MovieRepository extends JpaRepository<Movie, Long> {
 
-    boolean existsById(Long idMovie);
 
 }

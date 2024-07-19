@@ -59,7 +59,7 @@ public class ReviewServiceImpl implements ReviewService {
         Review review = createReview(email, title, content);
         if (review == null)
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        Movie movie = movieService.setMovie(idMovie);
+        Movie movie = movieService.setMovieIfNotExist(idMovie);
         if (movie != null) {
             ReviewMovie reviewMovie = new ReviewMovie(movie, review);
             reviewMovieRepository.save(reviewMovie);

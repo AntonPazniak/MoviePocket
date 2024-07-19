@@ -61,7 +61,7 @@ public class TracingServiceImpl implements TracingService {
         if (user != null) {
             Tracking tracking = trackingRepository.findByUserAndMovie_Id(user, idMovie);
             if (tracking == null) {
-                Movie movie = movieService.setMovie(idMovie);
+                Movie movie = movieService.setMovieIfNotExist(idMovie);
                 if (movie != null) {
                     LocalDate currentDate = LocalDate.now();
                     LocalDate releaseDate = movie.getRelease_date();

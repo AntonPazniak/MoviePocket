@@ -142,7 +142,7 @@ class MovieListServiceImplTest {
         user.setEmail(email);
 
         when(userRepository.findByEmail(email)).thenReturn(user);
-        when(movieService.setMovie(idMovie)).thenReturn(null);
+        when(movieService.setMovieIfNotExist(idMovie)).thenReturn(null);
 
         ResponseEntity<Void> response = reviewService.createMovieReview(email, idMovie, title, content);
 
@@ -284,7 +284,7 @@ class MovieListServiceImplTest {
         existingList.setUser(user);
         existingList.setMovies(new ArrayList<>());
         Mockito.when(movieListRepository.getById(idList)).thenReturn(existingList);
-        Mockito.when(movieService.setMovie(idMovie)).thenReturn(new Movie());
+        Mockito.when(movieService.setMovieIfNotExist(idMovie)).thenReturn(new Movie());
 
         // Test service method
         ResponseEntity<Void> response = movieListService.addOrDelItemLIst(email, idList, idMovie);
@@ -311,7 +311,7 @@ class MovieListServiceImplTest {
         existingList.setUser(anotherUser);  // User is not the owner of the list
         existingList.setMovies(new ArrayList<>());
         Mockito.when(movieListRepository.getById(idList)).thenReturn(existingList);
-        Mockito.when(movieService.setMovie(idMovie)).thenReturn(new Movie());
+        Mockito.when(movieService.setMovieIfNotExist(idMovie)).thenReturn(new Movie());
 
         // Test service method
         ResponseEntity<Void> response = movieListService.addOrDelItemLIst(email, idList, idMovie);

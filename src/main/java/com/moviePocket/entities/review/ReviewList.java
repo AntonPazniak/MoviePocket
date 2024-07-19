@@ -38,5 +38,4 @@ public class ReviewList {
         this.movieList = movieList;
         this.review = review;
     }
-
 }

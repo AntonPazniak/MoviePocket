@@ -13,50 +13,61 @@ import com.moviePocket.api.TMDBApi;
 import com.moviePocket.entities.movie.Movie;
 import com.moviePocket.entities.movie.ProductionCompany;
 import com.moviePocket.entities.movie.ProductionCountry;
-import com.moviePocket.repository.movie.GenreRepository;
 import com.moviePocket.repository.movie.MovieRepository;
 import com.moviePocket.repository.movie.ProductionCompanyRepository;
 import com.moviePocket.repository.movie.ProductionCountryRepository;
+import com.moviePocket.service.inter.movie.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.NoSuchElementException;
+
 @Service
-public class MovieServiceImpl {
+public class MovieServiceImpl implements MovieService {
 
     @Autowired
     private MovieRepository movieRepository;
-    @Autowired
-    private GenreRepository genreRepository;
+
     @Autowired
     private ProductionCompanyRepository productionCompanyRepository;
+
     @Autowired
     private ProductionCountryRepository productionCountryRepository;
 
-    public Movie setMovie(Long idMovie) {
-        Movie movie = null;
-        if (!movieRepository.existsById(idMovie)) {
-            movie = TMDBApi.getShortInfoMovie(idMovie);
-            if (movie != null) {
-                if (movie.getProduction_companies() != null) {
-                    for (ProductionCompany productionCompany : movie.getProduction_companies()) {
-                        if (!productionCompanyRepository.existsById(productionCompany.getId())) {
-                            productionCompanyRepository.save(productionCompany);
-                        }
-                    }
-                }
-                if (movie.getProduction_countries() != null) {
-                    for (ProductionCountry productionCountry : movie.getProduction_countries()) {
-                        if (!productionCountryRepository.existsByIso31661(productionCountry.getIso31661())) {
-                            productionCountryRepository.save(productionCountry);
-                        }
-                    }
-                }
-                movieRepository.save(movie);
-            }
-        } else {
-            return movieRepository.getById(idMovie);
+    public Movie setMovieIfNotExist(Long idMovie) {
+        if (movieRepository.existsById(idMovie)) {
+            return movieRepository.findById(idMovie).orElseThrow();
         }
+
+        Movie movie = TMDBApi.getShortInfoMovie(idMovie);
+        if (movie == null) {
+            throw new NoSuchElementException("Movie with ID " + idMovie + " not found in external API.");
+        }
+
+        saveProductionCompanies(movie.getProduction_companies());
+        saveProductionCountries(movie.getProduction_countries());
+        movieRepository.save(movie);
         return movie;
     }
 
+    private void saveProductionCompanies(List<ProductionCompany> productionCompanies) {
+        if (productionCompanies != null) {
+            for (ProductionCompany productionCompany : productionCompanies) {
+                if (!productionCompanyRepository.existsById(productionCompany.getId())) {
+                    productionCompanyRepository.save(productionCompany);
+                }
+            }
+        }
+    }
+
+    private void saveProductionCountries(List<ProductionCountry> productionCountries) {
+        if (productionCountries != null) {
+            for (ProductionCountry productionCountry : productionCountries) {
+                if (!productionCountryRepository.existsByIso31661(productionCountry.getIso31661())) {
+                    productionCountryRepository.save(productionCountry);
+                }
+            }
+        }
+    }
 }

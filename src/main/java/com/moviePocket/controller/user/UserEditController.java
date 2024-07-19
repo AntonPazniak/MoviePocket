@@ -18,6 +18,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import jakarta.mail.MessagingException;
+import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,7 +44,7 @@ public class UserEditController {
     @GetMapping("/getUserDto")
     public ResponseEntity<UserDto> getUserDto() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user = userService.findUserByEmail(authentication.getName());
+        User user = userService.chekUserAuntByEmail(authentication.getName());
         if (user != null) {
             Long idAvatar = null;
             if (user.getAvatar() != null)
@@ -65,9 +66,9 @@ public class UserEditController {
             @ApiResponse(code = 400, message = "Bad request")
     })
     @PostMapping("/delete")
-    public ResponseEntity<Void> deleteUser(@RequestParam String password) {
+    public void deleteUser(@RequestParam String password) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return userService.deleteUser(authentication.getName(), password);
+        userService.deleteUser(authentication.getName(), password);
     }
 
     @ApiOperation("Set a new password(password is validated")
@@ -77,12 +78,12 @@ public class UserEditController {
 
     })
     @PostMapping("/newPas")
-    public ResponseEntity<Void> newPasswordPostForm(
+    public void newPasswordPostForm(
             @RequestParam("passwordold") String passwordOld,
             @RequestParam("password0") String passwordNew0,
-            @RequestParam("password1") String passwordNew1) {
+            @RequestParam("password1") String passwordNew1) throws BadRequestException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return userService.setNewPassword(authentication.getName(), passwordOld, passwordNew0, passwordNew1);
+        userService.setNewPassword(authentication.getName(), passwordOld, passwordNew0, passwordNew1);
     }
 
     @PostMapping("/newEmail")
@@ -91,9 +92,9 @@ public class UserEditController {
             @ApiResponse(code = 200, message = "Successfully set the new email"),
             @ApiResponse(code = 400, message = "Bad request")
     })
-    public ResponseEntity<Void> newEmailGetForm(@RequestParam("email") String email) throws MessagingException {
+    public void newEmailGetForm(@RequestParam("email") String email) throws MessagingException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return userService.setTokenEmail(authentication.getName(), email);
+        userService.setTokenEmail(authentication.getName(), email);
     }
 
     @GetMapping("/activateNewEmail/{token}")
@@ -111,9 +112,9 @@ public class UserEditController {
             @ApiResponse(code = 200, message = "Successfully set the new username"),
             @ApiResponse(code = 400, message = "Bad request")
     })
-    public ResponseEntity<Void> newSetNewUsername(@RequestParam("username") String username) {
+    public void newSetNewUsername(@RequestParam("username") String username) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return userService.setNewUsername(authentication.getName(), username);
+        userService.setNewUsername(authentication.getName(), username);
     }
 
 
@@ -122,9 +123,9 @@ public class UserEditController {
             @ApiResponse(code = 200, message = "Successfully set the new username")
     })
     @PostMapping("/newBio")
-    public ResponseEntity<Void> newSetNewBio(@RequestParam("bio") String bio) {
+    public void newSetNewBio(@RequestParam("bio") String bio) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return userService.setNewBio(authentication.getName(), bio);
+        userService.setNewBio(authentication.getName(), bio);
     }
 
 

@@ -39,7 +39,7 @@ public class DislikedMovieServiceImpl implements DislikedMovieService {
         if (user == null)
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         DislikedMovie dislikedMovie = dislikedMovieRepository.findByUserAndMovie_Id(user, idMovie);
-        Movie movie = movieService.setMovie(idMovie);
+        Movie movie = movieService.setMovieIfNotExist(idMovie);
         if (movie != null) {
             if (dislikedMovie == null) {
                 dislikedMovieRepository.save(

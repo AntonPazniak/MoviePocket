@@ -60,7 +60,7 @@ public class FavoriteMovieServiceImplTest {
     void testSetOrDeleteNewFavoriteMovies_MovieNotFound() {
         User user = new User();
         when(userRepository.findByEmail(Mockito.anyString())).thenReturn(user);
-        when(movieService.setMovie(anyLong())).thenReturn(null);
+        when(movieService.setMovieIfNotExist(anyLong())).thenReturn(null);
 
         ResponseEntity<Void> response = favoriteMovieService.setOrDeleteNewFavoriteMovies("test@example.com", 1L);
 
@@ -71,7 +71,7 @@ public class FavoriteMovieServiceImplTest {
     void testSetOrDeleteNewFavoriteMovies_AddFavorite() {
         User user = new User();
         when(userRepository.findByEmail(Mockito.anyString())).thenReturn(user);
-        when(movieService.setMovie(anyLong())).thenReturn(new Movie());
+        when(movieService.setMovieIfNotExist(anyLong())).thenReturn(new Movie());
 
         ResponseEntity<Void> response = favoriteMovieService.setOrDeleteNewFavoriteMovies("test@example.com", 1L);
 
@@ -82,7 +82,7 @@ public class FavoriteMovieServiceImplTest {
     void testSetOrDeleteNewFavoriteMovies_DeleteFavorite() {
         User user = new User();
         when(userRepository.findByEmail(Mockito.anyString())).thenReturn(user);
-        when(movieService.setMovie(anyLong())).thenReturn(new Movie());
+        when(movieService.setMovieIfNotExist(anyLong())).thenReturn(new Movie());
         when(favoriteMovieRepository.findByUserAndMovie_id(user, 1L)).thenReturn(new FavoriteMovie(user, new Movie()));
 
         ResponseEntity<Void> response = favoriteMovieService.setOrDeleteNewFavoriteMovies("test@example.com", 1L);

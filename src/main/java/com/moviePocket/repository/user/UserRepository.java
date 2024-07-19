@@ -16,9 +16,12 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
+
+    Optional<User> findUserAuntByEmail(String mail);
 
     User findByEmail(String mail);
 
@@ -30,7 +33,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     User findByUsername(String username);
 
-    @Query("SELECT u FROM User u WHERE LOWER(u.username) LIKE LOWER(CONCAT('%', :partialUsername, '%'))")
+    @Query("SELECT u FROM users u WHERE LOWER(u.username) LIKE LOWER(CONCAT('%', :partialUsername, '%'))")
     List<User> findByPartialUsername(@Param("partialUsername") String partialUsername);
 
 }

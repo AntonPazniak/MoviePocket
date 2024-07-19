@@ -17,7 +17,6 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -39,10 +38,9 @@ public class WatchedMovieController {
             @ApiResponse(code = 401, message = "Unauthorized"),
             @ApiResponse(code = 500, message = "Internal Server Error")
     })
-    public ResponseEntity<Void> setOrDeleteMovieWatched(@RequestParam("idMovie") Long idMovie, HttpServletRequest request) {
-
+    public void setOrDeleteMovieWatched(@RequestParam("idMovie") Long idMovie, HttpServletRequest request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return watchedMovieService.setOrDeleteNewWatched(authentication.getName(), idMovie);
+        watchedMovieService.setOrDeleteNewWatched(authentication.getName(), idMovie);
     }
 
     @GetMapping("/get")
@@ -52,7 +50,7 @@ public class WatchedMovieController {
             @ApiResponse(code = 401, message = "Unauthorized"),
             @ApiResponse(code = 500, message = "Internal Server Error")
     })
-    public ResponseEntity<Boolean> getIsMovieWatchedByUser(@RequestParam("idMovie") Long idMovie) {
+    public boolean getIsMovieWatchedByUser(@RequestParam("idMovie") Long idMovie) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return watchedMovieService.getFromWatched(
                 authentication.getName(), idMovie);
@@ -65,7 +63,7 @@ public class WatchedMovieController {
             @ApiResponse(code = 401, message = "Unauthorized"),
             @ApiResponse(code = 500, message = "Internal Server Error")
     })
-    public ResponseEntity<List<Movie>> allUserMovieWatchedMovies() {
+    public List<Movie> allUserMovieWatchedMovies() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return watchedMovieService.getAllUserWatched(
                 authentication.getName());
@@ -78,21 +76,21 @@ public class WatchedMovieController {
 
     })
     @GetMapping("/count/watched")
-    public ResponseEntity<Integer> getAllCountWatchedByIdMovie(@RequestParam("idMovie") Long id) {
+    public Integer getAllCountWatchedByIdMovie(@RequestParam("idMovie") Long id) {
         return watchedMovieService.getAllCountByIdMovie(id);
     }
 
-    @ApiOperation(value = "Get the number of movies added to the watched list from a specific movie list")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully retrieved the count"),
-            @ApiResponse(code = 400, message = "Invalid movie list ID"),
-            @ApiResponse(code = 401, message = "Unauthorized"),
-            @ApiResponse(code = 500, message = "Internal Server Error")
-    })
-    @GetMapping("/count/watched/fromList")
-    public ResponseEntity<Integer> getCountWatchedFromList(
-            @RequestParam("idMovieList") Long idMovieList) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return watchedMovieService.getCountWatchedFromList(authentication.getName(), idMovieList);
-    }
+//    @ApiOperation(value = "Get the number of movies added to the watched list from a specific movie list")
+//    @ApiResponses(value = {
+//            @ApiResponse(code = 200, message = "Successfully retrieved the count"),
+//            @ApiResponse(code = 400, message = "Invalid movie list ID"),
+//            @ApiResponse(code = 401, message = "Unauthorized"),
+//            @ApiResponse(code = 500, message = "Internal Server Error")
+//    })
+//    @GetMapping("/count/watched/fromList")
+//    public ResponseEntity<Integer> getCountWatchedFromList(
+//            @RequestParam("idMovieList") Long idMovieList) {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        return watchedMovieService.getCountWatchedFromList(authentication.getName(), idMovieList);
+//    }
 }

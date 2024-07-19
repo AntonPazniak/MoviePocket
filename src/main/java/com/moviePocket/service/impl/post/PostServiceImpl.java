@@ -72,7 +72,7 @@ public class PostServiceImpl implements PostService {
         Post post = createPost(email, title, content);
         if (post == null)
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        Movie movie = movieService.setMovie(idMovie);
+        Movie movie = movieService.setMovieIfNotExist(idMovie);
         if (movie == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         else {
