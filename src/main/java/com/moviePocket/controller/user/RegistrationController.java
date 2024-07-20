@@ -4,9 +4,9 @@ package com.moviePocket.controller.user;
 import com.moviePocket.controller.dto.UserRegistrationDto;
 import com.moviePocket.entities.user.User;
 import com.moviePocket.service.inter.user.UserService;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -16,22 +16,21 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-@RestController("/registration")
+@RestController
+@RequestMapping("/registration")
 @RequiredArgsConstructor
 public class RegistrationController {
 
     @Autowired
-    private UserService userService;
+    private final UserService userService;
 
-    @ApiOperation(value = "Register a user ", notes = "Registration with username, password(with validation) and email, email and username should be unique, cookie based")
+    @Operation(summary = "Register a user", description = "Registration with username, password(with validation) and email, email and username should be unique, cookie based")
     @ApiResponses(value = {
-            @ApiResponse(code = 201, message = "Successfully registered"),
-            @ApiResponse(code = 403, message = "User already registered"),
-            @ApiResponse(code = 400, message = "Password does not match the criteria"),
-            @ApiResponse(code = 404, message = "Username or email is empty"),
-            @ApiResponse(code = 401, message = "Username is already occupied")
-
-
+            @ApiResponse(responseCode = "201", description = "Successfully registered"),
+            @ApiResponse(responseCode = "403", description = "User already registered"),
+            @ApiResponse(responseCode = "400", description = "Password does not match the criteria"),
+            @ApiResponse(responseCode = "404", description = "Username or email is empty"),
+            @ApiResponse(responseCode = "401", description = "Username is already occupied")
     })
     @PostMapping("/")
     public ResponseEntity<?> registration(
@@ -42,28 +41,23 @@ public class RegistrationController {
         if ((existingUser != null) && existingUser.isAccountActive()) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-        //403
+
         if ((existingUser != null) || (existingUserByMail != null))
             return new ResponseEntity<>("User already registered !!!", HttpStatus.FORBIDDEN);
 
-        //400
         if (result.hasFieldErrors("password")) {
             String passwordErrorMessage = result.getFieldError("password").getDefaultMessage();
-            // Handle the password validation error, e.g., add a custom message to the response
             return new ResponseEntity<>(passwordErrorMessage, HttpStatus.BAD_REQUEST);
         }
 
-        //404
         if (userDto.getUsername().isEmpty() || userDto.getEmail().isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        //404
         if (result.hasErrors()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        //201
         userService.save(userDto);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
@@ -77,5 +71,4 @@ public class RegistrationController {
     public ResponseEntity<Boolean> existsUserByEmail(@RequestParam("email") String email) {
         return userService.existsByEmail(email);
     }
-
 }

@@ -13,10 +13,10 @@ import com.moviePocket.controller.dto.UserDto;
 import com.moviePocket.entities.user.User;
 import com.moviePocket.service.inter.image.ImageService;
 import com.moviePocket.service.inter.user.UserService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.mail.MessagingException;
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,15 +24,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-
-@Controller
 @RestController
 @RequestMapping("/user/edit")
-@Api(value = "User edition controller", tags = "Bio, username, email or password edition")
+@Tag(name = "User edition controller", description = "Bio, username, email or password edition")
 public class UserEditController {
 
     @Autowired
@@ -60,10 +57,10 @@ public class UserEditController {
         }
     }
 
-    @ApiOperation(value = "Delete a user", notes = "User set status deleted and stays in db")
+    @Operation(summary = "Delete a user", description = "User set status deleted and stays in db")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "Successfully deleted the user"),
-            @ApiResponse(code = 400, message = "Bad request")
+            @ApiResponse(responseCode = "200", description = "Successfully deleted the user"),
+            @ApiResponse(responseCode = "400", description = "Bad request")
     })
     @PostMapping("/delete")
     public void deleteUser(@RequestParam String password) {
@@ -71,11 +68,10 @@ public class UserEditController {
         userService.deleteUser(authentication.getName(), password);
     }
 
-    @ApiOperation("Set a new password(password is validated")
+    @Operation(summary = "Set a new password", description = "Password is validated")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "Successfully set the new password"),
-            @ApiResponse(code = 400, message = "Password does not match the criteria"),
-
+            @ApiResponse(responseCode = "200", description = "Successfully set the new password"),
+            @ApiResponse(responseCode = "400", description = "Password does not match the criteria"),
     })
     @PostMapping("/newPas")
     public void newPasswordPostForm(
@@ -86,41 +82,40 @@ public class UserEditController {
         userService.setNewPassword(authentication.getName(), passwordOld, passwordNew0, passwordNew1);
     }
 
-    @PostMapping("/newEmail")
-    @ApiOperation("Set a new email")
+    @Operation(summary = "Set a new email")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "Successfully set the new email"),
-            @ApiResponse(code = 400, message = "Bad request")
+            @ApiResponse(responseCode = "200", description = "Successfully set the new email"),
+            @ApiResponse(responseCode = "400", description = "Bad request")
     })
+    @PostMapping("/newEmail")
     public void newEmailGetForm(@RequestParam("email") String email) throws MessagingException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         userService.setTokenEmail(authentication.getName(), email);
     }
 
-    @GetMapping("/activateNewEmail/{token}")
-    @ApiOperation("Activate a new email")
+    @Operation(summary = "Activate a new email")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "Successfully activated the new email")
+            @ApiResponse(responseCode = "200", description = "Successfully activated the new email")
     })
+    @GetMapping("/activateNewEmail/{token}")
     public ResponseEntity<Void> activate(@PathVariable String token) {
         return userService.activateNewEmail(token);
     }
 
-    @PostMapping("/newUsername")
-    @ApiOperation(value = "Set a new username", notes = "username should be unique and not empty")
+    @Operation(summary = "Set a new username", description = "Username should be unique and not empty")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "Successfully set the new username"),
-            @ApiResponse(code = 400, message = "Bad request")
+            @ApiResponse(responseCode = "200", description = "Successfully set the new username"),
+            @ApiResponse(responseCode = "400", description = "Bad request")
     })
+    @PostMapping("/newUsername")
     public void newSetNewUsername(@RequestParam("username") String username) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         userService.setNewUsername(authentication.getName(), username);
     }
 
-
-    @ApiOperation(value = "Set a new bio", notes = "username should be not empty")
+    @Operation(summary = "Set a new bio", description = "Bio should not be empty")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "Successfully set the new username")
+            @ApiResponse(responseCode = "200", description = "Successfully set the new bio")
     })
     @PostMapping("/newBio")
     public void newSetNewBio(@RequestParam("bio") String bio) {
@@ -128,27 +123,25 @@ public class UserEditController {
         userService.setNewBio(authentication.getName(), bio);
     }
 
-
-    @PostMapping("/newAvatar")
-    @ApiOperation("Set a new avatar")
+    @Operation(summary = "Set a new avatar")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "Successfully set the new avatar"),
-            @ApiResponse(code = 400, message = "Image size is exceeded (1MB)"),
-            @ApiResponse(code = 401, message = "User is not authorized")
+            @ApiResponse(responseCode = "200", description = "Successfully set the new avatar"),
+            @ApiResponse(responseCode = "400", description = "Image size is exceeded (1MB)"),
+            @ApiResponse(responseCode = "401", description = "User is not authorized")
     })
+    @PostMapping("/newAvatar")
     public ResponseEntity<Void> setNewAvatar(@RequestParam("file") MultipartFile file) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return userService.setNewAvatar(authentication.getName(), file);
     }
 
-
-    @PostMapping("/deleteAvatar")
-    @ApiOperation("Delete current avatar")
+    @Operation(summary = "Delete current avatar")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "Successfully deleted avatar"),
-            @ApiResponse(code = 400, message = "Avatar is null"),
-            @ApiResponse(code = 401, message = "User is not authorized")
+            @ApiResponse(responseCode = "200", description = "Successfully deleted avatar"),
+            @ApiResponse(responseCode = "400", description = "Avatar is null"),
+            @ApiResponse(responseCode = "401", description = "User is not authorized")
     })
+    @PostMapping("/deleteAvatar")
     public ResponseEntity<Void> deleteAvatar(@RequestParam("avatarId") Long avatarId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return userService.deleteAvatar(authentication.getName(), avatarId);

@@ -11,10 +11,9 @@ package com.moviePocket.controller.rating;
 
 import com.moviePocket.entities.movie.Movie;
 import com.moviePocket.service.inter.rating.WatchedMovieService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -25,72 +24,72 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/movies/watched")
-@Api(value = "Watched Movie Controller")
+@io.swagger.v3.oas.annotations.tags.Tag(name = "Watched Movie Controller", description = "Controller for managing watched movies")
 public class WatchedMovieController {
 
     @Autowired
-    WatchedMovieService watchedMovieService;
+    private WatchedMovieService watchedMovieService;
 
-    @PostMapping("/set")
-    @ApiOperation("Set or delete a movie from watched list")
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "Successfully set or deleted the movie as watched"),
-            @ApiResponse(code = 401, message = "Unauthorized"),
-            @ApiResponse(code = 500, message = "Internal Server Error")
+    @Operation(summary = "Set or delete a movie from watched list", description = "Allows setting or deleting a movie from the watched list")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully set or deleted the movie as watched"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error")
     })
+    @PostMapping("/set")
     public void setOrDeleteMovieWatched(@RequestParam("idMovie") Long idMovie, HttpServletRequest request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         watchedMovieService.setOrDeleteNewWatched(authentication.getName(), idMovie);
     }
 
-    @GetMapping("/get")
-    @ApiOperation("Check if a movie is watched by the user")
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "Successfully retrieved the movie watch status"),
-            @ApiResponse(code = 401, message = "Unauthorized"),
-            @ApiResponse(code = 500, message = "Internal Server Error")
+    @Operation(summary = "Check if a movie is watched by the user", description = "Checks if a specific movie is in the user's watched list")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved the movie watch status"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error")
     })
+    @GetMapping("/get")
     public boolean getIsMovieWatchedByUser(@RequestParam("idMovie") Long idMovie) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return watchedMovieService.getFromWatched(
-                authentication.getName(), idMovie);
+        return watchedMovieService.getFromWatched(authentication.getName(), idMovie);
     }
 
-    @GetMapping("/allByUser")
-    @ApiOperation("Get all movies watched by the user")
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "Successfully retrieved all watched movies"),
-            @ApiResponse(code = 401, message = "Unauthorized"),
-            @ApiResponse(code = 500, message = "Internal Server Error")
+    @Operation(summary = "Get all movies watched by the user", description = "Retrieves all movies that have been watched by the user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved all watched movies"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error")
     })
+    @GetMapping("/allByUser")
     public List<Movie> allUserMovieWatchedMovies() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return watchedMovieService.getAllUserWatched(
-                authentication.getName());
+        return watchedMovieService.getAllUserWatched(authentication.getName());
     }
 
-    @ApiOperation(value = "Get int number of times the movie was added to watched")
+    @Operation(summary = "Get the number of times the movie was added to watched", description = "Retrieves the count of how many times a movie has been added to the watched list")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully retrieved number "),
-            @ApiResponse(code = 400, message = "Smth wrong"),
-
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved the count"),
+            @ApiResponse(responseCode = "400", description = "Bad request")
     })
     @GetMapping("/count/watched")
     public Integer getAllCountWatchedByIdMovie(@RequestParam("idMovie") Long id) {
         return watchedMovieService.getAllCountByIdMovie(id);
     }
 
-//    @ApiOperation(value = "Get the number of movies added to the watched list from a specific movie list")
-//    @ApiResponses(value = {
-//            @ApiResponse(code = 200, message = "Successfully retrieved the count"),
-//            @ApiResponse(code = 400, message = "Invalid movie list ID"),
-//            @ApiResponse(code = 401, message = "Unauthorized"),
-//            @ApiResponse(code = 500, message = "Internal Server Error")
-//    })
-//    @GetMapping("/count/watched/fromList")
-//    public ResponseEntity<Integer> getCountWatchedFromList(
-//            @RequestParam("idMovieList") Long idMovieList) {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        return watchedMovieService.getCountWatchedFromList(authentication.getName(), idMovieList);
-//    }
+    // Uncomment and update the following method as needed:
+    /*
+    @Operation(summary = "Get the number of movies added to the watched list from a specific movie list", description = "Retrieves the count of watched movies from a specific list")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved the count"),
+            @ApiResponse(responseCode = "400", description = "Invalid movie list ID"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error")
+    })
+    @GetMapping("/count/watched/fromList")
+    public ResponseEntity<Integer> getCountWatchedFromList(
+            @RequestParam("idMovieList") Long idMovieList) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return watchedMovieService.getCountWatchedFromList(authentication.getName(), idMovieList);
+    }
+    */
 }

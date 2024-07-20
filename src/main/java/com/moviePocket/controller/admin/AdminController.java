@@ -14,9 +14,9 @@ import com.moviePocket.entities.user.ParsBlockedUser;
 import com.moviePocket.entities.user.User;
 import com.moviePocket.service.inter.admin.BlockedUserService;
 import com.moviePocket.service.inter.user.UserService;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,12 +34,12 @@ public class AdminController {
     private final BlockedUserService blockedUserService;
     private final UserService userService;
 
-    @ApiOperation(value = "Ban user by admin", notes = "Make user status unactive and add to Blocked table")
+    @Operation(summary = "Ban user by admin", description = "Make user status unactive and add to Blocked table")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully created new post"),
-            @ApiResponse(code = 401, message = "Forbidden - user is not admin"),
-            @ApiResponse(code = 404, message = "Not found - no such a user"),
-            @ApiResponse(code = 400, message = "Bad request - user is already blocked and is in table")
+            @ApiResponse(responseCode = "200", description = "Successfully created new post"),
+            @ApiResponse(responseCode = "401", description = "Forbidden - user is not admin"),
+            @ApiResponse(responseCode = "404", description = "Not found - no such a user"),
+            @ApiResponse(responseCode = "400", description = "Bad request - user is already blocked and is in table")
     })
     @PostMapping("/banUser/{username}")
     public ResponseEntity<Void> banUser(@PathVariable String username, @RequestParam String comment) {
@@ -64,12 +64,12 @@ public class AdminController {
         }
     }
 
-    @ApiOperation(value = "Unban user by admin", notes = "Make user status active and delete from Blocked table")
+    @Operation(summary = "Unban user by admin", description = "Make user status active and delete from Blocked table")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully created new post"),
-            @ApiResponse(code = 401, message = "Forbidden - user is not admin"),
-            @ApiResponse(code = 404, message = "Not found - no such a user"),
-            @ApiResponse(code = 400, message = "Bad request - user is already unblocked and is in table")
+            @ApiResponse(responseCode = "200", description = "Successfully created new post"),
+            @ApiResponse(responseCode = "401", description = "Forbidden - user is not admin"),
+            @ApiResponse(responseCode = "404", description = "Not found - no such a user"),
+            @ApiResponse(responseCode = "400", description = "Bad request - user is already unblocked and is in table")
     })
     @PostMapping("/unbanUser/{username}")
     public ResponseEntity<Void> unbanUser(@PathVariable String username) {
@@ -97,12 +97,12 @@ public class AdminController {
         }
     }
 
-    @ApiOperation(value = "Get all blocked users", notes = "Return list of blocked users in specific format for each user: username/avatar, date blocked, admin's username/idAvatar, comment from admin")
+    @Operation(summary = "Get all blocked users", description = "Return list of blocked users in specific format for each user: username/avatar, date blocked, admin's username/idAvatar, comment from admin")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully created new post"),
-            @ApiResponse(code = 401, message = "Forbidden - user is not admin"),
-            @ApiResponse(code = 404, message = "Not found - no such a user"),
-            @ApiResponse(code = 400, message = "Bad request - user is already blocked and is in table")
+            @ApiResponse(responseCode = "200", description = "Successfully created new post"),
+            @ApiResponse(responseCode = "401", description = "Forbidden - user is not admin"),
+            @ApiResponse(responseCode = "404", description = "Not found - no such a user"),
+            @ApiResponse(responseCode = "400", description = "Bad request - user is already blocked and is in table")
     })
     @GetMapping("/blockedUsers")
     public ResponseEntity<List<ParsBlockedUser>> getBlockedUsers() {

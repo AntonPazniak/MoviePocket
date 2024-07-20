@@ -11,10 +11,9 @@ package com.moviePocket.controller.rating;
 
 import com.moviePocket.entities.movie.Movie;
 import com.moviePocket.service.inter.rating.FavoriteMovieService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -24,18 +23,21 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@Api(value = "Favorite Movie Controller", tags = "Controller for favorites movies list")
 @RequestMapping("/movies/favorite")
 public class FavoriteMovieController {
 
     @Autowired
-    FavoriteMovieService favoriteMoviesService;
+    private final FavoriteMovieService favoriteMoviesService;
 
-    @ApiOperation(value = "Set or delete a movie from the favorite list")
+    public FavoriteMovieController(FavoriteMovieService favoriteMoviesService) {
+        this.favoriteMoviesService = favoriteMoviesService;
+    }
+
+    @Operation(summary = "Set or delete a movie from the favorite list")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully set or deleted the movie"),
-            @ApiResponse(code = 400, message = "Bad request"),
-            @ApiResponse(code = 401, message = "User is not authentificated")
+            @ApiResponse(responseCode = "200", description = "Successfully set or deleted the movie"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "401", description = "User is not authenticated")
     })
     @PostMapping("/set")
     public ResponseEntity<Void> setOrDeleteFavoriteMovie(@RequestParam("idMovie") Long idMovie) {
@@ -43,41 +45,37 @@ public class FavoriteMovieController {
         return favoriteMoviesService.setOrDeleteNewFavoriteMovies(authentication.getName(), idMovie);
     }
 
-    @ApiOperation(value = "Check if a user has favorite a movie")
+    @Operation(summary = "Check if a user has favorited a movie")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully retrieved the result"),
-            @ApiResponse(code = 400, message = "Bad request"),
-            @ApiResponse(code = 401, message = "User is not authentificated")
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved the result"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "401", description = "User is not authenticated")
     })
     @GetMapping("/get")
     public ResponseEntity<Boolean> getIsUserFavoriteMovie(@RequestParam("idMovie") Long idMovie) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return favoriteMoviesService.getFromFavoriteMovies(
-                authentication.getName(), idMovie);
+        return favoriteMoviesService.getFromFavoriteMovies(authentication.getName(), idMovie);
     }
 
-    @ApiOperation(value = "Get all movies user's favorite list")
+    @Operation(summary = "Get all movies in user's favorite list")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully retrieved the list"),
-            @ApiResponse(code = 400, message = "Bad request"),
-            @ApiResponse(code = 401, message = "User is not authentificated")
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved the list"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "401", description = "User is not authenticated")
     })
     @GetMapping("/all")
     public ResponseEntity<List<Movie>> allUserFavoriteMovies() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return favoriteMoviesService.getAllUserFavoriteMovies(
-                authentication.getName());
+        return favoriteMoviesService.getAllUserFavoriteMovies(authentication.getName());
     }
 
-    @ApiOperation(value = "Get int number of times the movie was added to fav")
+    @Operation(summary = "Get the number of times the movie was added to favorites")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully retrieved number "),
-            @ApiResponse(code = 400, message = "Smth wrong"),
-
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved number"),
+            @ApiResponse(responseCode = "400", description = "Something went wrong")
     })
     @GetMapping("/count/favorite")
     public ResponseEntity<Integer> getAllCountFavoriteByIdMovie(@RequestParam("idMovie") Long idMovie) {
         return favoriteMoviesService.getAllCountByIdMovie(idMovie);
     }
-
 }

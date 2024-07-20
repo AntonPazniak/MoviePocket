@@ -11,10 +11,9 @@ package com.moviePocket.controller.rating;
 
 import com.moviePocket.entities.rating.Rating;
 import com.moviePocket.service.inter.rating.RatingMovieService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -25,18 +24,18 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/movies/rating")
-@Api(value = "Rating Movie Controller", tags = "Controller to rate movies, avr rating is double value")
+@io.swagger.v3.oas.annotations.tags.Tag(name = "Rating Movie Controller", description = "Controller to rate movies, average rating is double value")
 public class RatingMovieController {
 
     @Autowired
-    RatingMovieService ratingMovieService;
+    private RatingMovieService ratingMovieService;
 
     @PostMapping("/set")
-    @ApiOperation(value = "Set the rating for a movie", notes = "Ff user already set rating for the movie it will be updated")
+    @Operation(summary = "Set the rating for a movie", description = "If user already set rating for the movie, it will be updated")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "Successfully set the rating"),
-            @ApiResponse(code = 400, message = "Bad request"),
-            @ApiResponse(code = 401, message = "User is not authentificated")
+            @ApiResponse(responseCode = "200", description = "Successfully set the rating"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "401", description = "User is not authenticated")
     })
     public ResponseEntity<Void> setRatingMovie(
             @RequestParam("idMovie") Long idMovie,
@@ -46,11 +45,11 @@ public class RatingMovieController {
     }
 
     @PostMapping("/del")
-    @ApiOperation("Remove the rating for a movie")
+    @Operation(summary = "Remove the rating for a movie", description = "Removes the rating for the specified movie")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "Successfully removed the rating"),
-            @ApiResponse(code = 400, message = "Bad request"),
-            @ApiResponse(code = 401, message = "User is not authentificated")
+            @ApiResponse(responseCode = "200", description = "Successfully removed the rating"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "401", description = "User is not authenticated")
     })
     public ResponseEntity<Void> delRatingMovie(@RequestParam("idMovie") Long idMovie) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -58,11 +57,11 @@ public class RatingMovieController {
     }
 
     @GetMapping("/get")
-    @ApiOperation("Get the rating for a movie")
+    @Operation(summary = "Get the rating for a movie", description = "Retrieves the rating set by the user for the specified movie")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "Successfully retrieved the rating"),
-            @ApiResponse(code = 400, message = "Bad request"),
-            @ApiResponse(code = 401, message = "User is not authentificated")
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved the rating"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "401", description = "User is not authenticated")
     })
     public ResponseEntity<Integer> getUserRatingMovie(@RequestParam("idMovie") Long idMovie) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -70,37 +69,34 @@ public class RatingMovieController {
     }
 
     @GetMapping("/allByUser")
-    @ApiOperation("Get all ratings for a user")
+    @Operation(summary = "Get all ratings for a user", description = "Retrieves all ratings given by the user")
     @ApiResponses({
-            @ApiResponse(code = 200, message = "Successfully retrieved the users' ratings"),
-            @ApiResponse(code = 400, message = "Bad request"),
-            @ApiResponse(code = 401, message = "User is not authentificated")
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved the user's ratings"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "401", description = "User is not authenticated")
     })
     public ResponseEntity<List<Rating>> allRatingByUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return ratingMovieService.getAllUserRatingMovie(authentication.getName());
     }
 
-    @ApiOperation(value = "Get double number which represents the current rating of the movie(avr of all from users)")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully retrieved (0.0 if it was now rated yet "),
-            @ApiResponse(code = 400, message = "Smth wrong"),
-
-    })
     @GetMapping("/getByIdMovie")
+    @Operation(summary = "Get average rating for a movie", description = "Retrieves the average rating for the specified movie")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved the average rating (0.0 if it was not rated yet)"),
+            @ApiResponse(responseCode = "400", description = "Something went wrong")
+    })
     public ResponseEntity<Double> getByIdMovieRating(@RequestParam("idMovie") Long idMovie) {
         return ratingMovieService.getMovieRating(idMovie);
     }
 
-    @ApiOperation(value = "Get int number of times the movie was rated")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully retrieved number "),
-            @ApiResponse(code = 400, message = "Smth wrong"),
-
-    })
     @GetMapping("/count/rating")
+    @Operation(summary = "Get the number of times the movie was rated", description = "Retrieves the count of ratings for the specified movie")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved the number of ratings"),
+            @ApiResponse(responseCode = "400", description = "Something went wrong")
+    })
     public ResponseEntity<Integer> getCountMovieRating(@RequestParam("idMovie") Long idMovie) {
         return ratingMovieService.getAllCountByIdMovie(idMovie);
     }
-
 }

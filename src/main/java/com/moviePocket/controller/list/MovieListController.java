@@ -9,16 +9,15 @@
 
 package com.moviePocket.controller.list;
 
-
 import com.moviePocket.entities.list.ParsList;
 import com.moviePocket.entities.movie.Genre;
 import com.moviePocket.service.inter.list.CategoriesMovieListService;
 import com.moviePocket.service.inter.list.LikeListService;
 import com.moviePocket.service.inter.list.MovieListService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -30,20 +29,17 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/movies/list")
-@Api(value = "Movie List Controller", description = "Controller related to the movie lists manipulations")
+@Tag(name = "Movie List Controller", description = "Controller related to the movie lists manipulations")
 public class MovieListController {
 
-
     private final MovieListService movieListService;
-
     private final LikeListService likeListService;
-
     private final CategoriesMovieListService categoriesMovieListService;
 
-    @ApiOperation(value = "Create a new movie list", notes = "Return Http response Ok")
+    @Operation(summary = "Create a new movie list", description = "Return Http response Ok")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully created new movie list"),
-            @ApiResponse(code = 401, message = "Forbidden - user is not authenticated")
+            @ApiResponse(responseCode = "200", description = "Successfully created new movie list"),
+            @ApiResponse(responseCode = "401", description = "Forbidden - user is not authenticated")
     })
     @PostMapping("/set")
     public ResponseEntity<ParsList> setNewMovieList(@RequestParam("title") String title,
@@ -52,12 +48,12 @@ public class MovieListController {
         return movieListService.setList(authentication.getName(), title, content);
     }
 
-    @ApiOperation(value = "Update movie list title", notes = "Return Http response Ok")
+    @Operation(summary = "Update movie list title", description = "Return Http response Ok")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully updated title"),
-            @ApiResponse(code = 401, message = "Forbidden - user is not authenticated"),
-            @ApiResponse(code = 403, message = "Forbidden - user is not authenticated"),
-            @ApiResponse(code = 404, message = "Movie list not found")
+            @ApiResponse(responseCode = "200", description = "Successfully updated title"),
+            @ApiResponse(responseCode = "401", description = "Forbidden - user is not authenticated"),
+            @ApiResponse(responseCode = "403", description = "Forbidden - user is not authenticated"),
+            @ApiResponse(responseCode = "404", description = "Movie list not found")
     })
     @PostMapping("/up")
     public ResponseEntity<Void> setUpdateMovieListTitle(@RequestParam("idMovieList") Long idMovieList,
@@ -67,12 +63,12 @@ public class MovieListController {
         return movieListService.updateList(authentication.getName(), idMovieList, title, content);
     }
 
-    @ApiOperation(value = "Delete movie list and all that it had(movies in it adn likes from other 2 tables", notes = "Return Http response Ok")
+    @Operation(summary = "Delete movie list and all that it had(movies in it and likes from other 2 tables)", description = "Return Http response Ok")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully updated title"),
-            @ApiResponse(code = 401, message = "Forbidden - user is not authenticated"),
-            @ApiResponse(code = 403, message = "Forbidden - user is not authenticated"),
-            @ApiResponse(code = 404, message = "Movie list not found")
+            @ApiResponse(responseCode = "200", description = "Successfully updated title"),
+            @ApiResponse(responseCode = "401", description = "Forbidden - user is not authenticated"),
+            @ApiResponse(responseCode = "403", description = "Forbidden - user is not authenticated"),
+            @ApiResponse(responseCode = "404", description = "Movie list not found")
     })
     @PostMapping("/del")
     public ResponseEntity<Void> delMovieList(@RequestParam("idMovieList") Long idMovieList) {
@@ -80,43 +76,42 @@ public class MovieListController {
         return movieListService.deleteList(authentication.getName(), idMovieList);
     }
 
-    @ApiOperation(value = "Return boolean saying whether movie is already in list of not", notes = "Return Boolean true if it is")
+    @Operation(summary = "Return boolean saying whether movie is already in list or not", description = "Return Boolean true if it is")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Movie is in list"),
-            @ApiResponse(code = 404, message = "List is not found")
+            @ApiResponse(responseCode = "200", description = "Movie is in list"),
+            @ApiResponse(responseCode = "404", description = "List is not found")
     })
     @GetMapping("/isInList")
     public ResponseEntity<Boolean> isMovieInList(@RequestParam("idList") Long idList, @RequestParam("idMovie") Long idMovie) {
         return movieListService.isMovieInList(idList, idMovie);
     }
 
-
-    @ApiOperation(value = "Get movie list", notes = "Returns a list of movies for the given movie list ID")
+    @Operation(summary = "Get movie list", description = "Returns a list of movies for the given movie list ID")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully retrieved movie list"),
-            @ApiResponse(code = 400, message = "Invalid movie list ID"),
-            @ApiResponse(code = 404, message = "Movie list not found")
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved movie list"),
+            @ApiResponse(responseCode = "400", description = "Invalid movie list ID"),
+            @ApiResponse(responseCode = "404", description = "Movie list not found")
     })
     @GetMapping("/get")
     public ResponseEntity<ParsList> getMovieList(@RequestParam("idMovieList") Long idMovieList) {
         return movieListService.getList(idMovieList);
     }
 
-    @ApiOperation(value = "Get movie list by partial title", notes = "Returns a list of movies that matches the title if it doesn't match it's empty list")
+    @Operation(summary = "Get movie list by partial title", description = "Returns a list of movies that matches the title if it doesn't match it's empty list")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully retrieved movie list"),
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved movie list")
     })
     @GetMapping("/get/title")
     public ResponseEntity<?> getMovieListByPartialTitle(@RequestParam("title") String title) {
         return movieListService.getAllByPartialTitle(title);
     }
 
-    @ApiOperation(value = "Add or delete movie from list", notes = "Adds or deletes a movie from the specified movie list")
+    @Operation(summary = "Add or delete movie from list", description = "Adds or deletes a movie from the specified movie list")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully added or deleted movie from list"),
-            @ApiResponse(code = 400, message = "Invalid movie list ID or movie ID"),
-            @ApiResponse(code = 401, message = "Forbidden - user is not authenticated"),
-            @ApiResponse(code = 404, message = "Movie list or movie not found")
+            @ApiResponse(responseCode = "200", description = "Successfully added or deleted movie from list"),
+            @ApiResponse(responseCode = "400", description = "Invalid movie list ID or movie ID"),
+            @ApiResponse(responseCode = "401", description = "Forbidden - user is not authenticated"),
+            @ApiResponse(responseCode = "404", description = "Movie list or movie not found")
     })
     @PostMapping("/movie/set")
     public ResponseEntity<Void> setOrDelMovieInMovieList(@RequestParam("idList") Long idList, @RequestParam("idMovie") Long idMovie) {
@@ -124,12 +119,12 @@ public class MovieListController {
         return movieListService.addOrDelItemLIst(authentication.getName(), idList, idMovie);
     }
 
-    @ApiOperation(value = "Like or dislike movie list", notes = "Likes or dislikes the specified movie list")
+    @Operation(summary = "Like or dislike movie list", description = "Likes or dislikes the specified movie list")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully liked or disliked movie list"),
-            @ApiResponse(code = 400, message = "Invalid movie list ID"),
-            @ApiResponse(code = 401, message = "Forbidden - user is not authenticated"),
-            @ApiResponse(code = 404, message = "Movie list not found")
+            @ApiResponse(responseCode = "200", description = "Successfully liked or disliked movie list"),
+            @ApiResponse(responseCode = "400", description = "Invalid movie list ID"),
+            @ApiResponse(responseCode = "401", description = "Forbidden - user is not authenticated"),
+            @ApiResponse(responseCode = "404", description = "Movie list not found")
     })
     @PostMapping("/like/set")
     public ResponseEntity<Void> setLikeOrDesMovieList(@RequestParam("idList") Long idList, @RequestParam("like") Boolean like) {
@@ -143,12 +138,12 @@ public class MovieListController {
         return likeListService.getLikeOrDis(authentication.getName(), idList);
     }
 
-    @ApiOperation(value = "Set or delete category(tag)", notes = "Sets  or delete the category for the specified movie list that it can be searched by after")
+    @Operation(summary = "Set or delete category(tag)", description = "Sets or delete the category for the specified movie list that it can be searched by after")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully set category for movie list"),
-            @ApiResponse(code = 400, message = "Invalid movie list ID or category ID"),
-            @ApiResponse(code = 401, message = "Forbidden - user is not authenticated"),
-            @ApiResponse(code = 404, message = "Movie list or category not found")
+            @ApiResponse(responseCode = "200", description = "Successfully set category for movie list"),
+            @ApiResponse(responseCode = "400", description = "Invalid movie list ID or category ID"),
+            @ApiResponse(responseCode = "401", description = "Forbidden - user is not authenticated"),
+            @ApiResponse(responseCode = "404", description = "Movie list or category not found")
     })
     @PostMapping("/genre/set")
     public ResponseEntity<?> setOrDelCategoryMovieList(@RequestParam("idList") Long idList, @RequestParam("idCategory") Long idCategory) {
@@ -156,10 +151,10 @@ public class MovieListController {
         return categoriesMovieListService.setOrDelCategoryList(authentication.getName(), idList, idCategory);
     }
 
-    @ApiOperation(value = "Get all my movie lists", notes = "Returns a list of all movie lists for the authenticated user")
+    @Operation(summary = "Get all my movie lists", description = "Returns a list of all movie lists for the authenticated user")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully retrieved all movie lists for authenticated user"),
-            @ApiResponse(code = 401, message = "User not authenticated")
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved all movie lists for authenticated user"),
+            @ApiResponse(responseCode = "401", description = "User not authenticated")
     })
     @GetMapping("/user/my")
     public ResponseEntity<List<ParsList>> getAllMyLists() {
@@ -167,11 +162,11 @@ public class MovieListController {
         return movieListService.getAllMyList(authentication.getName());
     }
 
-    @ApiOperation(value = "Get all movie lists of user", notes = "Returns a list of all movie lists for the specified username")
+    @Operation(summary = "Get all movie lists of user", description = "Returns a list of all movie lists for the specified username")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully retrieved all movie lists for specified username"),
-            @ApiResponse(code = 400, message = "Invalid username"),
-            @ApiResponse(code = 404, message = "User not found")
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved all movie lists for specified username"),
+            @ApiResponse(responseCode = "400", description = "Invalid username"),
+            @ApiResponse(responseCode = "404", description = "User not found")
     })
     @GetMapping("/user/all")
     public ResponseEntity<List<ParsList>> getAllUsername(@RequestParam("username") String username) {
@@ -183,11 +178,10 @@ public class MovieListController {
         return movieListService.getAllListsContainingMovie(idMovie);
     }
 
-
-    @ApiOperation(value = "Get boolean true/false if you are list author", notes = "Returns bolean true if you are")
+    @Operation(summary = "Get boolean true/false if you are list author", description = "Returns boolean true if you are")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "You are author of the list "),
-            @ApiResponse(code = 404, message = "User not found")
+            @ApiResponse(responseCode = "200", description = "You are author of the list"),
+            @ApiResponse(responseCode = "404", description = "User not found")
     })
     @GetMapping("/authorship")
     public ResponseEntity<Boolean> getAuthorshipByIdMovie(@RequestParam("idList") Long idList) {
