@@ -11,11 +11,11 @@ package com.moviePocket.service.impl.tracing;
 
 import com.moviePocket.api.TMDBApi;
 import com.moviePocket.api.models.MovieTMDB;
-import com.moviePocket.entities.movie.Movie;
-import com.moviePocket.entities.tracking.Tracking;
-import com.moviePocket.entities.user.User;
-import com.moviePocket.repository.tracking.TrackingRepository;
-import com.moviePocket.repository.user.UserRepository;
+import com.moviePocket.db.entities.movie.Movie;
+import com.moviePocket.db.entities.tracking.Tracking;
+import com.moviePocket.db.entities.user.User;
+import com.moviePocket.db.repository.tracking.TrackingRepository;
+import com.moviePocket.db.repository.user.UserRepository;
 import com.moviePocket.service.impl.movie.MovieServiceImpl;
 import com.moviePocket.service.impl.user.EmailSenderService;
 import com.moviePocket.service.inter.tracing.TracingService;

@@ -9,10 +9,10 @@
 
 package com.moviePocket.service.impl.rating;
 
-import com.moviePocket.entities.movie.Movie;
-import com.moviePocket.entities.rating.WatchedMovie;
-import com.moviePocket.entities.user.User;
-import com.moviePocket.repository.rating.WatchedMovieRepository;
+import com.moviePocket.db.entities.movie.Movie;
+import com.moviePocket.db.entities.rating.WatchedMovie;
+import com.moviePocket.db.entities.user.User;
+import com.moviePocket.db.repository.rating.WatchedMovieRepository;
 import com.moviePocket.service.impl.movie.MovieServiceImpl;
 import com.moviePocket.service.inter.rating.WatchedMovieService;
 import com.moviePocket.service.inter.user.UserService;

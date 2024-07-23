@@ -9,7 +9,7 @@
 
 package com.moviePocket.service.inter.rating;
 
-import com.moviePocket.entities.movie.Movie;
+import com.moviePocket.db.entities.movie.Movie;
 
 import java.util.List;
 

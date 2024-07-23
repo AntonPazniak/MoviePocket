@@ -9,7 +9,7 @@
 
 package com.moviePocket.service.inter.movie;
 
-import com.moviePocket.entities.movie.Movie;
+import com.moviePocket.db.entities.movie.Movie;
 
 public interface MovieService {
 

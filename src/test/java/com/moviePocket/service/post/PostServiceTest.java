@@ -9,15 +9,15 @@
 
 package com.moviePocket.service.post;
 
-import com.moviePocket.entities.list.ListMovie;
-import com.moviePocket.entities.post.*;
-import com.moviePocket.entities.user.User;
-import com.moviePocket.repository.list.MovieListRepository;
-import com.moviePocket.repository.movie.MovieRepository;
-import com.moviePocket.repository.post.*;
-import com.moviePocket.repository.review.LikeReviewRepository;
-import com.moviePocket.repository.review.ReviewPostRepository;
-import com.moviePocket.repository.user.UserRepository;
+import com.moviePocket.db.entities.list.ListMovie;
+import com.moviePocket.db.entities.post.*;
+import com.moviePocket.db.entities.user.User;
+import com.moviePocket.db.repository.list.MovieListRepository;
+import com.moviePocket.db.repository.movie.MovieRepository;
+import com.moviePocket.db.repository.post.*;
+import com.moviePocket.db.repository.review.LikeReviewRepository;
+import com.moviePocket.db.repository.review.ReviewPostRepository;
+import com.moviePocket.db.repository.user.UserRepository;
 import com.moviePocket.service.impl.movie.MovieServiceImpl;
 import com.moviePocket.service.impl.post.PostServiceImpl;
 import org.junit.jupiter.api.Test;

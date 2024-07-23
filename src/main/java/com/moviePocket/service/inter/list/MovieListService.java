@@ -9,7 +9,7 @@
 
 package com.moviePocket.service.inter.list;
 
-import com.moviePocket.entities.list.ParsList;
+import com.moviePocket.db.entities.list.ParsList;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;

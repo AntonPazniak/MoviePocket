@@ -9,9 +9,9 @@
 
 package com.moviePocket.service.rating;
 
-import com.moviePocket.repository.list.MovieListRepository;
-import com.moviePocket.repository.rating.WatchedMovieRepository;
-import com.moviePocket.repository.user.UserRepository;
+import com.moviePocket.db.repository.list.MovieListRepository;
+import com.moviePocket.db.repository.rating.WatchedMovieRepository;
+import com.moviePocket.db.repository.user.UserRepository;
 import com.moviePocket.service.impl.movie.MovieServiceImpl;
 import com.moviePocket.service.impl.rating.WatchedMovieServiceImpl;
 import org.mockito.InjectMocks;

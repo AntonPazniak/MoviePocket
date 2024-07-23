@@ -9,7 +9,7 @@
 
 package com.moviePocket.service.inter.raview;
 
-import com.moviePocket.entities.review.ParsReview;
+import com.moviePocket.db.entities.review.ParsReview;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;

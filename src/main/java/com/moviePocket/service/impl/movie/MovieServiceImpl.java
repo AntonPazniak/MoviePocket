@@ -10,12 +10,12 @@
 package com.moviePocket.service.impl.movie;
 
 import com.moviePocket.api.TMDBApi;
-import com.moviePocket.entities.movie.Movie;
-import com.moviePocket.entities.movie.ProductionCompany;
-import com.moviePocket.entities.movie.ProductionCountry;
-import com.moviePocket.repository.movie.MovieRepository;
-import com.moviePocket.repository.movie.ProductionCompanyRepository;
-import com.moviePocket.repository.movie.ProductionCountryRepository;
+import com.moviePocket.db.entities.movie.Movie;
+import com.moviePocket.db.entities.movie.ProductionCompany;
+import com.moviePocket.db.entities.movie.ProductionCountry;
+import com.moviePocket.db.repository.movie.MovieRepository;
+import com.moviePocket.db.repository.movie.ProductionCompanyRepository;
+import com.moviePocket.db.repository.movie.ProductionCountryRepository;
 import com.moviePocket.service.inter.movie.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -9,12 +9,12 @@
 
 package com.moviePocket.service.rating;
 
-import com.moviePocket.entities.movie.Movie;
-import com.moviePocket.entities.rating.Rating;
-import com.moviePocket.entities.rating.RatingMovie;
-import com.moviePocket.entities.user.User;
-import com.moviePocket.repository.rating.RatingMovieRepository;
-import com.moviePocket.repository.user.UserRepository;
+import com.moviePocket.db.entities.movie.Movie;
+import com.moviePocket.db.entities.rating.Rating;
+import com.moviePocket.db.entities.rating.RatingMovie;
+import com.moviePocket.db.entities.user.User;
+import com.moviePocket.db.repository.rating.RatingMovieRepository;
+import com.moviePocket.db.repository.user.UserRepository;
 import com.moviePocket.service.impl.movie.MovieServiceImpl;
 import com.moviePocket.service.impl.rating.RatingMovieServiceImpl;
 import org.junit.jupiter.api.Test;

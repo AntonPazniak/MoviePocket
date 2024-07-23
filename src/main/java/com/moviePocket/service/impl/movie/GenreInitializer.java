@@ -11,8 +11,8 @@ package com.moviePocket.service.impl.movie;
 
 
 import com.moviePocket.api.TMDBApi;
-import com.moviePocket.entities.movie.Genre;
-import com.moviePocket.repository.movie.GenreRepository;
+import com.moviePocket.db.entities.movie.Genre;
+import com.moviePocket.db.repository.movie.GenreRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;

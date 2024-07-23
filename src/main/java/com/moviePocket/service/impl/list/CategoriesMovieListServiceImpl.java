@@ -10,14 +10,14 @@
 package com.moviePocket.service.impl.list;
 
 
-import com.moviePocket.entities.list.ListGenres;
-import com.moviePocket.entities.list.ListMovie;
-import com.moviePocket.entities.movie.Genre;
-import com.moviePocket.entities.user.User;
-import com.moviePocket.repository.list.ListGenreRepository;
-import com.moviePocket.repository.list.MovieListRepository;
-import com.moviePocket.repository.movie.GenreRepository;
-import com.moviePocket.repository.user.UserRepository;
+import com.moviePocket.db.entities.list.ListGenres;
+import com.moviePocket.db.entities.list.ListMovie;
+import com.moviePocket.db.entities.movie.Genre;
+import com.moviePocket.db.entities.user.User;
+import com.moviePocket.db.repository.list.ListGenreRepository;
+import com.moviePocket.db.repository.list.MovieListRepository;
+import com.moviePocket.db.repository.movie.GenreRepository;
+import com.moviePocket.db.repository.user.UserRepository;
 import com.moviePocket.service.inter.list.CategoriesMovieListService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;

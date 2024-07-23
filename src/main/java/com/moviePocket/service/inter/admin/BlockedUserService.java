@@ -9,8 +9,8 @@
 
 package com.moviePocket.service.inter.admin;
 
-import com.moviePocket.entities.user.BlockedUser;
-import com.moviePocket.entities.user.ParsBlockedUser;
+import com.moviePocket.db.entities.user.BlockedUser;
+import com.moviePocket.db.entities.user.ParsBlockedUser;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;

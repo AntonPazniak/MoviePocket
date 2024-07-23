@@ -9,11 +9,11 @@
 
 package com.moviePocket.service.impl.rating;
 
-import com.moviePocket.entities.movie.Movie;
-import com.moviePocket.entities.rating.DislikedMovie;
-import com.moviePocket.entities.user.User;
-import com.moviePocket.repository.rating.DislikedMovieRepository;
-import com.moviePocket.repository.user.UserRepository;
+import com.moviePocket.db.entities.movie.Movie;
+import com.moviePocket.db.entities.rating.DislikedMovie;
+import com.moviePocket.db.entities.user.User;
+import com.moviePocket.db.repository.rating.DislikedMovieRepository;
+import com.moviePocket.db.repository.user.UserRepository;
 import com.moviePocket.service.impl.movie.MovieServiceImpl;
 import com.moviePocket.service.inter.rating.DislikedMovieService;
 import jakarta.transaction.Transactional;

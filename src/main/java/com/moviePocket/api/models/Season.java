@@ -10,7 +10,15 @@
 package com.moviePocket.api.models;
 
 import com.google.gson.annotations.SerializedName;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class Season {
     @SerializedName("air_date")
     private String airDate;

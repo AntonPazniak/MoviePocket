@@ -9,7 +9,7 @@
 
 package com.moviePocket.service.inter.rating;
 
-import com.moviePocket.entities.rating.Rating;
+import com.moviePocket.db.entities.rating.Rating;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;

@@ -1,38 +1,24 @@
-/*
- * ******************************************************
- *  Copyright (C)  MoviePocket <prymakdn@gmail.com>
- *  This file is part of MoviePocket.
- *  MoviePocket can not be copied and/or distributed without the express
- *  permission of Danila Prymak, Alexander Trafimchyk and Anton Pozniak
- * *****************************************************
- */
-
 package com.moviePocket.util;
 
-import com.google.gson.*;
+import com.google.gson.TypeAdapter;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
 
-import java.lang.reflect.Type;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-public class LocalDateAdapter implements JsonSerializer<LocalDate>, JsonDeserializer<LocalDate> {
+public class LocalDateAdapter extends TypeAdapter<LocalDate> {
 
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
 
     @Override
-    public JsonElement serialize(LocalDate src, Type typeOfSrc, JsonSerializationContext context) {
-        return context.serialize(src.format(formatter));
+    public void write(JsonWriter jsonWriter, LocalDate localDate) throws IOException {
+        jsonWriter.value(localDate != null ? localDate.format(formatter) : null);
     }
 
     @Override
-    public LocalDate deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)
-            throws JsonParseException {
-        String dateStr = json.getAsString();
-
-        if ("null".equals(dateStr)) {
-            return null;
-        }
-
-        return LocalDate.parse(dateStr, formatter);
+    public LocalDate read(JsonReader jsonReader) throws IOException {
+        return LocalDate.parse(jsonReader.nextString(), formatter);
     }
 }

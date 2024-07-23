@@ -9,8 +9,8 @@
 
 package com.moviePocket.service.impl.image;
 
-import com.moviePocket.entities.image.ImageEntity;
-import com.moviePocket.repository.image.ImageRepository;
+import com.moviePocket.db.entities.image.ImageEntity;
+import com.moviePocket.db.repository.image.ImageRepository;
 import com.moviePocket.service.inter.image.ImageService;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;

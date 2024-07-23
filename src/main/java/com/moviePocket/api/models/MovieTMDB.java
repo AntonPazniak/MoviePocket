@@ -10,18 +10,19 @@
 package com.moviePocket.api.models;
 
 import com.google.gson.annotations.SerializedName;
-import com.moviePocket.entities.movie.Genre;
-import com.moviePocket.entities.movie.ProductionCompany;
-import com.moviePocket.entities.movie.ProductionCountry;
-import lombok.Getter;
-import lombok.Setter;
+import com.moviePocket.db.entities.movie.Genre;
+import com.moviePocket.db.entities.movie.ProductionCompany;
+import com.moviePocket.db.entities.movie.ProductionCountry;
+import lombok.*;
 
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 
-@Getter
-@Setter
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class MovieTMDB implements Serializable {
     private final String BASE_URL = "https://image.tmdb.org/t/p/w500";
     private final String STANDARD_POSTER_URL = "https://github.com/prymakD/MoviePocket/raw/16f04a6063f407cec8ee8eab29a4bd25c4ae111b/src/main/frontend/src/images/person.png";

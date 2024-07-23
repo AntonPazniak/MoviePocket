@@ -9,12 +9,12 @@
 
 package com.moviePocket.service.impl.list;
 
-import com.moviePocket.entities.list.LikeList;
-import com.moviePocket.entities.list.ListMovie;
-import com.moviePocket.entities.user.User;
-import com.moviePocket.repository.list.LikeListRepository;
-import com.moviePocket.repository.list.MovieListRepository;
-import com.moviePocket.repository.user.UserRepository;
+import com.moviePocket.db.entities.list.LikeList;
+import com.moviePocket.db.entities.list.ListMovie;
+import com.moviePocket.db.entities.user.User;
+import com.moviePocket.db.repository.list.LikeListRepository;
+import com.moviePocket.db.repository.list.MovieListRepository;
+import com.moviePocket.db.repository.user.UserRepository;
 import com.moviePocket.service.inter.list.LikeListService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

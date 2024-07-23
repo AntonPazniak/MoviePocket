@@ -10,7 +10,7 @@
 package com.moviePocket.controller.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.moviePocket.entities.user.User;
+import com.moviePocket.db.entities.user.User;
 import com.moviePocket.security.validation.ValidPassword;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;

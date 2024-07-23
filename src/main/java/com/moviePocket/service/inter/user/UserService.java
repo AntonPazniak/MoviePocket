@@ -10,8 +10,8 @@
 package com.moviePocket.service.inter.user;
 
 import com.moviePocket.controller.dto.UserPostDto;
-import com.moviePocket.controller.dto.UserRegistrationDto;
-import com.moviePocket.entities.user.User;
+import com.moviePocket.controller.dto.auth.RegisterRequest;
+import com.moviePocket.db.entities.user.User;
 import jakarta.mail.MessagingException;
 import org.apache.coyote.BadRequestException;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 public interface UserService extends UserDetailsService {
-    void save(UserRegistrationDto registrationDto) throws MessagingException, MessagingException;
+    User saveNewUser(RegisterRequest registrationDto) throws MessagingException, MessagingException;
 
     void cleanSave(User user);
 

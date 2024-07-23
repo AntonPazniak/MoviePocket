@@ -10,7 +10,7 @@
 package com.moviePocket.controller.user;
 
 import com.moviePocket.controller.dto.UserDto;
-import com.moviePocket.entities.user.User;
+import com.moviePocket.db.entities.user.User;
 import com.moviePocket.service.inter.image.ImageService;
 import com.moviePocket.service.inter.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;

@@ -9,7 +9,7 @@
 
 package com.moviePocket.controller.post;
 
-import com.moviePocket.entities.post.ParsPost;
+import com.moviePocket.db.entities.post.ParsPost;
 import com.moviePocket.service.inter.post.LikePostService;
 import com.moviePocket.service.inter.post.PostService;
 import io.swagger.v3.oas.annotations.Operation;

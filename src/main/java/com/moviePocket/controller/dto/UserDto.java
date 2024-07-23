@@ -9,7 +9,7 @@
 
 package com.moviePocket.controller.dto;
 
-import com.moviePocket.entities.user.User;
+import com.moviePocket.db.entities.user.User;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

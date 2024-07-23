@@ -10,15 +10,15 @@
 package com.moviePocket.service.impl.review;
 
 import com.moviePocket.controller.dto.UserPostDto;
-import com.moviePocket.entities.list.ListMovie;
-import com.moviePocket.entities.movie.Movie;
-import com.moviePocket.entities.post.Post;
-import com.moviePocket.entities.review.*;
-import com.moviePocket.entities.user.User;
-import com.moviePocket.repository.list.MovieListRepository;
-import com.moviePocket.repository.post.PostRepository;
-import com.moviePocket.repository.review.*;
-import com.moviePocket.repository.user.UserRepository;
+import com.moviePocket.db.entities.list.ListMovie;
+import com.moviePocket.db.entities.movie.Movie;
+import com.moviePocket.db.entities.post.Post;
+import com.moviePocket.db.entities.review.*;
+import com.moviePocket.db.entities.user.User;
+import com.moviePocket.db.repository.list.MovieListRepository;
+import com.moviePocket.db.repository.post.PostRepository;
+import com.moviePocket.db.repository.review.*;
+import com.moviePocket.db.repository.user.UserRepository;
 import com.moviePocket.service.impl.movie.MovieServiceImpl;
 import com.moviePocket.service.inter.raview.ReviewService;
 import jakarta.persistence.EntityNotFoundException;

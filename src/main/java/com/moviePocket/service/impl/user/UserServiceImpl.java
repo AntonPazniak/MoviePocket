@@ -10,12 +10,12 @@
 package com.moviePocket.service.impl.user;
 
 import com.moviePocket.controller.dto.UserPostDto;
-import com.moviePocket.controller.dto.UserRegistrationDto;
-import com.moviePocket.entities.image.ImageEntity;
-import com.moviePocket.entities.user.*;
+import com.moviePocket.controller.dto.auth.RegisterRequest;
+import com.moviePocket.db.entities.image.ImageEntity;
+import com.moviePocket.db.entities.user.*;
+import com.moviePocket.db.repository.user.*;
 import com.moviePocket.exception.ForbiddenException;
 import com.moviePocket.exception.UnauthorizedException;
-import com.moviePocket.repository.user.*;
 import com.moviePocket.service.impl.image.ImageServiceImpl;
 import com.moviePocket.service.inter.user.UserService;
 import com.moviePocket.util.TbConstants;
@@ -27,7 +27,6 @@ import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -56,24 +55,32 @@ public class UserServiceImpl implements UserService {
     private final ImageServiceImpl imageService;
 
     @Override
-    public void save(UserRegistrationDto userDto) throws MessagingException {
+    public User saveNewUser(RegisterRequest userDto) throws MessagingException {
         Role role = roleRepository.findByName(TbConstants.Roles.USER);
 
         if (role == null)
             role = roleRepository.save(new Role(TbConstants.Roles.USER));
-        User user = new User(userDto.getUsername(), userDto.getEmail(), passwordEncoder.encode(userDto.getPassword()),
-                List.of(role));
-        userRepository.save(user);
+        User user = User.builder()
+                .username(userDto.getUsername())
+                .password(passwordEncoder.encode(userDto.getPassword()))
+                .email(userDto.getEmail())
+                .roles(List.of(role))
+                .accountActive(true)
+                .emailVerification(true)
+                .avatar(null)
+                .bio("test bio")
+                .build();
+        return userRepository.save(user);
 
-        AccountActivate accountActivate = new AccountActivate(user, UUID.randomUUID().toString());
-        accountActivateRepository.save(accountActivate);
-
-        String username = user.getUsername();
-        String link = "https://moviepocket.projektstudencki.pl/activateUser?token=" + accountActivate.getTokenAccountActivate();
-        String massage = "Welcome to MoviePocket family. We really hope that you will enjoy being a part of MoviePocket family \n" +
-                " We want to make sure it's really you. To do that please confirm your mail by clicking the link below.";
-
-        emailSenderService.sendMailWithAttachment(user.getEmail(), buildEmail(username, massage, link), "Email Verification");
+//        AccountActivate accountActivate = new AccountActivate(user, UUID.randomUUID().toString());
+//        accountActivateRepository.save(accountActivate);
+//
+//        String username = user.getUsername();
+//        String link = "https://moviepocket.projektstudencki.pl/activateUser?token=" + accountActivate.getTokenAccountActivate();
+//        String massage = "Welcome to MoviePocket family. We really hope that you will enjoy being a part of MoviePocket family \n" +
+//                " We want to make sure it's really you. To do that please confirm your mail by clicking the link below.";
+//
+//        emailSenderService.sendMailWithAttachment(user.getEmail(), buildEmail(username, massage, link), "Email Verification");
 
     }
 
@@ -290,21 +297,22 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
 
-        User user = userRepository.findByEmail(usernameOrEmail);
-        if (user != null) {
-            if (user.getEmailVerification()) {
-                return new org.springframework.security.core.userdetails.User(user.getEmail()
-                        , user.getPassword(),
-                        user.getRoles().stream()
-                                .map((role) -> new SimpleGrantedAuthority(role.getName()))
-                                .collect(Collectors.toList()));
-            } else {
-                throw new UsernameNotFoundException("You have not verified your email");
-            }
-        } else {
-            throw new UsernameNotFoundException("Invalid email or password");
-
-        }
+//        User user = userRepository.findByEmail(usernameOrEmail);
+//        if (user != null) {
+//            if (user.getEmailVerification()) {
+//                return new org.springframework.security.core.userdetails.User(user.getEmail()
+//                        , user.getPassword(),
+//                        user.getRoles().stream()
+//                                .map((role) -> new SimpleGrantedAuthority(role.getName()))
+//                                .collect(Collectors.toList()));
+//            } else {
+//                throw new UsernameNotFoundException("You have not verified your email");
+//            }
+//        } else {
+//            throw new UsernameNotFoundException("Invalid email or password");
+//
+//        }
+        return null;
     }
 
     @Override

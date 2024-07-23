@@ -9,7 +9,7 @@
 
 package com.moviePocket.service.inter.list;
 
-import com.moviePocket.entities.movie.Genre;
+import com.moviePocket.db.entities.movie.Genre;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;

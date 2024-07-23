@@ -9,7 +9,7 @@
 
 package com.moviePocket.service.inter.image;
 
-import com.moviePocket.entities.image.ImageEntity;
+import com.moviePocket.db.entities.image.ImageEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 

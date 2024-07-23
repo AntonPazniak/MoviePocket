@@ -9,13 +9,13 @@
 
 package com.moviePocket.service.impl.post;
 
-import com.moviePocket.entities.post.LikePost;
-import com.moviePocket.entities.post.ParsPost;
-import com.moviePocket.entities.post.Post;
-import com.moviePocket.entities.user.User;
-import com.moviePocket.repository.post.LikePostRepository;
-import com.moviePocket.repository.post.PostRepository;
-import com.moviePocket.repository.user.UserRepository;
+import com.moviePocket.db.entities.post.LikePost;
+import com.moviePocket.db.entities.post.ParsPost;
+import com.moviePocket.db.entities.post.Post;
+import com.moviePocket.db.entities.user.User;
+import com.moviePocket.db.repository.post.LikePostRepository;
+import com.moviePocket.db.repository.post.PostRepository;
+import com.moviePocket.db.repository.user.UserRepository;
 import com.moviePocket.service.inter.post.LikePostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

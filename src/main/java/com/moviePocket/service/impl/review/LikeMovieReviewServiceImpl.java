@@ -10,12 +10,12 @@
 package com.moviePocket.service.impl.review;
 
 
-import com.moviePocket.entities.review.LikeMovieReview;
-import com.moviePocket.entities.review.Review;
-import com.moviePocket.entities.user.User;
-import com.moviePocket.repository.review.LikeReviewRepository;
-import com.moviePocket.repository.review.ReviewRepository;
-import com.moviePocket.repository.user.UserRepository;
+import com.moviePocket.db.entities.review.LikeMovieReview;
+import com.moviePocket.db.entities.review.Review;
+import com.moviePocket.db.entities.user.User;
+import com.moviePocket.db.repository.review.LikeReviewRepository;
+import com.moviePocket.db.repository.review.ReviewRepository;
+import com.moviePocket.db.repository.user.UserRepository;
 import com.moviePocket.service.inter.raview.LikeMovieReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

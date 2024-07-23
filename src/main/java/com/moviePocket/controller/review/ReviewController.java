@@ -10,7 +10,7 @@
 package com.moviePocket.controller.review;
 
 
-import com.moviePocket.entities.review.ParsReview;
+import com.moviePocket.db.entities.review.ParsReview;
 import com.moviePocket.service.inter.raview.LikeMovieReviewService;
 import com.moviePocket.service.inter.raview.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;

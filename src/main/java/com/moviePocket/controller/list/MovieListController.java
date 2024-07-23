@@ -9,8 +9,8 @@
 
 package com.moviePocket.controller.list;
 
-import com.moviePocket.entities.list.ParsList;
-import com.moviePocket.entities.movie.Genre;
+import com.moviePocket.db.entities.list.ParsList;
+import com.moviePocket.db.entities.movie.Genre;
 import com.moviePocket.service.inter.list.CategoriesMovieListService;
 import com.moviePocket.service.inter.list.LikeListService;
 import com.moviePocket.service.inter.list.MovieListService;

@@ -10,7 +10,15 @@
 package com.moviePocket.api.models;
 
 import com.google.gson.annotations.SerializedName;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class Episode {
     @SerializedName("id")
     private int id;
@@ -50,56 +58,4 @@ public class Episode {
 
     @SerializedName("still_path")
     private String stillPath;
-
-    public int getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getOverview() {
-        return overview;
-    }
-
-    public double getVoteAverage() {
-        return voteAverage;
-    }
-
-    public int getVoteCount() {
-        return voteCount;
-    }
-
-    public String getAirDate() {
-        return airDate;
-    }
-
-    public int getEpisodeNumber() {
-        return episodeNumber;
-    }
-
-    public String getEpisodeType() {
-        return episodeType;
-    }
-
-    public String getProductionCode() {
-        return productionCode;
-    }
-
-    public int getRuntime() {
-        return runtime;
-    }
-
-    public int getSeasonNumber() {
-        return seasonNumber;
-    }
-
-    public int getShowId() {
-        return showId;
-    }
-
-    public String getStillPath() {
-        return stillPath;
-    }
 }
