@@ -56,6 +56,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User saveNewUser(RegisterRequest userDto) throws MessagingException {
+//        if(userRepository.existsByEmail(userDto.getEmail())){
+//
+//        }
+
         Role role = roleRepository.findByName(TbConstants.Roles.USER);
 
         if (role == null)
