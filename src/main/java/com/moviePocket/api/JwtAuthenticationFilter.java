@@ -1,4 +1,4 @@
-package com.moviePocket.test;
+package com.moviePocket.api;
 
 import com.moviePocket.db.repository.auth.TokenRepository;
 import com.moviePocket.service.impl.auth.JwtService;
