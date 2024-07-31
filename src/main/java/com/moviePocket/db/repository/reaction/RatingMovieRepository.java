@@ -7,7 +7,7 @@
  * *****************************************************
  */
 
-package com.moviePocket.db.repository.rating;
+package com.moviePocket.db.repository.reaction;
 
 import com.moviePocket.db.entities.rating.RatingMovie;
 import com.moviePocket.db.entities.user.User;
@@ -16,15 +16,16 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface RatingMovieRepository extends JpaRepository<RatingMovie,Long> {
 
-    RatingMovie findByUserAndMovie_id(User user, Long idMovie);
+    Optional<RatingMovie> findByUserAndMovie_id(User user, Long idMovie);
 
     List<RatingMovie> findAllByUser(User user);
 
     @Query("SELECT AVG(rm.rating) FROM RatingMovie rm WHERE rm.movie.id = :movieId")
-    Double getAverageRatingByMovieId(@Param("movieId") Long movieId);
+    Optional<Float> getAverageRatingByMovieId(@Param("movieId") Long movieId);
 
     int countAllByMovie_id(Long idMovie);
 

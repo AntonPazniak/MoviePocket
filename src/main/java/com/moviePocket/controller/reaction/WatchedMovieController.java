@@ -7,7 +7,7 @@
  * *****************************************************
  */
 
-package com.moviePocket.controller.rating;
+package com.moviePocket.controller.reaction;
 
 import com.moviePocket.db.entities.movie.Movie;
 import com.moviePocket.service.inter.reaction.ReactionMovie;

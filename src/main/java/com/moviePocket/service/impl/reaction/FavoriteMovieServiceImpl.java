@@ -11,7 +11,7 @@ package com.moviePocket.service.impl.reaction;
 
 import com.moviePocket.db.entities.movie.Movie;
 import com.moviePocket.db.entities.rating.FavoriteMovie;
-import com.moviePocket.db.repository.rating.FavoriteMovieRepository;
+import com.moviePocket.db.repository.reaction.FavoriteMovieRepository;
 import com.moviePocket.service.impl.auth.AuthUser;
 import com.moviePocket.service.impl.movie.MovieServiceImpl;
 import com.moviePocket.service.inter.reaction.ReactionMovie;

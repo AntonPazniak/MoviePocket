@@ -10,21 +10,20 @@
 package com.moviePocket.service.inter.reaction;
 
 import com.moviePocket.db.entities.rating.Rating;
-import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
 public interface RatingMovieService {
 
-    ResponseEntity<Void> setNewRatingMovie(String email, Long idMovie, int rating);
+    void setRating(Long idMovie, int rating);
 
-    ResponseEntity<Void> removeFromRatingMovie(String email, Long idMovie);
+    void removeRating(Long idMovie);
 
-    ResponseEntity<Integer> getFromRatingMovie(String email, Long idMovie);
+    Integer getMyRatingByIdMovie(Long idMovie);
 
-    ResponseEntity<List<Rating>> getAllUserRatingMovie(String email);
+    List<Rating> getAllUserRating();
 
-    ResponseEntity<Double> getMovieRating(Long idFilm);
+    Float getRatingByIdMovie(Long idMovie);
 
-    ResponseEntity<Integer> getAllCountByIdMovie(Long idMovie);
+    Integer getRatingCountByIdMovie(Long idMovie);
 }

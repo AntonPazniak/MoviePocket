@@ -13,111 +13,94 @@ import com.moviePocket.db.entities.movie.Movie;
 import com.moviePocket.db.entities.rating.Rating;
 import com.moviePocket.db.entities.rating.RatingMovie;
 import com.moviePocket.db.entities.user.User;
-import com.moviePocket.db.repository.rating.RatingMovieRepository;
-import com.moviePocket.db.repository.user.UserRepository;
+import com.moviePocket.db.repository.reaction.RatingMovieRepository;
+import com.moviePocket.exception.NotFoundException;
+import com.moviePocket.service.impl.auth.AuthUser;
 import com.moviePocket.service.inter.movie.MovieService;
 import com.moviePocket.service.inter.reaction.RatingMovieService;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
+@Transactional
 public class RatingMovieServiceImpl implements RatingMovieService {
-    @Autowired
-    private RatingMovieRepository ratingMovieRepository;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private MovieService movieService;
 
-    @Transactional
-    public ResponseEntity<Void> setNewRatingMovie(String email, Long idMovie, int rating) {
-        if (rating > 0 && rating < 11) {
-            User user = userRepository.findByEmail(email);
-            if (user == null)
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-            Movie movie = movieService.setMovieIfNotExist(idMovie);
-            if (movie != null) {
-                RatingMovie ratingMovie = ratingMovieRepository.findByUserAndMovie_id(user, idMovie);
-                if (ratingMovie == null) {
-                    ratingMovie = new RatingMovie(user, movie, rating);
-                } else {
-                    ratingMovie.setRating(rating);
-                }
-                ratingMovieRepository.save(ratingMovie);
-                return new ResponseEntity<>(HttpStatus.OK);
-            }
+    private final RatingMovieRepository ratingMovieRepository;
+    private final MovieService movieService;
+    private final AuthUser auth;
+
+
+    @Override
+    public void setRating(Long idMovie, int rating) {
+        var user = auth.getAuthenticatedUser();
+        Movie movie = movieService.setMovieIfNotExist(idMovie);
+
+        var ratingMovie = ratingMovieRepository.findByUserAndMovie_id(user, idMovie);
+        if (ratingMovie.isEmpty()) {
+            ratingMovieRepository.save(
+                    new RatingMovie(user, movie, rating)
+            );
+        } else {
+            var updateRatingMovie = ratingMovie.get();
+            updateRatingMovie.setRating(rating);
+            ratingMovieRepository.save(updateRatingMovie);
         }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-
-    @Transactional
-    public ResponseEntity<Void> removeFromRatingMovie(String email, Long idMovie) {
-        User user = userRepository.findByEmail(email);
-        if (user == null)
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        RatingMovie ratingMovie = ratingMovieRepository.findByUserAndMovie_id(user, idMovie);
-        if (ratingMovie == null)
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        ratingMovieRepository.delete(ratingMovie);
-        return new ResponseEntity<>(HttpStatus.OK);
+    @Override
+    public void removeRating(Long idMovie) {
+        User user = auth.getAuthenticatedUser();
+        var ratingMovie = ratingMovieRepository.findByUserAndMovie_id(user, idMovie);
+        if (ratingMovie.isPresent()) {
+            ratingMovieRepository.delete(ratingMovie.get());
+        } else {
+            throw new NotFoundException("Can't delete the rating, because rating is not found");
+        }
     }
 
-    public ResponseEntity<Integer> getFromRatingMovie(String email, Long idMovie) {
-        User user = userRepository.findByEmail(email);
-        if (user == null)
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+    @Override
+    public Integer getMyRatingByIdMovie(Long idMovie) {
+        User user = auth.getAuthenticatedUser();
 
-        RatingMovie ratingMovie = ratingMovieRepository.findByUserAndMovie_id(user, idMovie);
-        if (ratingMovie == null)
-            return ResponseEntity.ok(0);
+        var ratingMovie = ratingMovieRepository.findByUserAndMovie_id(user, idMovie);
 
-        return ResponseEntity.ok(ratingMovie.getRating());
+        return ratingMovie.map(RatingMovie::getRating).orElse(0);
     }
 
-
-    public ResponseEntity<List<Rating>> getAllUserRatingMovie(String email) {
-        User user = userRepository.findByEmail(email);
-        if (user == null)
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+    @Override
+    public List<Rating> getAllUserRating() {
+        User user = auth.getAuthenticatedUser();
         List<RatingMovie> ratingMovieList = ratingMovieRepository.findAllByUser(user);
-        if (ratingMovieList.isEmpty())
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        return ResponseEntity.ok(parsRatingMovieList(ratingMovieList));
+
+        return ratingMovieList.stream()
+                .map(e -> Rating.builder()
+                        .rating(e.getRating())
+                        .movie(e.getMovie())
+                        .build())
+                .collect(Collectors.toList());
     }
 
-    private List<Rating> parsRatingMovieList(List<RatingMovie> ratingMovieList) {
-        List<Rating> ratingList = new ArrayList<>();
-        for (RatingMovie ratingMovie : ratingMovieList) {
-            ratingList.add(new Rating(
 
-                    ratingMovie.getRating(),
-                    ratingMovie.getMovie()
-            ));
-        }
-        return ratingList;
-    }
-
-    public ResponseEntity<Double> getMovieRating(Long idMovie) {
-        Double rating = ratingMovieRepository.getAverageRatingByMovieId(idMovie);
-        if (rating != null) {
-            BigDecimal bd = BigDecimal.valueOf(rating);
+    @Override
+    public Float getRatingByIdMovie(Long idMovie) {
+        var rating = ratingMovieRepository.getAverageRatingByMovieId(idMovie);
+        if (rating.isPresent()) {
+            BigDecimal bd = BigDecimal.valueOf(rating.get());
             BigDecimal roundedNumber = bd.setScale(1, RoundingMode.HALF_UP);
-            return ResponseEntity.ok(roundedNumber.doubleValue());
+            return (float) roundedNumber.doubleValue();
         }
-        return ResponseEntity.ok(0.0);
+        return 0.0f;
     }
 
-    public ResponseEntity<Integer> getAllCountByIdMovie(Long idMovie) {
-        return ResponseEntity.ok(ratingMovieRepository.countAllByMovie_id(idMovie));
+    @Override
+    public Integer getRatingCountByIdMovie(Long idMovie) {
+        return ratingMovieRepository.countAllByMovie_id(idMovie);
     }
-
 }

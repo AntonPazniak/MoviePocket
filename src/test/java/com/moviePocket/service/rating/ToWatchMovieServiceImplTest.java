@@ -12,7 +12,7 @@ package com.moviePocket.service.rating;
 import com.moviePocket.db.entities.movie.Movie;
 import com.moviePocket.db.entities.rating.ToWatchMovie;
 import com.moviePocket.db.entities.user.User;
-import com.moviePocket.db.repository.rating.ToWatchMovieRepository;
+import com.moviePocket.db.repository.reaction.ToWatchMovieRepository;
 import com.moviePocket.db.repository.user.UserRepository;
 import com.moviePocket.service.impl.movie.MovieServiceImpl;
 import com.moviePocket.service.impl.reaction.ToWatchMovieServiceImpl;

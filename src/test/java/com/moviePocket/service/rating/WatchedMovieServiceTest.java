@@ -10,7 +10,7 @@
 package com.moviePocket.service.rating;
 
 import com.moviePocket.db.repository.list.MovieListRepository;
-import com.moviePocket.db.repository.rating.WatchedMovieRepository;
+import com.moviePocket.db.repository.reaction.WatchedMovieRepository;
 import com.moviePocket.db.repository.user.UserRepository;
 import com.moviePocket.service.impl.movie.MovieServiceImpl;
 import com.moviePocket.service.impl.reaction.WatchedMovieServiceImpl;
