@@ -1,4 +1,4 @@
-package com.moviePocket.api;
+package com.moviePocket.config;
 
 import com.moviePocket.db.repository.auth.TokenRepository;
 import com.moviePocket.service.impl.auth.JwtService;
@@ -32,7 +32,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
-        if (request.getServletPath().contains("/api/v1/auth")) {
+        if (request.getServletPath().contains("/auth")) {
             filterChain.doFilter(request, response);
             return;
         }

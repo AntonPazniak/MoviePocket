@@ -7,7 +7,7 @@
  * *****************************************************
  */
 
-package com.moviePocket.service.impl.rating;
+package com.moviePocket.service.impl.reaction;
 
 import com.moviePocket.db.entities.movie.Movie;
 import com.moviePocket.db.entities.rating.Rating;
@@ -16,7 +16,7 @@ import com.moviePocket.db.entities.user.User;
 import com.moviePocket.db.repository.rating.RatingMovieRepository;
 import com.moviePocket.db.repository.user.UserRepository;
 import com.moviePocket.service.inter.movie.MovieService;
-import com.moviePocket.service.inter.rating.RatingMovieService;
+import com.moviePocket.service.inter.reaction.RatingMovieService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

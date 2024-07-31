@@ -10,14 +10,14 @@
 package com.moviePocket.controller.rating;
 
 import com.moviePocket.db.entities.movie.Movie;
-import com.moviePocket.service.inter.rating.FavoriteMovieService;
+import com.moviePocket.service.inter.reaction.ReactionMovie;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,11 +26,11 @@ import java.util.List;
 @RequestMapping("/movies/favorite")
 public class FavoriteMovieController {
 
-    @Autowired
-    private final FavoriteMovieService favoriteMoviesService;
+    private final ReactionMovie favoriteMovieService;
 
-    public FavoriteMovieController(FavoriteMovieService favoriteMoviesService) {
-        this.favoriteMoviesService = favoriteMoviesService;
+    @Autowired
+    public FavoriteMovieController(@Qualifier("favoriteMovieService") ReactionMovie favoriteMovieService) {
+        this.favoriteMovieService = favoriteMovieService;
     }
 
     @Operation(summary = "Set or delete a movie from the favorite list")
@@ -40,9 +40,9 @@ public class FavoriteMovieController {
             @ApiResponse(responseCode = "401", description = "User is not authenticated")
     })
     @PostMapping("/set")
-    public ResponseEntity<Void> setOrDeleteFavoriteMovie(@RequestParam("idMovie") Long idMovie) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return favoriteMoviesService.setOrDeleteNewFavoriteMovies(authentication.getName(), idMovie);
+    public ResponseEntity<Object> setOrDeleteFavoriteMovie(@RequestParam("idMovie") Long idMovie) {
+        favoriteMovieService.setOrDelete(idMovie);
+        return ResponseEntity.ok(HttpStatus.OK);
     }
 
     @Operation(summary = "Check if a user has favorited a movie")
@@ -53,8 +53,7 @@ public class FavoriteMovieController {
     })
     @GetMapping("/get")
     public ResponseEntity<Boolean> getIsUserFavoriteMovie(@RequestParam("idMovie") Long idMovie) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return favoriteMoviesService.getFromFavoriteMovies(authentication.getName(), idMovie);
+        return ResponseEntity.ok(favoriteMovieService.getReaction(idMovie));
     }
 
     @Operation(summary = "Get all movies in user's favorite list")
@@ -65,8 +64,7 @@ public class FavoriteMovieController {
     })
     @GetMapping("/all")
     public ResponseEntity<List<Movie>> allUserFavoriteMovies() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return favoriteMoviesService.getAllUserFavoriteMovies(authentication.getName());
+        return ResponseEntity.ok(favoriteMovieService.getAllMyReactions());
     }
 
     @Operation(summary = "Get the number of times the movie was added to favorites")
@@ -74,8 +72,8 @@ public class FavoriteMovieController {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved number"),
             @ApiResponse(responseCode = "400", description = "Something went wrong")
     })
-    @GetMapping("/count/favorite")
+    @GetMapping("/count")
     public ResponseEntity<Integer> getAllCountFavoriteByIdMovie(@RequestParam("idMovie") Long idMovie) {
-        return favoriteMoviesService.getAllCountByIdMovie(idMovie);
+        return ResponseEntity.ok(favoriteMovieService.getCountReactionByIdMovie(idMovie));
     }
 }

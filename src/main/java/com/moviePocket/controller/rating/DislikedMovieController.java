@@ -10,18 +10,17 @@
 package com.moviePocket.controller.rating;
 
 import com.moviePocket.db.entities.movie.Movie;
-import com.moviePocket.service.inter.rating.DislikedMovieService;
+import com.moviePocket.service.inter.reaction.ReactionMovie;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,11 +28,16 @@ import java.util.List;
 @RestController
 @Tag(name = "Disliked Movie Controller", description = "Controller to dislike a movie")
 @RequestMapping("/movies/dislike")
+@Slf4j
 public class DislikedMovieController {
 
-    private static final Logger log = LoggerFactory.getLogger(DislikedMovieController.class);
+    private final ReactionMovie dislikedMovieService;
+
     @Autowired
-    DislikedMovieService dislikedMovieService;
+    public DislikedMovieController(@Qualifier("dislikedMovieService") ReactionMovie dislikedMovieService) {
+        this.dislikedMovieService = dislikedMovieService;
+    }
+
 
     @PostMapping("/set")
     @Operation(summary = "Set or delete a movie from the disliked list", security = @SecurityRequirement(name = "bearerAuth"))
@@ -42,11 +46,11 @@ public class DislikedMovieController {
             @ApiResponse(responseCode = "400", description = "Bad request"),
             @ApiResponse(responseCode = "401", description = "Unauthorized")
     })
-    public ResponseEntity<Void> setOrDeleteMovieWatched(@RequestParam("idMovie") Long idMovie) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        log.info(authentication.toString());
-        return dislikedMovieService.setOrDeleteDislikedMovie(authentication.getName(), idMovie);
+    public ResponseEntity<Object> setOrDeleteMovieWatched(@RequestParam("idMovie") Long idMovie) {
+        dislikedMovieService.setOrDelete(idMovie);
+        return ResponseEntity.ok(HttpStatus.OK);
     }
+
     @Operation(summary = "Check if a user has disliked a movie", description = "Returns boolean")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved the result"),
@@ -54,8 +58,9 @@ public class DislikedMovieController {
     })
     @GetMapping("/get")
     public ResponseEntity<Boolean> getIsUserDislikedMovie(@RequestParam("idMovie") Long idMovie) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return dislikedMovieService.getFromDislikedMovie(authentication.getName(), idMovie);
+        return ResponseEntity.ok(
+                dislikedMovieService.getReaction(idMovie)
+        );
     }
 
     @Operation(summary = "Get all movies disliked by a user")
@@ -65,8 +70,9 @@ public class DislikedMovieController {
     })
     @GetMapping("/all")
     public ResponseEntity<List<Movie>> allUserDislikedMovies() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return dislikedMovieService.getAllUserDislikedMovie(authentication.getName());
+        return ResponseEntity.ok(
+                dislikedMovieService.getAllMyReactions()
+        );
     }
 
     @Operation(summary = "Get the number of times the movie was added to disliked")
@@ -74,8 +80,11 @@ public class DislikedMovieController {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved number"),
             @ApiResponse(responseCode = "400", description = "Something went wrong"),
     })
-    @GetMapping("/count/dislike")
+    @GetMapping("/count")
     public ResponseEntity<Integer> getAllCountDislikedByIdMovie(@RequestParam("idMovie") Long idMovie) {
-        return dislikedMovieService.getAllCountByIdMovie(idMovie);
+        return ResponseEntity.ok(
+                dislikedMovieService.getCountReactionByIdMovie(idMovie)
+        );
     }
+
 }

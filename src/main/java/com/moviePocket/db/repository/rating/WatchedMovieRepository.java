@@ -9,7 +9,7 @@
 
 package com.moviePocket.db.repository.rating;
 
-
+import com.moviePocket.db.entities.movie.Movie;
 import com.moviePocket.db.entities.rating.WatchedMovie;
 import com.moviePocket.db.entities.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,21 +18,21 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-
+import java.util.Optional;
 
 @Repository
 public interface WatchedMovieRepository extends JpaRepository<WatchedMovie, Long> {
 
-    WatchedMovie findByUser_EmailAndMovie_Id(String email, Long idMovie);
+    Optional<WatchedMovie> findByUserAndMovie_Id(User user, Long idMovie);
 
-    boolean existsByUser_EmailAndMovie_Id(String email, Long idMovie);
+    Boolean existsByUserAndMovie_Id(User user, Long idMovie);
 
-    @Query("SELECT u FROM WatchedMovie u WHERE u.user.email = :email ORDER BY u.created ASC")
-    List<WatchedMovie> findAllByUserOrderByCreatedAsc(@Param("email") String email);
+    @Query("SELECT u.movie FROM WatchedMovie u WHERE u.user = :user ORDER BY u.created ASC")
+    List<Movie> findAllMoviesByUser(@Param("user") User user);
 
     @Query("SELECT COUNT(u) FROM WatchedMovie u WHERE u.movie.id = :movieId")
-    int getAllCountByIdMovie(@Param("movieId") Long idMovie);
+    Integer getAllCountByMovieId(@Param("movieId") Long idMovie);
 
     @Query("SELECT COUNT(wm) FROM WatchedMovie wm WHERE wm.user = :user AND wm.movie.id IN (SELECT m.id FROM ListMovie lm JOIN lm.movies m WHERE lm.id = :listMovieId)")
-    int getCountWatchedFromList(@Param("user") User user, @Param("listMovieId") Long listMovieId);
+    Integer getCountWatchedFromList(@Param("user") User user, @Param("listMovieId") Long listMovieId);
 }

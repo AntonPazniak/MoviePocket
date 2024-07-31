@@ -54,7 +54,6 @@ public class AuthenticationController {
     ) {
         var respon = ResponseEntity.ok(service.authenticate(request));
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        log.info(respon.toString());
         log.info(authentication.toString());
         return respon;
     }

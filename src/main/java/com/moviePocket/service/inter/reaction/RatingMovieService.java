@@ -7,7 +7,7 @@
  * *****************************************************
  */
 
-package com.moviePocket.service.inter.rating;
+package com.moviePocket.service.inter.reaction;
 
 import com.moviePocket.db.entities.rating.Rating;
 import org.springframework.http.ResponseEntity;

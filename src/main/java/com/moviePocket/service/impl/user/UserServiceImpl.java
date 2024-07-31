@@ -10,25 +10,28 @@
 package com.moviePocket.service.impl.user;
 
 import com.moviePocket.controller.dto.UserPostDto;
-import com.moviePocket.controller.dto.auth.RegisterRequest;
 import com.moviePocket.db.entities.image.ImageEntity;
-import com.moviePocket.db.entities.user.*;
-import com.moviePocket.db.repository.user.*;
+import com.moviePocket.db.entities.user.AccountActivate;
+import com.moviePocket.db.entities.user.ForgotPassword;
+import com.moviePocket.db.entities.user.NewEmail;
+import com.moviePocket.db.entities.user.User;
+import com.moviePocket.db.repository.user.AccountActivateRepository;
+import com.moviePocket.db.repository.user.ForgotPasswordRepository;
+import com.moviePocket.db.repository.user.NewEmailRepository;
+import com.moviePocket.db.repository.user.UserRepository;
+import com.moviePocket.exception.BadRequestException;
 import com.moviePocket.exception.ForbiddenException;
 import com.moviePocket.exception.UnauthorizedException;
+import com.moviePocket.service.impl.auth.AuthUser;
 import com.moviePocket.service.impl.image.ImageServiceImpl;
 import com.moviePocket.service.inter.user.UserService;
-import com.moviePocket.util.TbConstants;
 import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.coyote.BadRequestException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -44,49 +47,16 @@ import static com.moviePocket.util.BuildEmail.buildEmail;
 @Slf4j
 public class UserServiceImpl implements UserService {
 
-    @Autowired
-    private UserRepository userRepository;
-    private final RoleRepository roleRepository;
+    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final EmailSenderService emailSenderService;
     private final AccountActivateRepository accountActivateRepository;
     private final NewEmailRepository newEmailRepository;
     private final ForgotPasswordRepository forgotPasswordRepository;
     private final ImageServiceImpl imageService;
+    private final AuthUser authUser;
 
-    @Override
-    public User saveNewUser(RegisterRequest userDto) throws MessagingException {
-//        if(userRepository.existsByEmail(userDto.getEmail())){
-//
-//        }
 
-        Role role = roleRepository.findByName(TbConstants.Roles.USER);
-
-        if (role == null)
-            role = roleRepository.save(new Role(TbConstants.Roles.USER));
-        User user = User.builder()
-                .username(userDto.getUsername())
-                .password(passwordEncoder.encode(userDto.getPassword()))
-                .email(userDto.getEmail())
-                .roles(List.of(role))
-                .accountActive(true)
-                .emailVerification(true)
-                .avatar(null)
-                .bio("test bio")
-                .build();
-        return userRepository.save(user);
-
-//        AccountActivate accountActivate = new AccountActivate(user, UUID.randomUUID().toString());
-//        accountActivateRepository.save(accountActivate);
-//
-//        String username = user.getUsername();
-//        String link = "https://moviepocket.projektstudencki.pl/activateUser?token=" + accountActivate.getTokenAccountActivate();
-//        String massage = "Welcome to MoviePocket family. We really hope that you will enjoy being a part of MoviePocket family \n" +
-//                " We want to make sure it's really you. To do that please confirm your mail by clicking the link below.";
-//
-//        emailSenderService.sendMailWithAttachment(user.getEmail(), buildEmail(username, massage, link), "Email Verification");
-
-    }
 
     @Override
     public void cleanSave(User user) {
@@ -112,43 +82,37 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public void setNewPassword(String email, String passwordOld, String passwordNew0, String passwordNew1) throws BadRequestException {
-        User user = userRepository.findByEmail(email);
-        if (user == null) {
-            throw new UnauthorizedException("User with email " + email + " not found.");
-        } else if (!passwordEncoder.matches(passwordOld, user.getPassword())) {
-            throw new ForbiddenException("Incorrect password.");
-        } else if (!passwordNew0.equals(passwordNew1)) {
-            throw new BadRequestException("Passwords do not match.");
+    public void setNewPassword(String username, String oldPassword, String newPassword) {
+        User user = findUserByUsername(username);
+        if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
+            throw new ForbiddenException("Incorrect old password.");
+        } else if (!oldPassword.equals(newPassword)) {
+            throw new BadRequestException("The current password is the same as the new one.");
         } else {
-            user.setPassword(passwordEncoder.encode(passwordNew0));
+            user.setPassword(passwordEncoder.encode(newPassword));
             userRepository.save(user);
         }
     }
 
     @Override
-    public void setNewUsername(String email, String username) {
-        User user = userRepository.findByEmail(email);
-        if (user == null) {
-            throw new UnauthorizedException("User with email " + email + " not found.");
-        } else if (userRepository.existsByUsername(username) && user.isAccountActive() || username.isEmpty()) {
-            throw new ForbiddenException("Username " + username + " is already taken or invalid.");
+    public void setNewUsername(String newUsername) {
+        var user = authUser.getAuthenticatedUser();
+        if (user.getUsername().equals(newUsername)) {
+            throw new BadRequestException("The current username is the same as the new one.");
+        } else if (userRepository.existsByUsername(newUsername)) {
+            throw new ForbiddenException("Username is already taken.");
         } else {
-            user.setUsername(username);
+            user.setUsername(newUsername);
             userRepository.save(user);
         }
     }
 
 
     @Override
-    public void setNewBio(String email, String bio) {
-        User user = userRepository.findByEmail(email);
-        if (user == null) {
-            throw new UnauthorizedException("User with email " + email + " not found.");
-        } else {
-            user.setBio(bio);
-            userRepository.save(user);
-        }
+    public void setNewBio(String bio) {
+        var user = authUser.getAuthenticatedUser();
+        user.setBio(bio);
+        userRepository.save(user);
     }
 
 
@@ -299,7 +263,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String usernameOrEmail) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String usernameOrEmail) {
 
 //        User user = userRepository.findByEmail(usernameOrEmail);
 //        if (user != null) {
@@ -337,16 +301,17 @@ public class UserServiceImpl implements UserService {
         return result;
     }
 
-    public User findUserByUsername(String username) {
-        return userRepository.findByUsernameAndAccountActive(username, true);
-    }
-
     public ResponseEntity<Boolean> existsByUsername(String username) {
         return ResponseEntity.ok(userRepository.existsByUsername(username));
     }
 
     public ResponseEntity<Boolean> existsByEmail(String email) {
         return ResponseEntity.ok(userRepository.existsByEmail(email));
+    }
+
+    public User findUserByUsername(String username) {
+        return userRepository.findUserByUsername(username)
+                .orElseThrow(() -> new UnauthorizedException("You are not logged in"));
     }
 
 

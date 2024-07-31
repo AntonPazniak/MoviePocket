@@ -9,6 +9,7 @@
 
 package com.moviePocket.db.repository.rating;
 
+import com.moviePocket.db.entities.movie.Movie;
 import com.moviePocket.db.entities.rating.FavoriteMovie;
 import com.moviePocket.db.entities.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,16 +17,17 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
-public interface FavoriteMovieRepository extends JpaRepository<FavoriteMovie,Long> {
+public interface FavoriteMovieRepository extends JpaRepository<FavoriteMovie, Long> {
 
-    FavoriteMovie findByUserAndMovie_id(User user, Long idMovie);
+    Optional<FavoriteMovie> findByUserAndMovie_Id(User user, Long idMovie);
 
-    @Query("SELECT u FROM FavoriteMovie u WHERE u.user = :user ORDER BY u.created ASC")
-    List<FavoriteMovie> findAllByUserOrderByCreatedAsc(@Param("user") User user);
+    Boolean existsByUserAndMovie_Id(User user, Long idMovie);
+
+    @Query("SELECT u.movie FROM FavoriteMovie u WHERE u.user = :user")
+    List<Movie> findAllMoviesByUser(@Param("user") User user);
 
     @Query("SELECT COUNT(u) FROM FavoriteMovie u WHERE u.movie.id = :movieId")
-    int getAllCountByIdMovie(@Param("movieId") Long idMovie);
-
-
+    Integer getAllCountByMovieId(@Param("movieId") Long movieId);
 }

@@ -14,7 +14,6 @@ import com.moviePocket.service.inter.user.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -26,13 +25,13 @@ import java.io.IOException;
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
+
     private final UserService userService;
     private final UserRegistrationService userRegistrationService;
     private final TokenRepository tokenRepository;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
-    @SneakyThrows
     public AuthenticationResponse register(RegisterRequest request) {
         var user = userRegistrationService.registerUser(request);
         var jwtToken = jwtService.generateToken(user);

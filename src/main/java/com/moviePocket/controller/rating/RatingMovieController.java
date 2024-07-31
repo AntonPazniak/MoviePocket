@@ -10,7 +10,7 @@
 package com.moviePocket.controller.rating;
 
 import com.moviePocket.db.entities.rating.Rating;
-import com.moviePocket.service.inter.rating.RatingMovieService;
+import com.moviePocket.service.inter.reaction.RatingMovieService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;

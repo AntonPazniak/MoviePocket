@@ -18,8 +18,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.mail.MessagingException;
-import org.apache.coyote.BadRequestException;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -27,16 +27,15 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+@Slf4j
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/user/edit")
 @Tag(name = "User edition controller", description = "Bio, username, email or password edition")
 public class UserEditController {
 
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private ImageService imageService;
+    private final UserService userService;
+    private final ImageService imageService;
 
     @GetMapping("/getUserDto")
     public ResponseEntity<UserDto> getUserDto() {
@@ -77,9 +76,9 @@ public class UserEditController {
     public void newPasswordPostForm(
             @RequestParam("passwordold") String passwordOld,
             @RequestParam("password0") String passwordNew0,
-            @RequestParam("password1") String passwordNew1) throws BadRequestException {
+            @RequestParam("password1") String passwordNew1) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        userService.setNewPassword(authentication.getName(), passwordOld, passwordNew0, passwordNew1);
+        userService.setNewPassword(authentication.getName(), passwordOld, passwordNew0);
     }
 
     @Operation(summary = "Set a new email")
@@ -102,25 +101,27 @@ public class UserEditController {
         return userService.activateNewEmail(token);
     }
 
+
     @Operation(summary = "Set a new username", description = "Username should be unique and not empty")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Successfully set the new username"),
-            @ApiResponse(responseCode = "400", description = "Bad request")
+            @ApiResponse(responseCode = "403", description = "Username is taken"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "401", description = "User is not authorized")
     })
-    @PostMapping("/newUsername")
-    public void newSetNewUsername(@RequestParam("username") String username) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        userService.setNewUsername(authentication.getName(), username);
+    @PatchMapping("/username")
+    public ResponseEntity<Object> newSetNewUsername(@RequestParam("username") String username) {
+        userService.setNewUsername(username);
+        return ResponseEntity.ok(HttpStatus.OK);
     }
 
     @Operation(summary = "Set a new bio", description = "Bio should not be empty")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Successfully set the new bio")
     })
-    @PostMapping("/newBio")
+    @PatchMapping("/newBio")
     public void newSetNewBio(@RequestParam("bio") String bio) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        userService.setNewBio(authentication.getName(), bio);
+        userService.setNewBio(bio);
     }
 
     @Operation(summary = "Set a new avatar")

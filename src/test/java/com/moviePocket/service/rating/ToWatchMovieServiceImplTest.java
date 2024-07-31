@@ -15,7 +15,7 @@ import com.moviePocket.db.entities.user.User;
 import com.moviePocket.db.repository.rating.ToWatchMovieRepository;
 import com.moviePocket.db.repository.user.UserRepository;
 import com.moviePocket.service.impl.movie.MovieServiceImpl;
-import com.moviePocket.service.impl.rating.ToWatchMovieServiceImpl;
+import com.moviePocket.service.impl.reaction.ToWatchMovieServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;

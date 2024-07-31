@@ -10,10 +10,8 @@
 package com.moviePocket.service.inter.user;
 
 import com.moviePocket.controller.dto.UserPostDto;
-import com.moviePocket.controller.dto.auth.RegisterRequest;
 import com.moviePocket.db.entities.user.User;
 import jakarta.mail.MessagingException;
-import org.apache.coyote.BadRequestException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,7 +19,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 public interface UserService extends UserDetailsService {
-    User saveNewUser(RegisterRequest registrationDto) throws MessagingException, MessagingException;
 
     void cleanSave(User user);
 
@@ -31,7 +28,7 @@ public interface UserService extends UserDetailsService {
 
     ResponseEntity<Void> activateUser(String code);
 
-    void setNewPassword(String email, String passwordOld, String passwordNew0, String passwordNew1) throws BadRequestException;
+    void setNewPassword(String username, String oldPassword, String newPassword);
 
     void deleteUser(String email, String pas);
 
@@ -39,9 +36,9 @@ public interface UserService extends UserDetailsService {
 
     ResponseEntity<Void> activateNewEmail(String token);
 
-    void setNewUsername(String email, String username);
+    void setNewUsername(String username);
 
-    void setNewBio(String email, String bio);
+    void setNewBio(String bio);
 
     ResponseEntity<Void> setNewAvatar(String email, MultipartFile file);
 

@@ -13,7 +13,7 @@ import com.moviePocket.db.repository.list.MovieListRepository;
 import com.moviePocket.db.repository.rating.WatchedMovieRepository;
 import com.moviePocket.db.repository.user.UserRepository;
 import com.moviePocket.service.impl.movie.MovieServiceImpl;
-import com.moviePocket.service.impl.rating.WatchedMovieServiceImpl;
+import com.moviePocket.service.impl.reaction.WatchedMovieServiceImpl;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;

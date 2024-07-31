@@ -88,17 +88,4 @@ public class Movie {
     @JsonBackReference
     private transient List<ListMovie> lists;
 
-    public Movie(Long id, String title, List<Genre> genres, List<ProductionCompany> production_companies, List<ProductionCountry> production_countries, String poster_path, String backdrop_path, LocalDate release_date, int runtime, String imdb_id, String overview) {
-        this.id = id;
-        this.title = title;
-        this.genres = genres;
-        this.production_companies = production_companies;
-        this.production_countries = production_countries;
-        this.poster_path = poster_path;
-        this.backdrop_path = backdrop_path;
-        this.release_date = release_date;
-        this.runtime = runtime;
-        this.imdb_id = imdb_id;
-        this.overview = overview;
-    }
 }
