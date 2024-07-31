@@ -56,7 +56,6 @@ public class AuthenticationService {
         revokeAllUserTokens(user);
         saveUserToken(user, jwtToken);
 
-        // Устанавливаем новый объект Authentication в SecurityContextHolder
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                 user, null, user.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authToken);
