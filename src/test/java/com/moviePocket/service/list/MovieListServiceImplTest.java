@@ -12,8 +12,8 @@ package com.moviePocket.service.list;
 import com.moviePocket.db.entities.list.ListMovie;
 import com.moviePocket.db.entities.list.ParsList;
 import com.moviePocket.db.entities.movie.Movie;
-import com.moviePocket.db.entities.review.ParsReview;
 import com.moviePocket.db.entities.review.Review;
+import com.moviePocket.db.entities.review.ReviewDTO;
 import com.moviePocket.db.entities.review.ReviewMovie;
 import com.moviePocket.db.entities.user.User;
 import com.moviePocket.db.repository.list.LikeListRepository;
@@ -198,7 +198,7 @@ class MovieListServiceImplTest {
 
         when(reviewMovieRepository.findReviewsByMovieId(idMovie)).thenReturn(new ArrayList<>());
 
-        ResponseEntity<List<ParsReview>> response = reviewService.getAllByIDMovie(idMovie);
+        ResponseEntity<List<ReviewDTO>> response = reviewService.getAllByIDMovie(idMovie);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(0, response.getBody().size());
@@ -213,7 +213,7 @@ class MovieListServiceImplTest {
         when(movieListRepository.getById(idList)).thenReturn(movieList);
         when(reviewListRepository.findReviewsByMovieList(movieList)).thenReturn(new ArrayList<>());
 
-        ResponseEntity<List<ParsReview>> response = reviewService.getAllByIdList(idList);
+        ResponseEntity<List<ReviewDTO>> response = reviewService.getAllByIdList(idList);
 
         assertEquals(0, response.getBody().size());
     }

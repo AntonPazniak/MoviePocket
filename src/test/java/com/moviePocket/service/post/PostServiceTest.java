@@ -86,7 +86,7 @@ class PostServiceTest {
         when(movieListRepository.getById(idList)).thenReturn(movieList);
 
         // Test service method
-        ResponseEntity<ParsPost> response = postService.createPostList(email, title, content, idList);
+        ResponseEntity<PostDTO> response = postService.createPostList(email, title, content, idList);
 
         // Assertions
         assertNotNull(response);
@@ -130,7 +130,7 @@ class PostServiceTest {
         when(userRepository.findByEmail(email)).thenReturn(user);
 
         // Test service method
-        ResponseEntity<ParsPost> response = postService.createPostPerson(email, title, content, idPerson);
+        ResponseEntity<PostDTO> response = postService.createPostPerson(email, title, content, idPerson);
 
         // Assertions
         assertNotNull(response);
@@ -219,7 +219,7 @@ class PostServiceTest {
         when(postMovieRepository.findAllByMovie_Id(idMovie)).thenReturn(list);
 
         // Test service method
-        ResponseEntity<List<ParsPost>> response = postService.getAllByIdMovie(idMovie);
+        ResponseEntity<List<PostDTO>> response = postService.getAllByIdMovie(idMovie);
 
         // Assertions
         assertNotNull(response);
@@ -236,7 +236,7 @@ class PostServiceTest {
         when(postPersonRepository.findAllByIdPerson(idPerson)).thenReturn(list);
 
         // Test service method
-        ResponseEntity<List<ParsPost>> response = postService.getAllByIdPerson(idPerson);
+        ResponseEntity<List<PostDTO>> response = postService.getAllByIdPerson(idPerson);
 
         // Assertions
         assertNotNull(response);
@@ -255,7 +255,7 @@ class PostServiceTest {
         when(postRepository.findAllByUser(user)).thenReturn(posts);
 
         // Test service method
-        ResponseEntity<List<ParsPost>> response = postService.getAllByUser(email);
+        ResponseEntity<List<PostDTO>> response = postService.getAllByUser(email);
 
         // Assertions
         assertNotNull(response);
@@ -272,7 +272,7 @@ class PostServiceTest {
         when(postListRepository.findAllByMovieList_Id(idList)).thenReturn(list);
 
         // Test service method
-        ResponseEntity<List<ParsPost>> response = postService.getAllByIdList(idList);
+        ResponseEntity<List<PostDTO>> response = postService.getAllByIdList(idList);
 
         // Assertions
         assertNotNull(response);
@@ -289,7 +289,7 @@ class PostServiceTest {
         when(postRepository.findAllByTitle(title)).thenReturn(posts);
 
         // Test service method
-        ResponseEntity<List<ParsPost>> response = postService.getAllByTitle(title);
+        ResponseEntity<List<PostDTO>> response = postService.getAllByTitle(title);
 
         // Assertions
         assertNotNull(response);
@@ -302,7 +302,7 @@ class PostServiceTest {
         String title = "";
 
         // Test service method
-        ResponseEntity<List<ParsPost>> response = postService.getAllByPartialTitle(title);
+        ResponseEntity<List<PostDTO>> response = postService.getAllByPartialTitle(title);
 
         // Assertions
         assertNotNull(response);
@@ -319,7 +319,7 @@ class PostServiceTest {
         when(postRepository.findAllByPartialTitle(title)).thenReturn(posts);
 
         // Test service method
-        ResponseEntity<List<ParsPost>> response = postService.getAllByPartialTitle(title);
+        ResponseEntity<List<PostDTO>> response = postService.getAllByPartialTitle(title);
 
         // Assertions
         assertNotNull(response);
@@ -338,7 +338,7 @@ class PostServiceTest {
         when(postRepository.getById(idPost)).thenReturn(post);
 
         // Test service method
-        ResponseEntity<ParsPost> response = postService.getPost(idPost);
+        ResponseEntity<PostDTO> response = postService.getPost(idPost);
 
         // Assertions
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -353,7 +353,7 @@ class PostServiceTest {
         when(postRepository.existsById(idPost)).thenReturn(false);
 
         // Test service method
-        ResponseEntity<ParsPost> response = postService.getPost(idPost);
+        ResponseEntity<PostDTO> response = postService.getPost(idPost);
 
         // Assertions
         assertNotNull(response);
@@ -372,7 +372,7 @@ class PostServiceTest {
         when(postRepository.findAllByUser(user)).thenReturn(new ArrayList<>());
 
         // Test service method
-        ResponseEntity<List<ParsPost>> response = postService.getAllMyPosts(email);
+        ResponseEntity<List<PostDTO>> response = postService.getAllMyPosts(email);
 
         // Assertions
         assertNotNull(response);
@@ -390,7 +390,7 @@ class PostServiceTest {
         when(postRepository.findAllByUser(user)).thenReturn(new ArrayList<>());
 
         // Test service method
-        ResponseEntity<List<ParsPost>> response = postService.getAllByUsernamePosts(username);
+        ResponseEntity<List<PostDTO>> response = postService.getAllByUsernamePosts(username);
 
         // Assertions
         assertNotNull(response);
@@ -404,7 +404,7 @@ class PostServiceTest {
         when(postRepository.findAll()).thenReturn(posts);
 
         // Test service method
-        ResponseEntity<List<ParsPost>> response = postService.getNewestPosts();
+        ResponseEntity<List<PostDTO>> response = postService.getNewestPosts();
 
         // Assertions
         assertNotNull(response);
@@ -418,7 +418,7 @@ class PostServiceTest {
         when(postRepository.findAll()).thenReturn(posts);
 
         // Test service method
-        ResponseEntity<List<ParsPost>> response = postService.getOldestPosts();
+        ResponseEntity<List<PostDTO>> response = postService.getOldestPosts();
 
         // Assertions
         assertNotNull(response);

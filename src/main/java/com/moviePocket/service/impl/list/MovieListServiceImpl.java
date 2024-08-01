@@ -48,21 +48,13 @@ public class MovieListServiceImpl implements MovieListService {
 
 
     private final MovieListRepository movieListRepository;
-
     private final UserRepository userRepository;
-
     private final LikeListRepository likeListRepository;
-
     private final ListGenreRepository listGenreRepository;
-
     private final MovieServiceImpl movieService;
-
     private final ImageServiceImpl imageService;
-
     private final ReviewRepository reviewRepository;
-
     private final LikeReviewRepository likeReviewRepository;
-
     private final ReviewListRepository reviewListRepository;
 
     public ResponseEntity<ParsList> setList(String email, String title, String content) throws NotFoundException {
@@ -343,6 +335,11 @@ public class MovieListServiceImpl implements MovieListService {
             return ResponseEntity.ok(parsLists(list));
         else
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    public ListMovie getListById(Long id) {
+        return movieListRepository.findById(id)
+                .orElseThrow(() -> new com.moviePocket.exception.NotFoundException("List with id " + id + " not found"));
     }
 
 }

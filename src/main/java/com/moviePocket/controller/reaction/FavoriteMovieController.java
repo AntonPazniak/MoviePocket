@@ -16,7 +16,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,7 +41,7 @@ public class FavoriteMovieController {
     @PostMapping("/set")
     public ResponseEntity<Object> setOrDeleteFavoriteMovie(@RequestParam("idMovie") Long idMovie) {
         favoriteMovieService.setOrDelete(idMovie);
-        return ResponseEntity.ok(HttpStatus.OK);
+        return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "Check if a user has favorited a movie")

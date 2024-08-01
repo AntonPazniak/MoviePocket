@@ -9,40 +9,40 @@
 
 package com.moviePocket.service.inter.raview;
 
-import com.moviePocket.db.entities.review.ParsReview;
-import org.springframework.http.ResponseEntity;
+import com.moviePocket.db.entities.review.ReviewDTO;
 
 import java.util.List;
 
 public interface ReviewService {
 
-    ResponseEntity<Void> createMovieReview(String email, Long idMovie, String title, String content);
+    void createReviewMovie(Long idMovie, String title, String content);
 
-    ResponseEntity<Void> updateReview(Long idReview, String username, String title, String content);
+    void createReviewList(Long idList, String title, String content);
 
-    ResponseEntity<List<ParsReview>> getAllByIDMovie(Long idMovie);
+    void createReviewPost(Long idPost, String title, String content);
 
-    ResponseEntity<Void> delReview(Long idReview, String username);
+    void updateReview(Long idReview, String title, String content);
 
-    ResponseEntity<Integer> getAllCountByIdMovie(Long idMovie);
+    void deleteReview(Long idReview);
 
-    ResponseEntity<ParsReview> getByIdReview(Long idReview);
+    List<ReviewDTO> getAllReviewByIdMovie(Long idMovie);
 
-    ResponseEntity<Boolean> authorshipCheck(Long idReview, String username);
+    List<ReviewDTO> getAllReviewByIdList(Long idList);
 
-    ResponseEntity<Void> createListReview(String email, Long idList, String title, String content);
+    List<ReviewDTO> getAllReviewByIdPost(Long idPost);
 
-    ResponseEntity<List<ParsReview>> getAllByIdList(Long idList);
+    List<ReviewDTO> getAllReviewsByUser();
 
-    ResponseEntity<Integer> getCountByIdList(Long idList);
+    ReviewDTO getReviewById(Long idReview);
 
-    ResponseEntity<List<ParsReview>> getAllByIdPost(Long idPost);
+    Integer getCountReviewByIdMovie(Long idMovie);
 
-    ResponseEntity<Integer> getCountByIdPost(Long idList);
+    Integer getCountReviewByIdList(Long idList);
 
-    ResponseEntity<Void> createPostReview(String email, Long idPost, String title, String content);
+    Integer getCountReviewByIdPost(Long idList);
 
-    ResponseEntity<Integer> getCountByUser(String email);
+    Integer getCountReviewByUser();
 
-    ResponseEntity<List<ParsReview>> getAllReviewsByUser(String email);
+    Boolean getAuthorship(Long idReview);
+
 }

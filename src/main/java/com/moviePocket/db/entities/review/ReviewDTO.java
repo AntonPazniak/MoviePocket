@@ -7,38 +7,29 @@
  * *****************************************************
  */
 
-package com.moviePocket.db.entities.post;
+package com.moviePocket.db.entities.review;
 
 import com.moviePocket.controller.dto.UserPostDto;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ParsPost {
-    private Long id;
+public class ReviewDTO {
+
     private String title;
     private String content;
-    private int[] likeOrDis;
     private UserPostDto user;
-    private LocalDateTime create;
-    private LocalDateTime update;
-    private Long idMovie;
-    private Long idPerson;
-    private Long idList;
+    private LocalDateTime dataCreated;
+    private LocalDateTime dataUpdated;
+    private Long id;
+    private int likes;
+    private int dislike;
 
-
-    public ParsPost(Long id, String title, String content, int[] likeOrDis, UserPostDto user, LocalDateTime create, LocalDateTime update) {
-        this.id = id;
-        this.title = title;
-        this.content = content;
-        this.likeOrDis = likeOrDis;
-        this.user = user;
-        this.create = create;
-        this.update = update;
-    }
 }

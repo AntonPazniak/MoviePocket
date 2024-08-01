@@ -12,14 +12,15 @@ package com.moviePocket.db.entities.review;
 import com.moviePocket.db.entities.BaseEntity;
 import com.moviePocket.db.entities.user.User;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "like_review", uniqueConstraints = @UniqueConstraint(columnNames = {"idUser", "idReview"}))
 @Data
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class LikeMovieReview extends BaseEntity {
 
     @ManyToOne
@@ -31,10 +32,4 @@ public class LikeMovieReview extends BaseEntity {
     private User user;
 
     private boolean lickOrDis;
-
-    public LikeMovieReview(Review movieReview, User user, boolean lickOrDis) {
-        this.review = movieReview;
-        this.user = user;
-        this.lickOrDis = lickOrDis;
-    }
 }

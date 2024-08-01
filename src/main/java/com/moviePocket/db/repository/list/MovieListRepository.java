@@ -23,6 +23,8 @@ import java.util.List;
 @Repository
 public interface MovieListRepository extends JpaRepository<ListMovie, Long> {
 
+//    Optional<ListMovie> findById(long idPost);
+
     ListMovie getById(Long id);
 
     List<ListMovie> findAllByUser(User user);

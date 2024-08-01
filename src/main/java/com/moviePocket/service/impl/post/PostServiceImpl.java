@@ -22,6 +22,7 @@ import com.moviePocket.db.repository.review.LikeReviewRepository;
 import com.moviePocket.db.repository.review.ReviewPostRepository;
 import com.moviePocket.db.repository.review.ReviewRepository;
 import com.moviePocket.db.repository.user.UserRepository;
+import com.moviePocket.exception.NotFoundException;
 import com.moviePocket.service.impl.movie.MovieServiceImpl;
 import com.moviePocket.service.inter.post.PostService;
 import jakarta.persistence.EntityNotFoundException;
@@ -53,7 +54,7 @@ public class PostServiceImpl implements PostService {
     private final LikeReviewRepository likeReviewRepository;
     private final ReviewRepository reviewRepository;
 
-    public ResponseEntity<ParsPost> createPostList(String email, String title, String content, Long idList) {
+    public ResponseEntity<PostDTO> createPostList(String email, String title, String content, Long idList) {
         ListMovie movieList = movieListRepository.getById(idList);
         if (movieList != null) {
             Post post = createPost(email, title, content);
@@ -68,7 +69,7 @@ public class PostServiceImpl implements PostService {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    public ResponseEntity<ParsPost> createPostMovie(String email, String title, String content, Long idMovie) {
+    public ResponseEntity<PostDTO> createPostMovie(String email, String title, String content, Long idMovie) {
         Post post = createPost(email, title, content);
         if (post == null)
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -82,7 +83,7 @@ public class PostServiceImpl implements PostService {
         }
     }
 
-    public ResponseEntity<ParsPost> createPostPerson(String email, String title, String content, Long idPerson) {
+    public ResponseEntity<PostDTO> createPostPerson(String email, String title, String content, Long idPerson) {
         Post post = createPost(email, title, content);
         if (post == null)
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -174,7 +175,7 @@ public class PostServiceImpl implements PostService {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
-    public ResponseEntity<List<ParsPost>> getAllByIdMovie(Long idMovie) {
+    public ResponseEntity<List<PostDTO>> getAllByIdMovie(Long idMovie) {
         List<PostMovie> list = postMovieRepository.findAllByMovie_Id(idMovie);
         if (list != null) {
             List<Post> posts = new ArrayList<>();
@@ -186,7 +187,7 @@ public class PostServiceImpl implements PostService {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    public ResponseEntity<List<ParsPost>> getAllByIdPerson(Long idPerson) {
+    public ResponseEntity<List<PostDTO>> getAllByIdPerson(Long idPerson) {
         List<PostPerson> list = postPersonRepository.findAllByIdPerson(idPerson);
         if (list != null) {
             List<Post> posts = new ArrayList<>();
@@ -198,7 +199,7 @@ public class PostServiceImpl implements PostService {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    public ResponseEntity<List<ParsPost>> getAllByUser(String email) {
+    public ResponseEntity<List<PostDTO>> getAllByUser(String email) {
         User user = userRepository.findByEmail(email);
         List<Post> posts = postRepository.findAllByUser(user);
         if (posts != null) {
@@ -207,7 +208,7 @@ public class PostServiceImpl implements PostService {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    public ResponseEntity<List<ParsPost>> getAllByIdList(Long idList) {
+    public ResponseEntity<List<PostDTO>> getAllByIdList(Long idList) {
         List<PostList> list = postListRepository.findAllByMovieList_Id(idList);
         if (list != null) {
             List<Post> posts = new ArrayList<>();
@@ -221,13 +222,13 @@ public class PostServiceImpl implements PostService {
 
 
     @Override
-    public ResponseEntity<List<ParsPost>> getAllByTitle(String title) {
+    public ResponseEntity<List<PostDTO>> getAllByTitle(String title) {
         List<Post> posts = postRepository.findAllByTitle(title);
         return ResponseEntity.ok(parsPost(posts));
     }
 
     @Override
-    public ResponseEntity<List<ParsPost>> getAllByPartialTitle(String title) {
+    public ResponseEntity<List<PostDTO>> getAllByPartialTitle(String title) {
         if (title.equals(""))
             return ResponseEntity.ok(null);
         List<Post> posts = postRepository.findAllByPartialTitle(title);
@@ -237,7 +238,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public ResponseEntity<ParsPost> getPost(Long idPost) {
+    public ResponseEntity<PostDTO> getPost(Long idPost) {
         if (postRepository.existsById(idPost)) {
             Post post = postRepository.getById(idPost);
             List<Post> posts = new ArrayList<>();
@@ -248,7 +249,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public ResponseEntity<List<ParsPost>> getAllMyPosts(String email) {
+    public ResponseEntity<List<PostDTO>> getAllMyPosts(String email) {
         User user = userRepository.findByEmail(email);
         if (user == null)
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -259,7 +260,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public ResponseEntity<List<ParsPost>> getAllByUsernamePosts(String username) {
+    public ResponseEntity<List<PostDTO>> getAllByUsernamePosts(String username) {
         User user = userRepository.findByUsernameAndAccountActive(username, true);
         if (user == null)
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -270,7 +271,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public ResponseEntity<List<ParsPost>> getNewestPosts() {
+    public ResponseEntity<List<PostDTO>> getNewestPosts() {
 
         List<Post> posts = postRepository.findAll();
         Collections.sort(posts, Comparator.comparing(Post::getCreated).reversed());
@@ -278,21 +279,21 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public ResponseEntity<List<ParsPost>> getOldestPosts() {
+    public ResponseEntity<List<PostDTO>> getOldestPosts() {
         List<Post> posts = postRepository.findAll();
         Collections.sort(posts, Comparator.comparing(Post::getCreated));
         return ResponseEntity.ok(parsPost(posts));
     }
 
-    public List<ParsPost> parsPost(List<Post> posts) {
-        List<ParsPost> parsPostLL = new ArrayList<>();
+    public List<PostDTO> parsPost(List<Post> posts) {
+        List<PostDTO> parsPostLL = new ArrayList<>();
         for (Post post : posts) {
             parsPostLL.add(parsOnePost(post));
         }
         return parsPostLL;
     }
 
-    public ParsPost parsOnePost(Post post) {
+    public PostDTO parsOnePost(Post post) {
         Long idAvatar = null;
 
         if (post.getUser().getAvatar() != null)
@@ -300,7 +301,7 @@ public class PostServiceImpl implements PostService {
 
         int[] likeAndDis = new int[]{likePostRepository.countByPostAndLickOrDisIsTrue(post),
                 likePostRepository.countByPostAndLickOrDisIsFalse(post)};
-        ParsPost parsPost = new ParsPost(
+        PostDTO parsPost = new PostDTO(
                 post.getId(),
                 post.getTitle(),
                 post.getContent(),
@@ -334,7 +335,7 @@ public class PostServiceImpl implements PostService {
         return ResponseEntity.ok(false);
     }
 
-    public ResponseEntity<List<ParsPost>> getTop10LatestPosts() {
+    public ResponseEntity<List<PostDTO>> getTop10LatestPosts() {
         List<Post> posts = postRepository.findTop10LatestPosts();
         if (!posts.isEmpty())
             return ResponseEntity.ok(parsPost(posts));
@@ -342,12 +343,18 @@ public class PostServiceImpl implements PostService {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    public ResponseEntity<List<ParsPost>> getTop10LikedPosts() {
+    public ResponseEntity<List<PostDTO>> getTop10LikedPosts() {
         List<Post> posts = postRepository.findTop10LikedPosts();
         if (!posts.isEmpty())
             return ResponseEntity.ok(parsPost(posts));
         else
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    public Post getPostById(Long idPost) {
+        return postRepository.findById(idPost).orElseThrow(
+                () -> new NotFoundException("Post not found")
+        );
     }
 
 }

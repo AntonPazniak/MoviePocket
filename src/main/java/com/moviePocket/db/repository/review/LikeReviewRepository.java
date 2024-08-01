@@ -17,11 +17,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Transactional
 @Repository
 public interface LikeReviewRepository extends JpaRepository<LikeMovieReview, Long> {
 
-    LikeMovieReview getByUserAndReview(User user, Review review);
+    Optional<LikeMovieReview> findByUserAndReview(User user, Review review);
 
     void deleteAllByReview(Review review);
 

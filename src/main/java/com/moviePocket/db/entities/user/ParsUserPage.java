@@ -12,7 +12,7 @@ package com.moviePocket.db.entities.user;
 import com.moviePocket.db.entities.list.ParsList;
 import com.moviePocket.db.entities.movie.Movie;
 import com.moviePocket.db.entities.rating.Rating;
-import com.moviePocket.db.entities.review.ParsReview;
+import com.moviePocket.db.entities.review.ReviewDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -34,6 +34,6 @@ public class ParsUserPage {
     private List<Movie> dislikeMovie;
     private List<Movie> watchedMovie;
     private List<Movie> toWatchMovie;
-    private List<ParsReview> reviews;
+    private List<ReviewDTO> reviews;
     private List<Rating> ratingMovie;
 }

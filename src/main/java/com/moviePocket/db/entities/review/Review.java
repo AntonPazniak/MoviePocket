@@ -12,15 +12,14 @@ package com.moviePocket.db.entities.review;
 import com.moviePocket.db.entities.BaseEntity;
 import com.moviePocket.db.entities.user.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 
-
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Table(name = "review", uniqueConstraints = @UniqueConstraint(columnNames = {"idUser", "id"}))
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Review extends BaseEntity {

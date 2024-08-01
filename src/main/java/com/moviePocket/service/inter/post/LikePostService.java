@@ -9,7 +9,7 @@
 
 package com.moviePocket.service.inter.post;
 
-import com.moviePocket.db.entities.post.ParsPost;
+import com.moviePocket.db.entities.post.PostDTO;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -21,8 +21,8 @@ public interface LikePostService {
 
     ResponseEntity<Integer[]> getAllLikeAndDisByIdPost(Long idPost);
 
-    ResponseEntity<List<ParsPost>> getMostLikedPosts();
+    ResponseEntity<List<PostDTO>> getMostLikedPosts();
 
-    ResponseEntity<List<ParsPost>> getLeastLikedPosts();
+    ResponseEntity<List<PostDTO>> getLeastLikedPosts();
 
 }

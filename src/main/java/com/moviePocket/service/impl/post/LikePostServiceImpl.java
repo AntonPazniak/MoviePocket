@@ -10,8 +10,8 @@
 package com.moviePocket.service.impl.post;
 
 import com.moviePocket.db.entities.post.LikePost;
-import com.moviePocket.db.entities.post.ParsPost;
 import com.moviePocket.db.entities.post.Post;
+import com.moviePocket.db.entities.post.PostDTO;
 import com.moviePocket.db.entities.user.User;
 import com.moviePocket.db.repository.post.LikePostRepository;
 import com.moviePocket.db.repository.post.PostRepository;
@@ -87,7 +87,7 @@ public class LikePostServiceImpl implements LikePostService {
     }
 
     @Override
-    public ResponseEntity<List<ParsPost>> getMostLikedPosts() {
+    public ResponseEntity<List<PostDTO>> getMostLikedPosts() {
         List<Post> posts = postRepository.findAll();
 
         // Sort the posts based on the total number of likes and dislikes
@@ -104,7 +104,7 @@ public class LikePostServiceImpl implements LikePostService {
     }
 
     @Override
-    public ResponseEntity<List<ParsPost>> getLeastLikedPosts() {
+    public ResponseEntity<List<PostDTO>> getLeastLikedPosts() {
         List<Post> posts = postRepository.findAll();
 
         // Sort the posts based on the total number of likes and dislikes

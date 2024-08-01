@@ -15,125 +15,87 @@ import com.moviePocket.db.entities.movie.Movie;
 import com.moviePocket.db.entities.post.Post;
 import com.moviePocket.db.entities.review.*;
 import com.moviePocket.db.entities.user.User;
-import com.moviePocket.db.repository.list.MovieListRepository;
-import com.moviePocket.db.repository.post.PostRepository;
 import com.moviePocket.db.repository.review.*;
-import com.moviePocket.db.repository.user.UserRepository;
+import com.moviePocket.exception.ForbiddenException;
+import com.moviePocket.exception.NotFoundException;
+import com.moviePocket.service.impl.auth.AuthUser;
+import com.moviePocket.service.impl.list.MovieListServiceImpl;
 import com.moviePocket.service.impl.movie.MovieServiceImpl;
+import com.moviePocket.service.impl.post.PostServiceImpl;
 import com.moviePocket.service.inter.raview.ReviewService;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Service
+@Transactional
+@RequiredArgsConstructor
 public class ReviewServiceImpl implements ReviewService {
 
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private ReviewRepository reviewRepository;
-    @Autowired
-    private LikeReviewRepository likeReviewRepository;
-    @Autowired
-    private ReviewMovieRepository reviewMovieRepository;
-    @Autowired
-    private MovieListRepository movieListRepository;
-    @Autowired
-    private ReviewListRepository reviewListRepository;
-    @Autowired
-    private PostRepository postRepository;
-    @Autowired
-    private ReviewPostRepository reviewPostRepository;
-    @Autowired
-    private MovieServiceImpl movieService;
+    private final ReviewRepository reviewRepository;
+    private final MovieServiceImpl movieService;
+    private final AuthUser auth;
+    private final LikeReviewRepository likeReviewRepository;
+    private final ReviewMovieRepository reviewMovieRepository;
+    private final MovieListServiceImpl listService;
+    private final ReviewListRepository reviewListRepository;
+    private final PostServiceImpl postService;
+    private final ReviewPostRepository reviewPostRepository;
 
-    @Transactional
-    public ResponseEntity<Void> createMovieReview(String email, Long idMovie, String title, String content) {
-        Review review = createReview(email, title, content);
-        if (review == null)
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
+    private Review createReview(String title, String content) {
+        User user = auth.getAuthenticatedUser();
+        Review review = new Review(user, title, content);
+        reviewRepository.save(review);
+        return review;
+    }
+
+    @Override
+    public void createReviewMovie(Long idMovie, String title, String content) {
         Movie movie = movieService.setMovieIfNotExist(idMovie);
-        if (movie != null) {
-            ReviewMovie reviewMovie = new ReviewMovie(movie, review);
-            reviewMovieRepository.save(reviewMovie);
-            return new ResponseEntity<>(HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        Review review = createReview(title, content);
+        ReviewMovie reviewMovie = new ReviewMovie(movie, review);
+        reviewMovieRepository.save(reviewMovie);
     }
 
-    @Transactional
-    public ResponseEntity<Void> createListReview(String email, Long idList, String title, String content) {
-        ListMovie movieList = movieListRepository.getById(idList);
-        if (movieList != null) {
-            Review review = createReview(email, title, content);
-            if (review == null)
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-            else {
-                ReviewList reviewList = new ReviewList(movieList, review);
-                reviewListRepository.save(reviewList);
-                return new ResponseEntity<>(HttpStatus.OK);
-            }
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    @Override
+    public void createReviewList(Long idList, String title, String content) {
+        ListMovie movieList = listService.getListById(idList);
+        Review review = createReview(title, content);
+        ReviewList reviewList = new ReviewList(movieList, review);
+        reviewListRepository.save(reviewList);
     }
 
-    @Transactional
-    public ResponseEntity<Void> createPostReview(String email, Long idPost, String title, String content) {
-        Post post = postRepository.getById(idPost);
-        if (post != null) {
-            Review review = createReview(email, title, content);
-            if (review == null)
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-            else {
-                ReviewPost reviewPost = new ReviewPost(post, review);
-                reviewPostRepository.save(reviewPost);
-                return new ResponseEntity<>(HttpStatus.OK);
-            }
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    @Override
+    public void createReviewPost(Long idPost, String title, String content) {
+        var post = postService.getPostById(idPost);
+        Review review = createReview(title, content);
+        ReviewPost reviewPost = new ReviewPost(post, review);
+        reviewPostRepository.save(reviewPost);
     }
 
-    @Transactional
-    public ResponseEntity<Void> updateReview(Long idReview, String username, String title, String content) {
-        User user = userRepository.findByEmail(username);
-        Review movieReview = reviewRepository.getById(idReview);
-        if (user == null)
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        else if (movieReview == null)
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        else if (movieReview.getUser() != user)
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        else {
+    @Override
+    public void updateReview(Long idReview, String title, String content) {
+        User user = auth.getAuthenticatedUser();
+        Review movieReview = getReviewByIdOrThrow(idReview);
+        if (movieReview.getUser().equals(user)) {
             movieReview.setTitle(title);
             movieReview.setContent(content);
             reviewRepository.save(movieReview);
-            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            throw new ForbiddenException("You cannot modify a review if it is not yours.");
         }
     }
 
-    @Transactional
-    public ResponseEntity<Void> delReview(Long idReview, String username) {
-        User user = userRepository.findByEmail(username);
-        Review review = reviewRepository.getById(idReview);
+    @Override
+    public void deleteReview(Long idReview) {
+        User user = auth.getAuthenticatedUser();
+        Review review = getReviewByIdOrThrow(idReview);
 
-        if (user == null) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
-
-        if (review == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        if (!Objects.equals(review.getUser(), user)) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
+        if (!review.getUser().equals(user))
+            throw new ForbiddenException("You cannot delete a review if it is not yours.");
 
         ReviewMovie reviewMovie = reviewMovieRepository.findByReview(review);
         ReviewList reviewList = reviewListRepository.findByReview(review);
@@ -146,141 +108,87 @@ public class ReviewServiceImpl implements ReviewService {
         } else if (reviewPost != null) {
             reviewPostRepository.delete(reviewPost);
         }
-
         likeReviewRepository.deleteAllByReview(review);
         reviewRepository.delete(review);
-
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 
-
-    private Review createReview(String email, String title, String content) {
-        User user = userRepository.findByEmail(email);
-        if (user == null)
-            return null;
-        else {
-            Review review = new Review(user, title, content);
-            reviewRepository.save(review);
-            return review;
-        }
+    @Override
+    public List<ReviewDTO> getAllReviewByIdMovie(Long idMovie) {
+        var review = reviewMovieRepository.findReviewsByMovieId(idMovie);
+        return review.stream().map(this::parsReview).toList();
     }
 
-    public ResponseEntity<Boolean> authorshipCheck(Long idReview, String username) {
-        try {
-            User user = userRepository.findByEmail(username);
-            Review review = reviewRepository.getById(idReview);
-            return ResponseEntity.ok(review.getUser().equals(user));
-        } catch (EntityNotFoundException e) {
-            System.out.println(e);
-        }
-        return ResponseEntity.ok(false);
+    @Override
+    public List<ReviewDTO> getAllReviewByIdList(Long idList) {
+        ListMovie movieList = listService.getListById(idList);
+        var reviews = reviewListRepository.findReviewsByMovieList(movieList);
+        return reviews.stream().map(this::parsReview).toList();
     }
 
-
-    public ResponseEntity<ParsReview> getByIdReview(Long idReview) {
-        try {
-            Review review = reviewRepository.getById(idReview);
-            Long idAvatar = null;
-            if (review.getUser().getAvatar() != null)
-                idAvatar = review.getUser().getAvatar().getId();
-            return ResponseEntity.ok(new ParsReview(
-                    review.getTitle(),
-                    review.getContent(),
-                    new UserPostDto(review.getUser().getUsername(), idAvatar),
-                    review.getCreated(),
-                    review.getUpdated(),
-                    review.getId(),
-                    new int[]{
-                            likeReviewRepository.countByMovieReviewAndLickOrDisIsTrue(review),
-                            likeReviewRepository.countByMovieReviewAndLickOrDisIsFalse(review)
-                    }
-            ));
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.ok().body(null);
-        }
+    @Override
+    public List<ReviewDTO> getAllReviewByIdPost(Long idPost) {
+        Post post = postService.getPostById(idPost);
+        var reviews = reviewPostRepository.findReviewsByPost(post);
+        return reviews.stream().map(this::parsReview).toList();
     }
 
-    public ResponseEntity<List<ParsReview>> getAllByIDMovie(Long idMovie) {
-        List<Review> reviews = reviewMovieRepository.findReviewsByMovieId(idMovie);
-        if (reviews.isEmpty()) {
-            List<ParsReview> reviewList = new ArrayList<>();
-            return new ResponseEntity<>(reviewList, HttpStatus.OK);
-        }
-        return ResponseEntity.ok(parsMovieReview(reviews));
+    @Override
+    public List<ReviewDTO> getAllReviewsByUser() {
+        User user = auth.getAuthenticatedUser();
+        var reviews = reviewRepository.findAllByUser(user);
+        return reviews.stream().map(this::parsReview).toList();
     }
 
-    public ResponseEntity<Integer> getAllCountByIdMovie(Long idMovie) {
-        return ResponseEntity.ok(reviewMovieRepository.countByMovie_id(idMovie));
+    @Override
+    public ReviewDTO getReviewById(Long idReview) {
+        return parsReview(getReviewByIdOrThrow(idReview));
     }
 
-    public ResponseEntity<List<ParsReview>> getAllByIdList(Long idList) {
-        ListMovie movieList = movieListRepository.getById(idList);
-        List<Review> reviews = reviewListRepository.findReviewsByMovieList(movieList);
-        if (reviews.isEmpty()) {
-            List<ParsReview> reviewList = new ArrayList<>();
-            return new ResponseEntity<>(reviewList, HttpStatus.OK);
-        }
-        return ResponseEntity.ok(parsMovieReview(reviews));
+    @Override
+    public Integer getCountReviewByIdMovie(Long idMovie) {
+        return reviewMovieRepository.countByMovie_id(idMovie);
     }
 
-    public ResponseEntity<Integer> getCountByIdList(Long idList) {
-        return ResponseEntity.ok(reviewListRepository.countByMovieList_Id(idList));
+    @Override
+    public Integer getCountReviewByIdList(Long idList) {
+        return reviewListRepository.countByMovieList_Id(idList);
     }
 
-    public ResponseEntity<List<ParsReview>> getAllByIdPost(Long idPost) {
-        Post post = postRepository.getById(idPost);
-        List<Review> reviews = reviewPostRepository.findReviewsByPost(post);
-        if (reviews.isEmpty()) {
-            List<ParsReview> reviewList = new ArrayList<>();
-            return new ResponseEntity<>(reviewList, HttpStatus.OK);
-        }
-        return ResponseEntity.ok(parsMovieReview(reviews));
+    @Override
+    public Integer getCountReviewByIdPost(Long idList) {
+        return reviewPostRepository.countByPost_Id(idList);
     }
 
-    public ResponseEntity<List<ParsReview>> getAllReviewsByUser(String email) {
-        User user = userRepository.findByEmail(email);
-        if (user == null)
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        List<Review> reviewList = reviewRepository.findAllByUser(user);
-        if (reviewList.isEmpty())
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        return ResponseEntity.ok(parsMovieReview(reviewList));
+    @Override
+    public Integer getCountReviewByUser() {
+        User user = auth.getAuthenticatedUser();
+        return reviewRepository.countReviewsByUser(user);
     }
 
-    public ResponseEntity<Integer> getCountByIdPost(Long idList) {
-        return ResponseEntity.ok(reviewPostRepository.countByPost_Id(idList));
+    @Override
+    public Boolean getAuthorship(Long idReview) {
+        User user = auth.getAuthenticatedUser();
+        Review review = getReviewByIdOrThrow(idReview);
+        return review.getUser().equals(user);
     }
 
-    public ResponseEntity<Integer> getCountByUser(String email) {
-        User user = userRepository.findByEmail(email);
-        if (user == null)
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-
-        int count = reviewRepository.countReviewsByUser(user);
-
-        return ResponseEntity.ok(count);
+    private ReviewDTO parsReview(Review review) {
+        return ReviewDTO.builder()
+                .title(review.getTitle())
+                .content(review.getContent())
+                .user(new UserPostDto(review.getUser().getUsername(),
+                        review.getUser().getAvatar() != null ? review.getUser().getAvatar().getId() : null))
+                .dataCreated(review.getCreated())
+                .dataUpdated(review.getUpdated())
+                .id(review.getId())
+                .likes(likeReviewRepository.countByMovieReviewAndLickOrDisIsTrue(review))
+                .dislike(likeReviewRepository.countByMovieReviewAndLickOrDisIsFalse(review))
+                .build();
     }
 
-    private List<ParsReview> parsMovieReview(List<Review> movieReviewList) {
-        List<ParsReview> reviewList = new ArrayList<>();
-        for (Review movieReview : movieReviewList) {
-            Long idAvatar = null;
-            if (movieReview.getUser().getAvatar() != null)
-                idAvatar = movieReview.getUser().getAvatar().getId();
-            reviewList.add(new ParsReview(
-                    movieReview.getTitle(),
-                    movieReview.getContent(),
-                    new UserPostDto(movieReview.getUser().getUsername(), idAvatar),
-                    movieReview.getCreated(),
-                    movieReview.getUpdated(),
-                    movieReview.getId(),
-                    new int[]{
-                            likeReviewRepository.countByMovieReviewAndLickOrDisIsTrue(movieReview),
-                            likeReviewRepository.countByMovieReviewAndLickOrDisIsFalse(movieReview)
-                    }
-            ));
-        }
-        return reviewList;
+    public Review getReviewByIdOrThrow(long idReview) {
+        return reviewRepository.findById(idReview)
+                .orElseThrow(() -> new NotFoundException("Review not found"));
     }
 
 }

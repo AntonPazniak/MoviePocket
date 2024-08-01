@@ -9,7 +9,7 @@
 
 package com.moviePocket.controller.post;
 
-import com.moviePocket.db.entities.post.ParsPost;
+import com.moviePocket.db.entities.post.PostDTO;
 import com.moviePocket.service.inter.post.LikePostService;
 import com.moviePocket.service.inter.post.PostService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -39,25 +39,25 @@ public class PostController {
             @ApiResponse(responseCode = "401", description = "Forbidden - user is not authenticated")
     })
     @PostMapping("/list/set")
-    public ResponseEntity<ParsPost> setNewPostList(@RequestParam("title") String title,
-                                                   @RequestParam("idList") Long idList,
-                                                   @RequestBody String content) {
+    public ResponseEntity<PostDTO> setNewPostList(@RequestParam("title") String title,
+                                                  @RequestParam("idList") Long idList,
+                                                  @RequestBody String content) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return postService.createPostList(authentication.getName(), title, content, idList);
     }
 
     @PostMapping("/movie/set")
-    public ResponseEntity<ParsPost> setNewPostMovie(@RequestParam("title") String title,
-                                                    @RequestBody String content,
-                                                    @RequestParam("idMovie") Long idMovie) {
+    public ResponseEntity<PostDTO> setNewPostMovie(@RequestParam("title") String title,
+                                                   @RequestBody String content,
+                                                   @RequestParam("idMovie") Long idMovie) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return postService.createPostMovie(authentication.getName(), title, content, idMovie);
     }
 
     @PostMapping("/person/set")
-    public ResponseEntity<ParsPost> setNewPostPerson(@RequestParam("title") String title,
-                                                     @RequestBody String content,
-                                                     @RequestParam("idPerson") Long idPerson) {
+    public ResponseEntity<PostDTO> setNewPostPerson(@RequestParam("title") String title,
+                                                    @RequestBody String content,
+                                                    @RequestParam("idPerson") Long idPerson) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return postService.createPostPerson(authentication.getName(), title, content, idPerson);
     }
@@ -97,27 +97,27 @@ public class PostController {
             @ApiResponse(responseCode = "404", description = "Post not found")
     })
     @GetMapping("/get")
-    public ResponseEntity<ParsPost> getPost(@RequestParam("idPost") Long idPost) {
+    public ResponseEntity<PostDTO> getPost(@RequestParam("idPost") Long idPost) {
         return postService.getPost(idPost);
     }
 
     @GetMapping("/movie")
-    public ResponseEntity<List<ParsPost>> getAllPostsByIdMovie(@RequestParam("idMovie") Long idMovie) {
+    public ResponseEntity<List<PostDTO>> getAllPostsByIdMovie(@RequestParam("idMovie") Long idMovie) {
         return postService.getAllByIdMovie(idMovie);
     }
 
     @GetMapping("/list")
-    public ResponseEntity<List<ParsPost>> getAllPostsByIdList(@RequestParam("idList") Long idList) {
+    public ResponseEntity<List<PostDTO>> getAllPostsByIdList(@RequestParam("idList") Long idList) {
         return postService.getAllByIdList(idList);
     }
 
     @GetMapping("/person")
-    public ResponseEntity<List<ParsPost>> getAllPostsByIdPerson(@RequestParam("idPerson") Long idPerson) {
+    public ResponseEntity<List<PostDTO>> getAllPostsByIdPerson(@RequestParam("idPerson") Long idPerson) {
         return postService.getAllByIdPerson(idPerson);
     }
 
     @GetMapping("/user")
-    public ResponseEntity<List<ParsPost>> getAllMyPosts() {
+    public ResponseEntity<List<PostDTO>> getAllMyPosts() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return postService.getAllByUser(authentication.getName());
     }
@@ -161,7 +161,7 @@ public class PostController {
             @ApiResponse(responseCode = "401", description = "Invalid username")
     })
     @GetMapping("/someUser")
-    public ResponseEntity<List<ParsPost>> getAllByUsername(@RequestParam("username") String username) {
+    public ResponseEntity<List<PostDTO>> getAllByUsername(@RequestParam("username") String username) {
         return postService.getAllByUsernamePosts(username);
     }
 
@@ -177,12 +177,12 @@ public class PostController {
     }
 
     @GetMapping("/get/last")
-    public ResponseEntity<List<ParsPost>> getLast() {
+    public ResponseEntity<List<PostDTO>> getLast() {
         return postService.getTop10LatestPosts();
     }
 
     @GetMapping("/get/top")
-    public ResponseEntity<List<ParsPost>> getTop() {
+    public ResponseEntity<List<PostDTO>> getTop() {
         return postService.getTop10LikedPosts();
     }
 }

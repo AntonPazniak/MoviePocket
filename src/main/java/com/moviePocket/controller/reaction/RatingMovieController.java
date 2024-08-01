@@ -14,7 +14,6 @@ import com.moviePocket.service.inter.reaction.RatingMovieService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,7 +37,7 @@ public class RatingMovieController {
             @RequestParam("idMovie") Long idMovie,
             @RequestParam("rating") int rating) {
         ratingMovieService.setRating(idMovie, rating);
-        return ResponseEntity.ok(HttpStatus.OK);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/my/del")
@@ -50,7 +49,7 @@ public class RatingMovieController {
     })
     public ResponseEntity<Object> delRatingMovie(@RequestParam("idMovie") Long idMovie) {
         ratingMovieService.removeRating(idMovie);
-        return ResponseEntity.ok(HttpStatus.OK);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/my/get")

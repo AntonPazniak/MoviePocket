@@ -16,7 +16,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,7 +39,7 @@ public class ToWatchMovieController {
     @PostMapping("/set")
     public ResponseEntity<Object> setOrDeleteMovieToWatch(@RequestParam("idMovie") Long idMovie) {
         toWatchMovieService.setOrDelete(idMovie);
-        return ResponseEntity.ok(HttpStatus.OK);
+        return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "Check if a movie is added to Watchlist by the user",

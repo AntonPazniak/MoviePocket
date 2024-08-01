@@ -19,7 +19,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,7 +47,7 @@ public class DislikedMovieController {
     })
     public ResponseEntity<Object> setOrDeleteMovieWatched(@RequestParam("idMovie") Long idMovie) {
         dislikedMovieService.setOrDelete(idMovie);
-        return ResponseEntity.ok(HttpStatus.OK);
+        return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "Check if a user has disliked a movie", description = "Returns boolean")
