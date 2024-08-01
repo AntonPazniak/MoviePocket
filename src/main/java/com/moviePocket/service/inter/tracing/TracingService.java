@@ -9,16 +9,18 @@
 
 package com.moviePocket.service.inter.tracing;
 
-import org.springframework.http.ResponseEntity;
+import com.moviePocket.db.entities.movie.Movie;
+
+import java.util.List;
 
 public interface TracingService {
 
 
-    ResponseEntity<Boolean> existByIdMovie(String email, Long idMovie);
+    Boolean getByIdMovie(Long idMovie);
 
-    ResponseEntity<Boolean> setOrDelByIdMovie(String email, Long idMovie);
+    void setOrDel(Long idMovie);
 
-    ResponseEntity<Long[]> getAllByUser(String email);
+    List<Movie> getAllByUser();
 
     Long getCountByIdMovie(Long idMovie);
 

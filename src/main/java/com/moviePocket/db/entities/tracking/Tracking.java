@@ -14,6 +14,7 @@ import com.moviePocket.db.entities.movie.Movie;
 import com.moviePocket.db.entities.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -22,6 +23,7 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "movie_tracking", uniqueConstraints = @UniqueConstraint(columnNames = {"idUser", "idMovie"}))
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Tracking extends BaseEntity {

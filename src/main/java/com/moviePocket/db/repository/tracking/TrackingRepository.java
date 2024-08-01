@@ -15,12 +15,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 public interface TrackingRepository extends JpaRepository<Tracking, Long> {
 
     Boolean existsByUserAndMovie_Id(User user, long idMovie);
 
-    Tracking findByUserAndMovie_Id(User user, long idMovie);
+    Optional<Tracking> findByUserAndMovie_Id(User user, long idMovie);
 
     List<Tracking> findByDateRelease(LocalDate date);
 
