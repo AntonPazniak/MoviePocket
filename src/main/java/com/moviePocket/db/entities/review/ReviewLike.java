@@ -16,12 +16,12 @@ import lombok.*;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
-@Table(name = "like_review", uniqueConstraints = @UniqueConstraint(columnNames = {"idUser", "idReview"}))
+@Table(name = "review_like", uniqueConstraints = @UniqueConstraint(columnNames = {"idUser", "idReview"}))
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class LikeMovieReview extends BaseEntity {
+public class ReviewLike extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "idReview")

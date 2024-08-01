@@ -7,7 +7,7 @@
  * *****************************************************
  */
 
-package com.moviePocket.db.entities.review;
+package com.moviePocket.controller.dto.review;
 
 import com.moviePocket.controller.dto.UserPostDto;
 import lombok.AllArgsConstructor;

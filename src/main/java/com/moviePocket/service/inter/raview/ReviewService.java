@@ -9,7 +9,7 @@
 
 package com.moviePocket.service.inter.raview;
 
-import com.moviePocket.db.entities.review.ReviewDTO;
+import com.moviePocket.controller.dto.review.ReviewDTO;
 
 import java.util.List;
 

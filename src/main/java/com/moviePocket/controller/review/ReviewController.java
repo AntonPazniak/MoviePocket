@@ -9,8 +9,8 @@
 
 package com.moviePocket.controller.review;
 
+import com.moviePocket.controller.dto.review.ReviewDTO;
 import com.moviePocket.controller.dto.review.ReviewLikeDTO;
-import com.moviePocket.db.entities.review.ReviewDTO;
 import com.moviePocket.service.inter.raview.LikeReviewService;
 import com.moviePocket.service.inter.raview.ReviewService;
 import io.swagger.v3.oas.annotations.Operation;

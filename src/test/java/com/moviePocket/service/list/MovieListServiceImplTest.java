@@ -9,11 +9,11 @@
 
 package com.moviePocket.service.list;
 
+import com.moviePocket.controller.dto.review.ReviewDTO;
 import com.moviePocket.db.entities.list.ListMovie;
 import com.moviePocket.db.entities.list.ParsList;
 import com.moviePocket.db.entities.movie.Movie;
 import com.moviePocket.db.entities.review.Review;
-import com.moviePocket.db.entities.review.ReviewDTO;
 import com.moviePocket.db.entities.review.ReviewMovie;
 import com.moviePocket.db.entities.user.User;
 import com.moviePocket.db.repository.list.LikeListRepository;

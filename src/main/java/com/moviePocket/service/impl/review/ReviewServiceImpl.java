@@ -10,10 +10,14 @@
 package com.moviePocket.service.impl.review;
 
 import com.moviePocket.controller.dto.UserPostDto;
+import com.moviePocket.controller.dto.review.ReviewDTO;
 import com.moviePocket.db.entities.list.ListMovie;
 import com.moviePocket.db.entities.movie.Movie;
 import com.moviePocket.db.entities.post.Post;
-import com.moviePocket.db.entities.review.*;
+import com.moviePocket.db.entities.review.Review;
+import com.moviePocket.db.entities.review.ReviewList;
+import com.moviePocket.db.entities.review.ReviewMovie;
+import com.moviePocket.db.entities.review.ReviewPost;
 import com.moviePocket.db.entities.user.User;
 import com.moviePocket.db.repository.review.*;
 import com.moviePocket.exception.ForbiddenException;

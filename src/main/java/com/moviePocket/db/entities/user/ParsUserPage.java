@@ -9,10 +9,10 @@
 
 package com.moviePocket.db.entities.user;
 
+import com.moviePocket.controller.dto.review.ReviewDTO;
 import com.moviePocket.db.entities.list.ParsList;
 import com.moviePocket.db.entities.movie.Movie;
 import com.moviePocket.db.entities.rating.Rating;
-import com.moviePocket.db.entities.review.ReviewDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
