@@ -18,16 +18,17 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Transactional
 @Repository
 public interface MovieListRepository extends JpaRepository<ListMovie, Long> {
 
-//    Optional<ListMovie> findById(long idPost);
-
-    ListMovie getById(Long id);
+    Optional<ListMovie> findById(long idPost);
 
     List<ListMovie> findAllByUser(User user);
+
+    List<ListMovie> findByUser_username(String username);
 
     @Query("SELECT lm FROM ListMovie lm WHERE LOWER(lm.title) LIKE LOWER(CONCAT('%', :partialTitle, '%'))")
     List<ListMovie> findAllByPartialTitle(@Param("partialTitle") String partialTitle);

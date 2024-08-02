@@ -10,7 +10,7 @@
 package com.moviePocket.service.impl.review;
 
 
-import com.moviePocket.controller.dto.review.ReviewLikeDTO;
+import com.moviePocket.controller.dto.review.ReactionDTO;
 import com.moviePocket.db.entities.review.ReviewLike;
 import com.moviePocket.db.repository.review.LikeReviewRepository;
 import com.moviePocket.exception.NotFoundException;
@@ -73,7 +73,7 @@ public class LikeReviewServiceImpl implements LikeReviewService {
 
 
     @Override
-    public ReviewLikeDTO getAllReactionReview(Long idReview) {
+    public ReactionDTO getAllReactionReview(Long idReview) {
         return null;
     }
 }

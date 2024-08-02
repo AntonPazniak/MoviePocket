@@ -10,6 +10,7 @@
 package com.moviePocket.service.impl.review;
 
 import com.moviePocket.controller.dto.UserPostDto;
+import com.moviePocket.controller.dto.review.ReactionDTO;
 import com.moviePocket.controller.dto.review.ReviewDTO;
 import com.moviePocket.db.entities.list.ListMovie;
 import com.moviePocket.db.entities.movie.Movie;
@@ -66,7 +67,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public void createReviewList(Long idList, String title, String content) {
-        ListMovie movieList = listService.getListById(idList);
+        ListMovie movieList = listService.getListByIdOrThrow(idList);
         Review review = createReview(title, content);
         ReviewList reviewList = new ReviewList(movieList, review);
         reviewListRepository.save(reviewList);
@@ -124,7 +125,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public List<ReviewDTO> getAllReviewByIdList(Long idList) {
-        ListMovie movieList = listService.getListById(idList);
+        ListMovie movieList = listService.getListByIdOrThrow(idList);
         var reviews = reviewListRepository.findReviewsByMovieList(movieList);
         return reviews.stream().map(this::parsReview).toList();
     }
@@ -180,13 +181,18 @@ public class ReviewServiceImpl implements ReviewService {
         return ReviewDTO.builder()
                 .title(review.getTitle())
                 .content(review.getContent())
-                .user(new UserPostDto(review.getUser().getUsername(),
-                        review.getUser().getAvatar() != null ? review.getUser().getAvatar().getId() : null))
+                .user(UserPostDto.builder()
+                        .avatar(review.getUser().getAvatar() != null ? review.getUser().getAvatar().getId() : null)
+                        .username(review.getUser().getUsername())
+                        .build()
+                )
                 .dataCreated(review.getCreated())
                 .dataUpdated(review.getUpdated())
                 .id(review.getId())
-                .likes(likeReviewRepository.countByMovieReviewAndLickOrDisIsTrue(review))
-                .dislike(likeReviewRepository.countByMovieReviewAndLickOrDisIsFalse(review))
+                .reactions(ReactionDTO.builder()
+                        .likes(likeReviewRepository.countByMovieReviewAndLickOrDisIsTrue(review))
+                        .dislikes(likeReviewRepository.countByMovieReviewAndLickOrDisIsFalse(review))
+                        .build())
                 .build();
     }
 

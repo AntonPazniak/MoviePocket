@@ -9,8 +9,8 @@
 
 package com.moviePocket.db.entities.user;
 
+import com.moviePocket.controller.dto.list.ListDTO;
 import com.moviePocket.controller.dto.review.ReviewDTO;
-import com.moviePocket.db.entities.list.ParsList;
 import com.moviePocket.db.entities.movie.Movie;
 import com.moviePocket.db.entities.rating.Rating;
 import lombok.AllArgsConstructor;
@@ -29,7 +29,7 @@ public class ParsUserPage {
     private String bio;
     private LocalDateTime created;
     private Long avatar;
-    private List<ParsList> lists;
+    private List<ListDTO> lists;
     private List<Movie> likeMovie;
     private List<Movie> dislikeMovie;
     private List<Movie> watchedMovie;

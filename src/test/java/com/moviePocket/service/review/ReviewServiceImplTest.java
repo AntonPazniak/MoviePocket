@@ -13,7 +13,7 @@
 //import com.moviePocket.db.entities.list.ListMovie;
 //import com.moviePocket.db.entities.movie.Movie;
 //import com.moviePocket.db.entities.post.Post;
-//import com.moviePocket.db.entities.review.ReviewDTO;
+//import com.moviePocket.controller.dto.review.ReviewDTO;
 //import com.moviePocket.db.entities.review.Review;
 //import com.moviePocket.db.entities.review.ReviewMovie;
 //import com.moviePocket.db.entities.user.User;

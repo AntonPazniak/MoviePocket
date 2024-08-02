@@ -18,10 +18,15 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Transactional
 @Repository
 public interface LikeListRepository extends JpaRepository<LikeList, Long> {
-    LikeList getByUserAndMovieList(User user, ListMovie movieList);
+
+    Optional<LikeList> findById(long idLike);
+
+    Optional<LikeList> findByUserAndMovieList(User user, ListMovie movieList);
 
     @Query("SELECT COUNT(lmr) FROM LikeList lmr WHERE lmr.movieList = :movieList AND lmr.lickOrDis = true")
     int countByMovieReviewAndLickOrDisIsTrue(@Param("movieList") ListMovie movieList);

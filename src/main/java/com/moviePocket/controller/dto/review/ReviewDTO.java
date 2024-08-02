@@ -10,10 +10,12 @@
 package com.moviePocket.controller.dto.review;
 
 import com.moviePocket.controller.dto.UserPostDto;
+import com.moviePocket.db.entities.review.Review;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDateTime;
 
@@ -29,7 +31,22 @@ public class ReviewDTO {
     private LocalDateTime dataCreated;
     private LocalDateTime dataUpdated;
     private Long id;
-    private int likes;
-    private int dislike;
+    private ReactionDTO reactions;
+
+
+    public static ReviewDTO parsReview(@NotNull Review review) {
+        return ReviewDTO.builder()
+                .id(review.getId())
+                .title(review.getTitle())
+                .content(review.getContent())
+                .dataCreated(review.getCreated())
+                .dataUpdated(review.getUpdated())
+                .user(UserPostDto.builder()
+                        .username(review.getUser().getUsername())
+                        .avatar(review.getUser().getAvatar() != null ? review.getUser().getAvatar().getId() : null)
+                        .build())
+                .build();
+    }
+
 
 }

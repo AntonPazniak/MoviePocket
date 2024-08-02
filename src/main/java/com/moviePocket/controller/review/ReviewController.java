@@ -9,8 +9,8 @@
 
 package com.moviePocket.controller.review;
 
+import com.moviePocket.controller.dto.review.ReactionDTO;
 import com.moviePocket.controller.dto.review.ReviewDTO;
-import com.moviePocket.controller.dto.review.ReviewLikeDTO;
 import com.moviePocket.service.inter.raview.LikeReviewService;
 import com.moviePocket.service.inter.raview.ReviewService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -224,7 +224,7 @@ public class ReviewController {
             @ApiResponse(responseCode = "401", description = "Unauthorized. The user is not authenticated.")
     })
     @GetMapping("/likes")
-    public ResponseEntity<ReviewLikeDTO> getAllLikesByReviewId(@RequestParam("idReview") Long idReview) {
+    public ResponseEntity<ReactionDTO> getAllLikesByReviewId(@RequestParam("idReview") Long idReview) {
         return ResponseEntity.ok(likeMovieReviewService.getAllReactionReview(idReview));
     }
 

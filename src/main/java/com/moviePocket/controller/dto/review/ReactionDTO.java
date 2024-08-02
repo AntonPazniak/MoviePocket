@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ReviewLikeDTO {
+public class ReactionDTO {
     private int likes;
     private int dislikes;
 }

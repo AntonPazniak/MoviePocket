@@ -12,15 +12,16 @@ package com.moviePocket.db.entities.list;
 import com.moviePocket.db.entities.BaseEntity;
 import com.moviePocket.db.entities.image.ImageEntity;
 import com.moviePocket.db.entities.movie.Movie;
+import com.moviePocket.db.entities.review.ReviewList;
 import com.moviePocket.db.entities.user.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -28,10 +29,10 @@ import java.util.List;
 public class ListMovie extends BaseEntity {
 
     @Column(nullable = false, unique = true)
-    String title;
+    private String title;
 
     @Column(nullable = false, columnDefinition = "TEXT")
-    String content;
+    private String content;
 
     @ManyToOne
     @JoinColumn(name = "idUser", referencedColumnName = "id")
@@ -46,11 +47,12 @@ public class ListMovie extends BaseEntity {
 
     @OneToOne
     @JoinColumn(name = "idImage", referencedColumnName = "id")
-    private ImageEntity imageEntity;
+    private ImageEntity poster;
 
-    public ListMovie(String title, String content, User user) {
-        this.title = title;
-        this.content = content;
-        this.user = user;
-    }
+    @OneToMany(mappedBy = "movieList", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ListGenres> listGenres;
+
+    @OneToMany(mappedBy = "movieList", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ReviewList> reviews;
+
 }

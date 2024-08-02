@@ -7,12 +7,15 @@
  * *****************************************************
  */
 
-package com.moviePocket.db.entities.list;
+package com.moviePocket.controller.dto.list;
 
 import com.moviePocket.controller.dto.UserPostDto;
+import com.moviePocket.controller.dto.review.ReactionDTO;
+import com.moviePocket.controller.dto.review.ReviewDTO;
 import com.moviePocket.db.entities.movie.Genre;
 import com.moviePocket.db.entities.movie.Movie;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -20,9 +23,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ParsList {
+public class ListDTO {
 
     private Long id;
     private String title;
@@ -30,8 +34,9 @@ public class ParsList {
     private Long poster;
     private List<Genre> genres;
     private List<Movie> movies;
-    private int[] likeOrDis;
+    private ReactionDTO reaction;
     private UserPostDto user;
+    private List<ReviewDTO> review;
     private LocalDateTime create;
     private LocalDateTime update;
 

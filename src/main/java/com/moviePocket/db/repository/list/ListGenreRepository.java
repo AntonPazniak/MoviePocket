@@ -17,12 +17,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Transactional
 @Repository
 public interface ListGenreRepository extends JpaRepository<ListGenres, Long> {
 
-    ListGenres getByMovieListAndGenre(ListMovie movieList, Genre genre);
+    Optional<ListGenres> getByMovieListAndGenre(ListMovie movieList, Genre genre);
 
     void deleteAllByMovieList(ListMovie movieList);
 

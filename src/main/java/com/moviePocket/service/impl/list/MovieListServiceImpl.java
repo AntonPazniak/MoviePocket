@@ -10,36 +10,23 @@
 package com.moviePocket.service.impl.list;
 
 import com.moviePocket.controller.dto.UserPostDto;
-import com.moviePocket.db.entities.image.ImageEntity;
+import com.moviePocket.controller.dto.list.ListDTO;
+import com.moviePocket.controller.dto.review.ReviewDTO;
 import com.moviePocket.db.entities.list.ListGenres;
 import com.moviePocket.db.entities.list.ListMovie;
-import com.moviePocket.db.entities.list.ParsList;
-import com.moviePocket.db.entities.movie.Genre;
 import com.moviePocket.db.entities.movie.Movie;
-import com.moviePocket.db.entities.review.Review;
-import com.moviePocket.db.entities.review.ReviewList;
 import com.moviePocket.db.entities.user.User;
-import com.moviePocket.db.repository.list.LikeListRepository;
 import com.moviePocket.db.repository.list.ListGenreRepository;
 import com.moviePocket.db.repository.list.MovieListRepository;
-import com.moviePocket.db.repository.review.LikeReviewRepository;
-import com.moviePocket.db.repository.review.ReviewListRepository;
-import com.moviePocket.db.repository.review.ReviewRepository;
-import com.moviePocket.db.repository.user.UserRepository;
-import com.moviePocket.service.impl.image.ImageServiceImpl;
+import com.moviePocket.exception.BadRequestException;
+import com.moviePocket.exception.ForbiddenException;
+import com.moviePocket.service.impl.auth.AuthUser;
 import com.moviePocket.service.impl.movie.MovieServiceImpl;
 import com.moviePocket.service.inter.list.MovieListService;
-import com.moviePocket.util.Utils;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.webjars.NotFoundException;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 
 @Service
@@ -47,299 +34,159 @@ import java.util.Objects;
 public class MovieListServiceImpl implements MovieListService {
 
 
-    private final MovieListRepository movieListRepository;
-    private final UserRepository userRepository;
-    private final LikeListRepository likeListRepository;
+    private final MovieListRepository listRepository;
+    private final ListReactionServiceImpl reactionService;
     private final ListGenreRepository listGenreRepository;
     private final MovieServiceImpl movieService;
-    private final ImageServiceImpl imageService;
-    private final ReviewRepository reviewRepository;
-    private final LikeReviewRepository likeReviewRepository;
-    private final ReviewListRepository reviewListRepository;
+    private final AuthUser auth;
 
-    public ResponseEntity<ParsList> setList(String email, String title, String content) throws NotFoundException {
-        User user = userRepository.findByEmail(email);
-        if (user == null)
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        ListMovie movieList = new ListMovie(title, content, user);
-        movieListRepository.save(movieList);
-        return ResponseEntity.ok(parsListWithMovies(movieList));
-    }
-
-    public ResponseEntity<Void> updateList(String email, Long idMovieList, String title, String content) {
-        User user = userRepository.findByEmail(email);
-        ListMovie movieList = movieListRepository.getById(idMovieList);
-        if (user == null)
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        else if (movieList == null)
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        else if (movieList.getUser() != user) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        } else {
-            movieList.setTitle(title);
-            movieList.setContent(content);
-            movieListRepository.save(movieList);
-            return new ResponseEntity<>(HttpStatus.OK);
-        }
-    }
-
-    public ResponseEntity<Void> deleteList(String email, Long idMovieList) {
-        User user = userRepository.findByEmail(email);
-        ListMovie movieList = movieListRepository.getById(idMovieList);
-        List<Review> reviewList = reviewListRepository.findReviewsByMovieList(movieList);
-
-        if (user == null) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        } else if (movieList == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } else if (!Objects.equals(movieList.getUser(), user)) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        } else {
-            if (reviewList != null) {
-                for (Review review : reviewList) {
-                    ReviewList reviewListEntity = reviewListRepository.findByReview(review);
-
-                    if (reviewListEntity != null)
-                        reviewListRepository.delete(reviewListEntity);
-
-                    likeReviewRepository.deleteAllByReview(review);
-                    reviewRepository.delete(review);
-                }
-            }
-
-            likeListRepository.deleteAllByMovieList(movieList);
-            listGenreRepository.deleteAllByMovieList(movieList);
-            movieListRepository.delete(movieList);
-
-            return new ResponseEntity<>(HttpStatus.OK);
-        }
-    }
-
-    public ResponseEntity<Void> addOrDelItemLIst(String email, Long idList, Long idMovie) {
-        User user = userRepository.findByEmail(email);
-        ListMovie movieList = movieListRepository.getById(idList);
-        if (user == null)
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        else if (movieList == null)
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        else if (movieList.getUser() != user) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        } else {
-            Movie movie = movieService.setMovieIfNotExist(idMovie);
-            if (movie != null) {
-                if (movieList.getMovies().contains(movie)) {
-                    movieList.getMovies().remove(movie);
-                } else {
-                    movieList.getMovies().add(movie);
-                }
-                int size = movieList.getMovies().size();
-                ImageEntity image = movieList.getImageEntity();
-                List<String> strings = new ArrayList<>();
-                if (size >= 6) {
-                    for (int i = 0; i < 6; i++) {
-                        if (movieList.getMovies().get(i).getPoster_path() != null)
-                            strings.add(Utils.TMDB_POSTER_PATH + movieList.getMovies().get(i).getPoster_path());
-                        else
-                            strings.add(Utils.BASS_POSTER_PATH);
-                    }
-                    movieList.setImageEntity(imageService.createMoviePoster(strings, movieList.getTitle() + ".jpg"));
-                } else if (size >= 4) {
-                    for (int i = 0; i < 4; i++) {
-                        if (movieList.getMovies().get(i).getPoster_path() != null)
-                            strings.add(Utils.TMDB_POSTER_PATH + movieList.getMovies().get(i).getPoster_path());
-                        else
-                            strings.add(Utils.BASS_POSTER_PATH);
-                    }
-                    movieList.setImageEntity(imageService.createMoviePoster(strings, movieList.getTitle() + ".jpg"));
-                } else if (size >= 2) {
-                    for (int i = 0; i < 2; i++) {
-                        if (movieList.getMovies().get(i).getPoster_path() != null)
-                            strings.add(Utils.TMDB_POSTER_PATH + movieList.getMovies().get(i).getPoster_path());
-                        else
-                            strings.add(Utils.BASS_POSTER_PATH);
-                    }
-
-                    movieList.setImageEntity(imageService.createMoviePoster(strings, movieList.getTitle() + ".jpg"));
-                }
-                movieListRepository.save(movieList);
-                if (image != null)
-                    imageService.delImage(image);
-                return new ResponseEntity<>(HttpStatus.OK);
-            }
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
-
-    public ResponseEntity<ParsList> getList(Long idMovieList) {
-        if (movieListRepository.existsById(idMovieList)) {
-            ListMovie movieList = movieListRepository.getById(idMovieList);
-            return ResponseEntity.ok(parsListWithMovies(movieList));
-        }
-        return ResponseEntity.notFound().build();
-    }
-
-    public ResponseEntity<List<ParsList>> getAllMyList(String email) {
-        User user = userRepository.findByEmail(email);
-        if (user == null)
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        else {
-            List<ListMovie> movieList = movieListRepository.findAllByUser(user);
-            return ResponseEntity.ok(parsLists(movieList));
-        }
-    }
-
-    public ResponseEntity<List<ParsList>> getAllByUsernameList(String username) {
-        User user = userRepository.findByUsernameAndAccountActive(username, true);
-        if (user == null)
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        else {
-            List<ListMovie> movieList = movieListRepository.findAllByUser(user);
-            return ResponseEntity.ok(parsLists(movieList));
-        }
-    }
-
-    public ResponseEntity<List<ParsList>> getAllByPartialTitle(String title) {
-        if (title.isEmpty())
-            return ResponseEntity.ok(null);
-        List<ListMovie> movieLists = movieListRepository.findAllByPartialTitle(title);
-        if (movieLists == null )
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        List<ParsList> parsLists = new ArrayList<>();
-        for (ListMovie list : movieLists) {
-            parsLists.add(parsListWithoutMovies(list));
-        }
-
-        return ResponseEntity.ok(parsLists);
+    @Override
+    public ListDTO getList(Long idList) {
+        return parsListToDTO(getListByIdOrThrow(idList));
     }
 
     @Override
-    public ResponseEntity<Boolean> isMovieInList(Long idMovieList, Long idMovie) {
-        ListMovie list = movieListRepository.getById(idMovieList);
-        if (list == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    public List<ListDTO> getAllUserList() {
+        User user = auth.getAuthenticatedUser();
+        List<ListMovie> listMovieList = listRepository.findAllByUser(user);
+        return listMovieList.stream().map(this::parsShortListToDTO).toList();
+    }
 
-        if (list.getMovies().stream().anyMatch(movie -> movie.getId().equals(idMovie))) {
-            return ResponseEntity.ok(true);
+    @Override
+    public List<ListDTO> getAllByUsernameList(String username) {
+        return listRepository.findByUser_username(username)
+                .stream().map(this::parsShortListToDTO).toList();
+    }
+
+    @Override
+    public ListDTO setList(String title, String content) {
+        User user = auth.getAuthenticatedUser();
+        var list = ListMovie.builder()
+                .title(title)
+                .content(content)
+                .user(user)
+                .build();
+        listRepository.save(list);
+        return parsShortListToDTO(list);
+    }
+
+    @Override
+    public ListDTO updateList(Long idList, String title, String content) {
+        User user = auth.getAuthenticatedUser();
+        var list = getListByIdOrThrow(idList);
+        if (!list.getUser().equals(user)) {
+            throw new ForbiddenException("Yor can't modify this list");
         } else {
-            return ResponseEntity.ok(false);
+            list.setTitle(title);
+            list.setContent(content);
+            listRepository.save(list);
+            return parsShortListToDTO(list);
         }
     }
 
-    private List<ParsList> parsLists(List<ListMovie> movieList) {
-        List<ParsList> parsMovieLL = new ArrayList<>();
-        for (ListMovie listMovie : movieList) {
-            parsMovieLL.add(parsListWithoutMovies(listMovie));
+    @Override
+    public void deleteList(Long idList) {
+        User user = auth.getAuthenticatedUser();
+        ListMovie list = getListByIdOrThrow(idList);
+        if (!list.getUser().equals(user)) {
+            throw new ForbiddenException("Yor can't delete this list");
+        } else {
+            listRepository.delete(list);
         }
-        return parsMovieLL;
     }
 
-    private ParsList parsListWithMovies(ListMovie listMovie) {
-        List<ListGenres> ListGenres = listGenreRepository.getAllByMovieList(listMovie);
-        List<Genre> genres = new ArrayList<>();
-        for (ListGenres g : ListGenres) {
-            genres.add(g.getGenre());
-        }
-
-        int[] likeAndDis = new int[]{likeListRepository.countByMovieReviewAndLickOrDisIsTrue(listMovie),
-                likeListRepository.countByMovieReviewAndLickOrDisIsFalse(listMovie)};
-
-        Long poster = null;
-        if (listMovie.getImageEntity() != null)
-            poster = listMovie.getImageEntity().getId();
-        Long idAvatar = null;
-        if (listMovie.getUser().getAvatar() != null)
-            idAvatar = listMovie.getUser().getAvatar().getId();
-        return new ParsList(
-                listMovie.getId(),
-                listMovie.getTitle(),
-                listMovie.getContent(),
-                poster,
-                genres,
-                listMovie.getMovies(),
-                likeAndDis,
-                new UserPostDto(listMovie.getUser().getUsername(), idAvatar),
-                listMovie.getCreated(),
-                listMovie.getUpdated()
-        );
+    @Override
+    public List<ListDTO> getAllByPartialTitle(String title) {
+        if (title.isEmpty())
+            throw new BadRequestException("Title can't be empty");
+        var movieLists = listRepository.findAllByPartialTitle(title);
+        return movieLists.stream().map(this::parsShortListToDTO).toList();
     }
 
-    private ParsList parsListWithoutMovies(ListMovie list) {
-        int[] likeAndDis = new int[]{likeListRepository.countByMovieReviewAndLickOrDisIsTrue(list),
-                likeListRepository.countByMovieReviewAndLickOrDisIsFalse(list)};
-        List<Genre> genres = new ArrayList<>();
-        List<ListGenres> ListGenres = listGenreRepository.getAllByMovieList(list);
-        for (ListGenres g : ListGenres) {
-            genres.add(g.getGenre());
-        }
-        Long poster = null;
-        if (list.getImageEntity() != null)
-            poster = list.getImageEntity().getId();
-        Long idAvatar = null;
-        if (list.getUser().getAvatar() != null)
-            idAvatar = list.getUser().getAvatar().getId();
-        return new ParsList(
-                list.getId(),
-                list.getTitle(),
-                list.getContent(),
-                poster,
-                genres,
-                null,
-                likeAndDis,
-                new UserPostDto(list.getUser().getUsername(), idAvatar),
-                list.getCreated(),
-                list.getUpdated()
-        );
+    @Override
+    public boolean isMovieInList(Long idList, Long idMovie) {
+        ListMovie list = getListByIdOrThrow(idList);
+        return list.getMovies().stream().anyMatch(movie -> movie.getId().equals(idMovie));
     }
 
+    @Override
+    public List<ListDTO> getAllListsContainingMovie(Long idMovie) {
+        List<ListMovie> listMovies = listRepository.findAllByidMovie(idMovie);
+        return listMovies.stream().map(this::parsShortListToDTO).toList();
+    }
 
-    public ResponseEntity<List<ParsList>> getAllListsContainingMovie(Long idMovie) {
-        List<ParsList> parsLists = new ArrayList<>();
-        List<ListMovie> listMovies = movieListRepository.findAllByidMovie(idMovie);
-        for (ListMovie list : listMovies) {
-            int[] likeAndDis = new int[]{likeListRepository.countByMovieReviewAndLickOrDisIsTrue(list),
-                    likeListRepository.countByMovieReviewAndLickOrDisIsFalse(list)};
-            List<Genre> genres = new ArrayList<>();
-            List<ListGenres> ListGenres = listGenreRepository.getAllByMovieList(list);
-            for (ListGenres g : ListGenres) {
-                genres.add(g.getGenre());
+    @Override
+    public void addOrDelItemList(Long idList, Long idMovie) {
+        User user = auth.getAuthenticatedUser();
+        var list = getListByIdOrThrow(idList);
+        if (!list.getUser().equals(user)) {
+            throw new ForbiddenException("Yor can't modify this list");
+        } else {
+            Movie movie = movieService.setMovieIfNotExist(idMovie);
+            if (list.getMovies().contains(movie)) {
+                list.getMovies().remove(movie);
+            } else {
+                list.getMovies().add(movie);
             }
-            parsLists.add(parsListWithoutMovies(list));
+            listRepository.save(list);
         }
-        return ResponseEntity.ok(parsLists);
     }
 
-    public ResponseEntity<Boolean> authorshipCheck(Long idList, String username) {
-        try {
-            User user = userRepository.findByEmail(username);
-            ListMovie list = movieListRepository.getById(idList);
-            return ResponseEntity.ok(list.getUser().equals(user));
-        } catch (EntityNotFoundException e) {
-            System.out.println(e);
-        }
-        return ResponseEntity.ok(false);
+    @Override
+    public boolean authorshipCheck(Long idList) {
+        User user = auth.getAuthenticatedUser();
+        ListMovie list = getListByIdOrThrow(idList);
+        return list.getUser().equals(user);
     }
 
-    public ResponseEntity<List<ParsList>> getTop10LatestLists() {
-        List<ListMovie> list = movieListRepository.findTop10LatestLists();
-        if (!list.isEmpty())
-            return ResponseEntity.ok(parsLists(list));
-        else
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    @Override
+    public List<ListDTO> getTop10LatestLists() {
+        List<ListMovie> list = listRepository.findTop10LatestLists();
+        return list.stream().map(this::parsShortListToDTO).toList();
     }
 
-
-    public ResponseEntity<List<ParsList>> getTop10LikedLists() {
-        List<ListMovie> list = movieListRepository.findTop10LikedLists();
-        if (!list.isEmpty())
-            return ResponseEntity.ok(parsLists(list));
-        else
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    @Override
+    public List<ListDTO> getTop10LikedLists() {
+        List<ListMovie> listMovies = listRepository.findTop10LikedLists();
+        return listMovies.stream().map(this::parsShortListToDTO).toList();
     }
 
-    public ListMovie getListById(Long id) {
-        return movieListRepository.findById(id)
+    public ListMovie getListByIdOrThrow(Long id) {
+        return listRepository.findById(id)
                 .orElseThrow(() -> new com.moviePocket.exception.NotFoundException("List with id " + id + " not found"));
     }
 
+    public ListDTO parsShortListToDTO(ListMovie list) {
+        return ListDTO.builder()
+                .id(list.getId())
+                .title(list.getTitle())
+                .content(list.getContent())
+                .poster(list.getPoster() != null ? list.getPoster().getId() : null)
+                .user(UserPostDto.builder()
+                        .username(list.getUser().getUsername())
+                        .avatar(list.getUser().getAvatar() != null ? list.getUser().getAvatar().getId() : null)
+                        .build())
+                .create(list.getCreated())
+                .update(list.getUpdated())
+                .build();
+    }
+
+    public ListDTO parsListToDTO(ListMovie list) {
+        return ListDTO.builder()
+                .id(list.getId())
+                .title(list.getTitle())
+                .content(list.getContent())
+                .poster(list.getPoster() != null ? list.getPoster().getId() : null)
+                .reaction(reactionService.getAllReactionReview(list.getId()))
+                .user(UserPostDto.builder()
+                        .username(list.getUser().getUsername())
+                        .avatar(list.getUser().getAvatar() != null ? list.getUser().getAvatar().getId() : null)
+                        .build())
+                .movies(list.getMovies())
+                .genres(list.getListGenres().stream().map(ListGenres::getGenre).toList())
+                .create(list.getCreated())
+                .update(list.getUpdated())
+                .review(list.getReviews().stream().map(e -> ReviewDTO.parsReview(e.getReview())).toList())
+                .build();
+    }
 }

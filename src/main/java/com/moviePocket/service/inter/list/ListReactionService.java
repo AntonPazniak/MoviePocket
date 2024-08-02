@@ -9,12 +9,15 @@
 
 package com.moviePocket.service.inter.list;
 
-import org.springframework.http.ResponseEntity;
+import com.moviePocket.controller.dto.review.ReactionDTO;
 
-public interface LikeListService {
-    ResponseEntity<Void> setLikeOrDisOrDel(String username, Long id, boolean likeOrDis);
+public interface ListReactionService {
 
-    ResponseEntity<Boolean> getLikeOrDis(String username, Long id);
+    void setLikeOrDisLike(Long idReview, boolean reaction);
 
-    ResponseEntity<Integer[]> getAllLikeAndDisByIdMovieList(Long idMovieList);
+    void deleteReaction(Long idReview);
+
+    Boolean getReaction(Long id);
+
+    ReactionDTO getAllReactionReview(Long idReview);
 }

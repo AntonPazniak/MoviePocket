@@ -9,7 +9,7 @@
 
 package com.moviePocket.service.inter.raview;
 
-import com.moviePocket.controller.dto.review.ReviewLikeDTO;
+import com.moviePocket.controller.dto.review.ReactionDTO;
 
 public interface LikeReviewService {
 
@@ -19,6 +19,6 @@ public interface LikeReviewService {
 
     Boolean getReaction(Long id);
 
-    ReviewLikeDTO getAllReactionReview(Long idReview);
+    ReactionDTO getAllReactionReview(Long idReview);
 
 }

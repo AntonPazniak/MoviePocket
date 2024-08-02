@@ -15,55 +15,50 @@ import com.moviePocket.db.entities.list.ListMovie;
 import com.moviePocket.db.entities.movie.Genre;
 import com.moviePocket.db.entities.user.User;
 import com.moviePocket.db.repository.list.ListGenreRepository;
-import com.moviePocket.db.repository.list.MovieListRepository;
 import com.moviePocket.db.repository.movie.GenreRepository;
-import com.moviePocket.db.repository.user.UserRepository;
+import com.moviePocket.exception.ForbiddenException;
+import com.moviePocket.exception.NotFoundException;
+import com.moviePocket.service.impl.auth.AuthUser;
 import com.moviePocket.service.inter.list.CategoriesMovieListService;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.webjars.NotFoundException;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
+@Transactional
 public class CategoriesMovieListServiceImpl implements CategoriesMovieListService {
-    @Autowired
-    private ListGenreRepository categoriesMovieListRepository;
-    @Autowired
-    private MovieListRepository movieListRepository;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private GenreRepository genreRepository;
 
-    @Transactional
-    public ResponseEntity<Void> setOrDelCategoryList(String email, Long idList, Long idGenre) throws NotFoundException {
-        User user = userRepository.findByEmail(email);
-        ListMovie movieList = movieListRepository.getById(idList);
-        if (user == null)
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        if (movieList == null)
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    private final ListGenreRepository categoriesMovieListRepository;
+    private final MovieListServiceImpl movieListService;
+    private final AuthUser auth;
+    private final GenreRepository genreRepository;
+
+
+    @Override
+    public void setOrDelCategoryList(Long idList, Long idCategory) {
+        User user = auth.getAuthenticatedUser();
+        ListMovie movieList = movieListService.getListByIdOrThrow(idList);
         if (!movieList.getUser().equals(user)) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+            throw new ForbiddenException("You do not have permission to modify this category");
         } else {
-            Genre genre = genreRepository.getById(idGenre);
-            ListGenres categoriesMovieList = categoriesMovieListRepository.
+            Genre genre = genreRepository.findById(idCategory)
+                    .orElseThrow(() -> new NotFoundException("Genre not found"));
+            var categoriesMovieList = categoriesMovieListRepository.
                     getByMovieListAndGenre(movieList, genre);
-            if (categoriesMovieList != null) {
-                categoriesMovieListRepository.delete(categoriesMovieList);
+            if (categoriesMovieList.isPresent()) {
+                categoriesMovieListRepository.delete(categoriesMovieList.get());
             } else {
                 categoriesMovieListRepository.save(new ListGenres(movieList, genre));
             }
-            return new ResponseEntity<>(HttpStatus.OK);
         }
     }
 
-    public ResponseEntity<List<Genre>> getAll() {
-        return ResponseEntity.ok(genreRepository.findAll());
+    @Override
+    public List<Genre> getAll() {
+        return genreRepository.findAll();
     }
 
 }

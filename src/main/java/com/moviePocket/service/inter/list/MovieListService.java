@@ -9,37 +9,36 @@
 
 package com.moviePocket.service.inter.list;
 
-import com.moviePocket.db.entities.list.ParsList;
-import org.springframework.http.ResponseEntity;
+import com.moviePocket.controller.dto.list.ListDTO;
 
 import java.util.List;
 
 public interface MovieListService {
 
-    ResponseEntity<ParsList> setList(String email, String title, String content);
+    ListDTO setList(String title, String content);
 
-    ResponseEntity<Void> updateList(String email, Long idMovieList, String title, String content);
+    ListDTO updateList(Long idMovieList, String title, String content);
 
-    ResponseEntity<Void> deleteList(String email, Long idMovieList);
+    void deleteList(Long idMovieList);
 
-    ResponseEntity<List<ParsList>> getAllByPartialTitle(String title);
+    List<ListDTO> getAllByPartialTitle(String title);
 
-    ResponseEntity<ParsList> getList(Long idMovieList);
+    ListDTO getList(Long idMovieList);
 
-    ResponseEntity<List<ParsList>> getAllMyList(String email);
+    List<ListDTO> getAllUserList();
 
-    ResponseEntity<List<ParsList>> getAllByUsernameList(String username);
+    List<ListDTO> getAllByUsernameList(String username);
 
-    ResponseEntity<List<ParsList>> getAllListsContainingMovie(Long idMovie);
+    List<ListDTO> getAllListsContainingMovie(Long idMovie);
 
-    ResponseEntity<Void> addOrDelItemLIst(String email, Long idList, Long idMovie);
+    void addOrDelItemList(Long idList, Long idMovie);
 
-    ResponseEntity<Boolean> authorshipCheck(Long idList, String username);
+    boolean authorshipCheck(Long idList);
 
-    ResponseEntity<Boolean> isMovieInList(Long idMovieList, Long idMovie);
+    boolean isMovieInList(Long idMovieList, Long idMovie);
 
-    ResponseEntity<List<ParsList>> getTop10LatestLists();
+    List<ListDTO> getTop10LatestLists();
 
-    ResponseEntity<List<ParsList>> getTop10LikedLists();
+    List<ListDTO> getTop10LikedLists();
 
 }
