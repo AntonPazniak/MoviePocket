@@ -11,7 +11,6 @@ package com.moviePocket.service.impl.user;
 
 import com.moviePocket.controller.dto.UserPostDto;
 import com.moviePocket.db.entities.image.ImageEntity;
-import com.moviePocket.db.entities.user.AccountActivate;
 import com.moviePocket.db.entities.user.ForgotPassword;
 import com.moviePocket.db.entities.user.NewEmail;
 import com.moviePocket.db.entities.user.User;
@@ -21,6 +20,7 @@ import com.moviePocket.db.repository.user.NewEmailRepository;
 import com.moviePocket.db.repository.user.UserRepository;
 import com.moviePocket.exception.BadRequestException;
 import com.moviePocket.exception.ForbiddenException;
+import com.moviePocket.exception.NotFoundException;
 import com.moviePocket.exception.UnauthorizedException;
 import com.moviePocket.service.impl.auth.AuthUser;
 import com.moviePocket.service.impl.image.ImageServiceImpl;
@@ -28,15 +28,16 @@ import com.moviePocket.service.inter.user.UserService;
 import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -62,11 +63,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(String email, String password) {
-        User user = chekUserAuntByEmail(email);
-        if (user == null) {
-            throw new UnauthorizedException("User with email " + email + " not found.");
-        } else if (!passwordEncoder.matches(password, user.getPassword())) {
+    public User findById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("User not exist"));
+    }
+
+    @Override
+    public void deleteUser(String password) {
+        User user = authUser.getAuthenticatedUser();
+        if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new ForbiddenException("Incorrect password.");
         } else {
             user.setAccountActive(false);
@@ -80,8 +85,8 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public void setNewPassword(String username, String oldPassword, String newPassword) {
-        User user = findUserByUsername(username);
+    public void setNewPassword(String oldPassword, String newPassword) {
+        User user = authUser.getAuthenticatedUser();
         if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
             throw new ForbiddenException("Incorrect old password.");
         } else if (!oldPassword.equals(newPassword)) {
@@ -113,144 +118,124 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
+    @Override
+    public void setNewAvatar(MultipartFile file) {
+        User user = authUser.getAuthenticatedUser();
+        Optional<ImageEntity> lastImage = Optional.ofNullable(user.getAvatar());
 
-    public ResponseEntity<Void> setNewAvatar(String email, MultipartFile file) {
-        User user = userRepository.findByEmail(email);
-        ImageEntity lastImage = null;
-
-        if (user == null)
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        else if (file.getSize() > 7340032) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        if (file.getSize() > 7340032) {
+            throw new BadRequestException("The image is too large.");
         } else {
-            if (user.getAvatar() != null)
-                lastImage = user.getAvatar();
             ImageEntity imageEntity = imageService.resizeImage(file);
             user.setAvatar(imageEntity);
             userRepository.save(user);
 
-            if (lastImage != null) {
-                imageService.delImage(lastImage);
-            }
-
-            return new ResponseEntity<>(HttpStatus.OK);
+            lastImage.ifPresent(imageService::delImage);
         }
     }
 
-    public ResponseEntity<Void> deleteAvatar(String email, Long imageId) {
-        User user = userRepository.findByEmail(email);
-        if (user == null)
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        else if (user.getAvatar() == null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+    @Override
+    public void deleteAvatar() {
+        User user = authUser.getAuthenticatedUser();
+
         ImageEntity image = user.getAvatar();
 
         user.setAvatar(null);
         userRepository.save(user);
 
         imageService.deleteImage(image.getId());
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    public ResponseEntity<Void> setTokenEmail(String email, String newEmail) throws MessagingException {
+    public void setTokenEmail(String email, String newEmail) throws MessagingException {
         User user = userRepository.findByEmail(email);
-        if (user == null)
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        else if (email.equals(newEmail))
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        var token = UUID.randomUUID().toString();
+        if (email.equals(newEmail))
+            throw new ForbiddenException("Rejected");
         else {
-            NewEmail newEmailOb = newEmailRepository.findByUser(user);
-            if (newEmailOb == null) {
-                newEmailOb = new NewEmail(user, newEmail, UUID.randomUUID().toString());
-                newEmailRepository.save(newEmailOb);
+            var newEmailOb = newEmailRepository.findByUser(user);
+            if (newEmailOb.isEmpty()) {
+                newEmailRepository.save(NewEmail.builder()
+                        .user(user)
+                        .newEmail(email)
+                        .tokenEmailActivate(token)
+                        .build());
             } else {
-                newEmailOb.setNewEmail(newEmail);
-                newEmailRepository.save(newEmailOb);
+                newEmailOb.get().setNewEmail(newEmail);
+                newEmailRepository.save(newEmailOb.get());
             }
 
             String username = user.getLogin();
-            String link = "https://moviepocket.projektstudencki.pl/api/user/edit/activateNewEmail/" + newEmailOb.getTokenEmailActivate();
+            String link = "https://moviepocket.projektstudencki.pl/api/user/edit/activateNewEmail/" + token;
             String massage = "You are just in the middle of setting up your new email address. \n Please confirm your new email address.";
 
-            emailSenderService.sendMailWithAttachment(newEmailOb.getNewEmail(), buildEmail(username, massage, link), "New Mail Confirmation");
-            return new ResponseEntity<>(HttpStatus.OK);
+            emailSenderService.sendMailWithAttachment(newEmail, buildEmail(username, massage, link), "New Mail Confirmation");
         }
     }
 
     @Override
-    public ResponseEntity<Void> activateNewEmail(String token) {
-        NewEmail newEmail = newEmailRepository.findByTokenEmailActivate(token);
-        if (newEmail == null)
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        else {
-            User user = newEmail.getUser();
-            user.setEmail(newEmail.getNewEmail());
-            newEmailRepository.delete(newEmail);
-            userRepository.save(user);
-            return ResponseEntity.status(HttpStatus.OK).build();
-        }
+    public void activateNewEmail(String token) {
+        var newEmail = newEmailRepository.findByTokenEmailActivate(token)
+                .orElseThrow(() -> new ForbiddenException("Rejected"));
+
+        User user = newEmail.getUser();
+        user.setEmail(newEmail.getNewEmail());
+        newEmailRepository.delete(newEmail);
+        userRepository.save(user);
     }
 
     @Override
-    public ResponseEntity<Void> activateUser(String token) {
-        AccountActivate accountActivate = accountActivateRepository.findByTokenAccountActivate(token);
-        if (accountActivate != null) {
-            User user = accountActivate.getUser();
-            if (user == null) {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            } else {
-                user.setEmailVerification(Boolean.TRUE);
-                userRepository.save(user);
-                accountActivateRepository.delete(accountActivate);
-                return new ResponseEntity<>(HttpStatus.OK);
-            }
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public void activateUser(String token) {
+        var accountActivate = accountActivateRepository.findByTokenAccountActivate(token)
+                .orElseThrow(() -> new ForbiddenException("Rejected"));
+        User user = accountActivate.getUser();
+        user.setEmailVerification(true);
+        userRepository.save(user);
+        accountActivateRepository.delete(accountActivate);
     }
 
+
+    @SneakyThrows
     @Transactional
-    public ResponseEntity<Void> createPasswordToken(String email) throws MessagingException {
-        User user = userRepository.findByEmail(email);
-        if (user != null) {
-            ForgotPassword forgotPassword = forgotPasswordRepository.findByUser(user);
-            if (forgotPassword != null) {
-                forgotPassword.setTokenForgotPassword(UUID.randomUUID().toString());
+    public void createPasswordToken(String email) {
+        var user = userRepository.findUserByEmail(email);
+        var token = UUID.randomUUID().toString();
+        if (user.isPresent()) {
+            var forgotPassword = forgotPasswordRepository.findByUser(user.get());
+            if (forgotPassword.isEmpty()) {
+                forgotPasswordRepository.save(
+                        ForgotPassword.builder()
+                                .tokenForgotPassword(token)
+                                .user(user.get())
+                                .build()
+                );
             } else {
-                forgotPassword = new ForgotPassword(user, UUID.randomUUID().toString());
+                forgotPassword.get().setTokenForgotPassword(token);
+                forgotPasswordRepository.save(forgotPassword.get());
             }
-            forgotPasswordRepository.save(forgotPassword);
-            sendEmail(user, forgotPassword.getTokenForgotPassword());
-        }
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @Transactional
-    public ResponseEntity<Void> resetPassword(String token, String password) {
-        ForgotPassword forgotPassword = forgotPasswordRepository.findByTokenForgotPassword(token);
-        if (forgotPassword == null) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        } else {
-            User user = forgotPassword.getUser();
-            user.setPassword(passwordEncoder.encode(password));
-            userRepository.save(user);
-            forgotPasswordRepository.deleteAllByUser(user);
-            return new ResponseEntity<>(HttpStatus.OK);
+            sendEmail(user.get(), token);
         }
     }
 
     @Override
-    public ResponseEntity<List<UserPostDto>> findByPartialUsername(String username) {
-        if (username.isEmpty())
-            return ResponseEntity.ok(null);
-        List<User> users = userRepository.findByPartialUsername(username);
-        if (users == null)
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        List<UserPostDto> userPostDtos = users.stream()
-                .map(user -> new UserPostDto(user.getLogin(), user.getAvatar() != null ? user.getAvatar().getId() : null))
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(userPostDtos);
+    public void resetPassword(String token, String password) {
+        var forgotPassword = forgotPasswordRepository.findByTokenForgotPassword(token)
+                .orElseThrow(() -> new BadRequestException("Invalid token."));
+        User user = forgotPassword.getUser();
+        user.setPassword(passwordEncoder.encode(password));
+        userRepository.save(user);
+        forgotPasswordRepository.deleteAllByUser(user);
     }
+
+    @Override
+    public List<UserPostDto> findByPartialUsername(String username) {
+        return userRepository.findByPartialUsername(username).stream()
+                .map(user -> UserPostDto.builder()
+                        .username(user.getLogin())
+                        .avatar(user.getAvatar() != null ? user.getAvatar().getId() : null)
+                        .build())
+                .toList();
+    }
+
 
     private void sendEmail(User user, String token) throws MessagingException {
         String username = user.getLogin();
@@ -263,22 +248,17 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDetails loadUserByUsername(String usernameOrEmail) {
 
-//        User user = userRepository.findByEmail(usernameOrEmail);
-//        if (user != null) {
-//            if (user.getEmailVerification()) {
-//                return new org.springframework.security.core.userdetails.User(user.getEmail()
-//                        , user.getPassword(),
-//                        user.getRoles().stream()
-//                                .map((role) -> new SimpleGrantedAuthority(role.getName()))
-//                                .collect(Collectors.toList()));
-//            } else {
-//                throw new UsernameNotFoundException("You have not verified your email");
-//            }
-//        } else {
-//            throw new UsernameNotFoundException("Invalid email or password");
-//
-//        }
-        return null;
+        User user = userRepository.findByEmail(usernameOrEmail);
+        if (user != null) {
+            if (user.getEmailVerification()) {
+                return new org.springframework.security.core.userdetails.User(user.getEmail()
+                        , user.getPassword(),
+                        user.getRoles().stream()
+                                .map((role) -> new SimpleGrantedAuthority(role.getName()))
+                                .collect(Collectors.toList()));
+            }
+        }
+        throw new NotFoundException("Invalid email.");
     }
 
     @Override
@@ -286,25 +266,12 @@ public class UserServiceImpl implements UserService {
         return userRepository.findUserAuntByEmail(email).orElseThrow(() -> new UnauthorizedException("You are not logged in"));
     }
 
-    @Override
-    public User findById(Long id) {
-        User result = userRepository.findById(id).orElse(null);
-
-        if (result == null) {
-            log.warn("IN findById - no user found by id: {}", id);
-            return null;
-        }
-
-        log.info("IN findById - user: {} found by id: {}", result);
-        return result;
+    public boolean existsByUsername(String username) {
+        return userRepository.existsByUsername(username);
     }
 
-    public ResponseEntity<Boolean> existsByUsername(String username) {
-        return ResponseEntity.ok(userRepository.existsByUsername(username));
-    }
-
-    public ResponseEntity<Boolean> existsByEmail(String email) {
-        return ResponseEntity.ok(userRepository.existsByEmail(email));
+    public boolean existsByEmail(String email) {
+        return userRepository.existsByEmail(email);
     }
 
     public User findUserByUsername(String username) {
@@ -312,5 +279,9 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UnauthorizedException("You are not logged in"));
     }
 
+    public User findUserByEmail(String email) {
+        return userRepository.findUserByEmail(email)
+                .orElseThrow(() -> new UnauthorizedException("You are not logged in"));
+    }
 
 }

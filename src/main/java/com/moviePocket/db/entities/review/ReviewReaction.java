@@ -7,7 +7,7 @@
  * *****************************************************
  */
 
-package com.moviePocket.db.entities.list;
+package com.moviePocket.db.entities.review;
 
 import com.moviePocket.db.entities.BaseEntity;
 import com.moviePocket.db.entities.user.User;
@@ -15,21 +15,21 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @EqualsAndHashCode(callSuper = true)
+@Entity
+@Table(name = "review_like", uniqueConstraints = @UniqueConstraint(columnNames = {"idUser", "idReview"}))
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "like_list", uniqueConstraints = @UniqueConstraint(columnNames = {"idUser", "idList"}))
-public class LikeList extends BaseEntity {
+public class ReviewReaction extends BaseEntity {
 
     @ManyToOne
-    @JoinColumn(name = "idList")
-    private ListMovie movieList;
+    @JoinColumn(name = "idReview")
+    private Review review;
 
     @ManyToOne
     @JoinColumn(name = "idUser")
     private User user;
 
-    private boolean lickOrDis;
+    private boolean reaction;
 }

@@ -40,11 +40,11 @@ public class ReviewController {
             @ApiResponse(responseCode = "401", description = "Unauthorized. The user is not authenticated.")
     })
     @PostMapping("/movie/set")
-    public ResponseEntity<Object> setMovieReview(@RequestParam("idMovie") Long idMovie,
-                                                 @RequestParam("title") String title,
-                                                 @RequestBody String content) {
-        reviewService.createReviewMovie(idMovie, title, content);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<ReviewDTO> setMovieReview(@RequestParam("idMovie") Long idMovie,
+                                                    @RequestParam("title") String title,
+                                                    @RequestBody String content) {
+
+        return ResponseEntity.ok(reviewService.createReviewMovie(idMovie, title, content));
     }
 
     @Operation(summary = "Create or update a list review",
@@ -56,11 +56,11 @@ public class ReviewController {
             @ApiResponse(responseCode = "401", description = "Unauthorized. The user is not authenticated.")
     })
     @PostMapping("/list/set")
-    public ResponseEntity<Object> setListReview(@RequestParam("idList") Long idList,
+    public ResponseEntity<ReviewDTO> setListReview(@RequestParam("idList") Long idList,
                                                 @RequestParam("title") String title,
                                                 @RequestBody String content) {
-        reviewService.createReviewList(idList, title, content);
-        return ResponseEntity.ok().build();
+
+        return ResponseEntity.ok(reviewService.createReviewList(idList, title, content));
     }
 
     @Operation(summary = "Create or update a post review",
@@ -72,11 +72,10 @@ public class ReviewController {
             @ApiResponse(responseCode = "401", description = "Unauthorized. The user is not authenticated.")
     })
     @PostMapping("/post/set")
-    public ResponseEntity<Object> setPostReview(@RequestParam("idPost") Long idPost,
+    public ResponseEntity<ReviewDTO> setPostReview(@RequestParam("idPost") Long idPost,
                                                 @RequestParam("title") String title,
                                                 @RequestBody String content) {
-        reviewService.createReviewPost(idPost, title, content);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(reviewService.createReviewPost(idPost, title, content));
     }
 
     @Operation(summary = "Update an existing review",

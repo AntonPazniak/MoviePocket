@@ -62,9 +62,9 @@ public class UserEditController {
             @ApiResponse(responseCode = "400", description = "Bad request")
     })
     @PostMapping("/delete")
-    public void deleteUser(@RequestParam String password) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        userService.deleteUser(authentication.getName(), password);
+    public ResponseEntity<?> deleteUser(@RequestParam String password) {
+        userService.deleteUser(password);
+        return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "Set a new password", description = "Password is validated")
@@ -73,12 +73,12 @@ public class UserEditController {
             @ApiResponse(responseCode = "400", description = "Password does not match the criteria"),
     })
     @PostMapping("/newPas")
-    public void newPasswordPostForm(
+    public ResponseEntity<?> newPasswordPostForm(
             @RequestParam("passwordold") String passwordOld,
             @RequestParam("password0") String passwordNew0,
             @RequestParam("password1") String passwordNew1) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        userService.setNewPassword(authentication.getName(), passwordOld, passwordNew0);
+        userService.setNewPassword(passwordOld, passwordNew0);
+        return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "Set a new email")
@@ -98,7 +98,8 @@ public class UserEditController {
     })
     @GetMapping("/activateNewEmail/{token}")
     public ResponseEntity<Void> activate(@PathVariable String token) {
-        return userService.activateNewEmail(token);
+        userService.activateNewEmail(token);
+        return ResponseEntity.ok().build();
     }
 
 
@@ -132,8 +133,8 @@ public class UserEditController {
     })
     @PostMapping("/newAvatar")
     public ResponseEntity<Void> setNewAvatar(@RequestParam("file") MultipartFile file) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return userService.setNewAvatar(authentication.getName(), file);
+        userService.setNewAvatar(file);
+        return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "Delete current avatar")
@@ -143,8 +144,8 @@ public class UserEditController {
             @ApiResponse(responseCode = "401", description = "User is not authorized")
     })
     @PostMapping("/deleteAvatar")
-    public ResponseEntity<Void> deleteAvatar(@RequestParam("avatarId") Long avatarId) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return userService.deleteAvatar(authentication.getName(), avatarId);
+    public ResponseEntity<Void> deleteAvatar() {
+        userService.deleteAvatar();
+        return ResponseEntity.ok().build();
     }
 }

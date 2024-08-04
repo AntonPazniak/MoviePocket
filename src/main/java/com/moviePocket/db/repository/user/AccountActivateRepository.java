@@ -14,10 +14,12 @@ import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Transactional
 @Repository
 public interface AccountActivateRepository extends JpaRepository<AccountActivate, Long> {
 
-    AccountActivate findByTokenAccountActivate(String token);
+    Optional<AccountActivate> findByTokenAccountActivate(String token);
 
 }

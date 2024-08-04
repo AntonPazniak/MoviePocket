@@ -9,8 +9,8 @@
 
 package com.moviePocket.db.repository.list;
 
-import com.moviePocket.db.entities.list.LikeList;
 import com.moviePocket.db.entities.list.ListMovie;
+import com.moviePocket.db.entities.list.ReactionList;
 import com.moviePocket.db.entities.user.User;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -22,16 +22,16 @@ import java.util.Optional;
 
 @Transactional
 @Repository
-public interface LikeListRepository extends JpaRepository<LikeList, Long> {
+public interface LikeListRepository extends JpaRepository<ReactionList, Long> {
 
-    Optional<LikeList> findById(long idLike);
+    Optional<ReactionList> findById(long idLike);
 
-    Optional<LikeList> findByUserAndMovieList(User user, ListMovie movieList);
+    Optional<ReactionList> findByUserAndMovieList(User user, ListMovie movieList);
 
-    @Query("SELECT COUNT(lmr) FROM LikeList lmr WHERE lmr.movieList = :movieList AND lmr.lickOrDis = true")
+    @Query("SELECT COUNT(lmr) FROM ReactionList lmr WHERE lmr.movieList = :movieList AND lmr.reaction = true")
     int countByMovieReviewAndLickOrDisIsTrue(@Param("movieList") ListMovie movieList);
 
-    @Query("SELECT COUNT(lmr) FROM LikeList lmr WHERE lmr.movieList = :movieList AND lmr.lickOrDis = false")
+    @Query("SELECT COUNT(lmr) FROM ReactionList lmr WHERE lmr.movieList = :movieList AND lmr.reaction = false")
     int countByMovieReviewAndLickOrDisIsFalse(@Param("movieList") ListMovie movieList);
 
     void deleteAllByMovieList(ListMovie movieList);

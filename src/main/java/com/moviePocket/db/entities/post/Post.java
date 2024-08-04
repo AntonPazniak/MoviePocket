@@ -16,6 +16,7 @@ import com.moviePocket.db.entities.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
@@ -41,7 +42,7 @@ public class Post extends BaseEntity {
     private int idModule;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ReactionPost> reactions;
+    private List<ReactionPost> reactions = new ArrayList<>();
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReviewPost> reviews;

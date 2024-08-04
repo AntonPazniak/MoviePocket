@@ -10,7 +10,7 @@
 package com.moviePocket.service.impl.list;
 
 import com.moviePocket.controller.dto.review.ReactionDTO;
-import com.moviePocket.db.entities.list.LikeList;
+import com.moviePocket.db.entities.list.ReactionList;
 import com.moviePocket.db.repository.list.LikeListRepository;
 import com.moviePocket.db.repository.list.MovieListRepository;
 import com.moviePocket.exception.NotFoundException;
@@ -38,12 +38,12 @@ public class ListReactionServiceImpl implements ListReactionService {
 
         if (existingLike.isPresent()) {
             var likeList = existingLike.get();
-            if (likeList.isLickOrDis() != reaction) {
-                likeList.setLickOrDis(reaction);
+            if (likeList.isReaction() != reaction) {
+                likeList.setReaction(reaction);
                 likeListRepository.save(likeList);
             }
         } else {
-            likeListRepository.save(new LikeList(movieList, user, reaction));
+            likeListRepository.save(new ReactionList(movieList, user, reaction));
         }
     }
 
@@ -66,7 +66,7 @@ public class ListReactionServiceImpl implements ListReactionService {
         if (existingLike.isEmpty()) {
             return null;
         }
-        return existingLike.get().isLickOrDis();
+        return existingLike.get().isReaction();
     }
 
     @Override

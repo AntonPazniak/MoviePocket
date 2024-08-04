@@ -10,7 +10,7 @@
 package com.moviePocket.db.repository.review;
 
 import com.moviePocket.db.entities.review.Review;
-import com.moviePocket.db.entities.review.ReviewLike;
+import com.moviePocket.db.entities.review.ReviewReaction;
 import com.moviePocket.db.entities.user.User;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -21,16 +21,16 @@ import java.util.Optional;
 
 @Transactional
 @Repository
-public interface LikeReviewRepository extends JpaRepository<ReviewLike, Long> {
+public interface LikeReviewRepository extends JpaRepository<ReviewReaction, Long> {
 
-    Optional<ReviewLike> findByUserAndReview(User user, Review review);
+    Optional<ReviewReaction> findByUserAndReview(User user, Review review);
 
     void deleteAllByReview(Review review);
 
-    @Query("SELECT COUNT(lmr) FROM ReviewLike lmr WHERE lmr.review = :movieReview AND lmr.reaction = true")
+    @Query("SELECT COUNT(lmr) FROM ReviewReaction lmr WHERE lmr.review = :movieReview AND lmr.reaction = true")
     int countByMovieReviewAndLickOrDisIsTrue(Review movieReview);
 
-    @Query("SELECT COUNT(lmr) FROM ReviewLike lmr WHERE lmr.review = :movieReview AND lmr.reaction = false")
+    @Query("SELECT COUNT(lmr) FROM ReviewReaction lmr WHERE lmr.review = :movieReview AND lmr.reaction = false")
     int countByMovieReviewAndLickOrDisIsFalse(Review movieReview);
 
 

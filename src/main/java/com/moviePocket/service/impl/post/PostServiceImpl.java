@@ -56,6 +56,7 @@ public class PostServiceImpl implements PostService {
                 .user(user)
                 .module(module)
                 .idItem(idItem)
+                .reactions(List.of())
                 .build();
         postRepository.save(post);
         return post;

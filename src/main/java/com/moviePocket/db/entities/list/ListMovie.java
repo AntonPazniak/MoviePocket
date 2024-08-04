@@ -55,4 +55,7 @@ public class ListMovie extends BaseEntity {
     @OneToMany(mappedBy = "movieList", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReviewList> reviews;
 
+    @OneToMany(mappedBy = "movieList", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ReactionList> reactions;
+
 }

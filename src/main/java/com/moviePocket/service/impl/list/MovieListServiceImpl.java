@@ -11,12 +11,13 @@ package com.moviePocket.service.impl.list;
 
 import com.moviePocket.controller.dto.UserPostDto;
 import com.moviePocket.controller.dto.list.ListDTO;
+import com.moviePocket.controller.dto.review.ReactionDTO;
 import com.moviePocket.controller.dto.review.ReviewDTO;
 import com.moviePocket.db.entities.list.ListGenres;
 import com.moviePocket.db.entities.list.ListMovie;
+import com.moviePocket.db.entities.list.ReactionList;
 import com.moviePocket.db.entities.movie.Movie;
 import com.moviePocket.db.entities.user.User;
-import com.moviePocket.db.repository.list.ListGenreRepository;
 import com.moviePocket.db.repository.list.MovieListRepository;
 import com.moviePocket.exception.BadRequestException;
 import com.moviePocket.exception.ForbiddenException;
@@ -35,9 +36,8 @@ public class MovieListServiceImpl implements MovieListService {
 
 
     private final MovieListRepository listRepository;
-    private final ListReactionServiceImpl reactionService;
-    private final ListGenreRepository listGenreRepository;
     private final MovieServiceImpl movieService;
+
     private final AuthUser auth;
 
     @Override
@@ -65,6 +65,7 @@ public class MovieListServiceImpl implements MovieListService {
                 .title(title)
                 .content(content)
                 .user(user)
+                .reviews(List.of())
                 .build();
         listRepository.save(list);
         return parsShortListToDTO(list);
@@ -177,7 +178,10 @@ public class MovieListServiceImpl implements MovieListService {
                 .title(list.getTitle())
                 .content(list.getContent())
                 .poster(list.getPoster() != null ? list.getPoster().getId() : null)
-                .reaction(reactionService.getAllReactionReview(list.getId()))
+                .reaction(ReactionDTO.builder()
+                        .likes((int) list.getReactions().stream().filter(ReactionList::isReaction).count())
+                        .dislikes((int) list.getReactions().stream().filter(reaction -> !reaction.isReaction()).count())
+                        .build())
                 .user(UserPostDto.builder()
                         .username(list.getUser().getLogin())
                         .avatar(list.getUser().getAvatar() != null ? list.getUser().getAvatar().getId() : null)

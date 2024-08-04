@@ -54,7 +54,7 @@ public class MovieListController {
             @ApiResponse(responseCode = "403", description = "Forbidden - user is not authenticated"),
             @ApiResponse(responseCode = "404", description = "Movie list not found")
     })
-    @PostMapping("/up")
+    @PatchMapping("/up")
     public ResponseEntity<ListDTO> setUpdateMovieListTitle(@RequestParam("idMovieList") Long idMovieList,
                                                         @RequestParam("title") String title,
                                                         @RequestBody String content) {
@@ -68,7 +68,7 @@ public class MovieListController {
             @ApiResponse(responseCode = "403", description = "Forbidden - user is not authenticated"),
             @ApiResponse(responseCode = "404", description = "Movie list not found")
     })
-    @PostMapping("/del")
+    @DeleteMapping("/del")
     public ResponseEntity<Object> delMovieList(@RequestParam("idMovieList") Long idMovieList) {
         movieListService.deleteList(idMovieList);
         return ResponseEntity.ok().build();

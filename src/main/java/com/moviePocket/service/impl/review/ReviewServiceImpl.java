@@ -16,12 +16,12 @@ import com.moviePocket.db.entities.Module;
 import com.moviePocket.db.entities.list.ListMovie;
 import com.moviePocket.db.entities.movie.Movie;
 import com.moviePocket.db.entities.post.Post;
-import com.moviePocket.db.entities.review.Review;
-import com.moviePocket.db.entities.review.ReviewList;
-import com.moviePocket.db.entities.review.ReviewMovie;
-import com.moviePocket.db.entities.review.ReviewPost;
+import com.moviePocket.db.entities.review.*;
 import com.moviePocket.db.entities.user.User;
-import com.moviePocket.db.repository.review.*;
+import com.moviePocket.db.repository.review.ReviewListRepository;
+import com.moviePocket.db.repository.review.ReviewMovieRepository;
+import com.moviePocket.db.repository.review.ReviewPostRepository;
+import com.moviePocket.db.repository.review.ReviewRepository;
 import com.moviePocket.exception.ForbiddenException;
 import com.moviePocket.exception.NotFoundException;
 import com.moviePocket.service.impl.auth.AuthUser;
@@ -44,7 +44,6 @@ public class ReviewServiceImpl implements ReviewService {
     private final ReviewRepository reviewRepository;
     private final MovieServiceImpl movieService;
     private final AuthUser auth;
-    private final LikeReviewRepository likeReviewRepository;
     private final ReviewMovieRepository reviewMovieRepository;
     private final MovieListServiceImpl listService;
     private final ReviewListRepository reviewListRepository;
@@ -60,6 +59,7 @@ public class ReviewServiceImpl implements ReviewService {
                 .content(content)
                 .module(module)
                 .idItem(idItem)
+                .reactions(List.of())
                 .build());
     }
 
@@ -126,14 +126,13 @@ public class ReviewServiceImpl implements ReviewService {
         if (!review.getUser().equals(user))
             throw new ForbiddenException("You cannot delete a review if it is not yours.");
 
-        if (review.getModule() == ModulesConstant.movie) {
+        if (review.getModule().getId().equals(ModulesConstant.movie.getId())) {
             reviewMovieRepository.delete(reviewMovieRepository.findByReview(review));
-        } else if (review.getModule() == ModulesConstant.list) {
+        } else if (review.getModule().getId().equals(ModulesConstant.list.getId())) {
             reviewListRepository.delete(reviewListRepository.findByReview(review));
-        } else if (review.getModule() == ModulesConstant.post) {
+        } else if (review.getModule().getId().equals(ModulesConstant.post.getId())) {
             reviewPostRepository.delete(reviewPostRepository.findByReview(review));
         }
-        likeReviewRepository.deleteAllByReview(review);
         reviewRepository.delete(review);
     }
 
@@ -210,8 +209,8 @@ public class ReviewServiceImpl implements ReviewService {
                 .dataUpdated(review.getUpdated())
                 .id(review.getId())
                 .reactions(ReactionDTO.builder()
-                        .likes(likeReviewRepository.countByMovieReviewAndLickOrDisIsTrue(review))
-                        .dislikes(likeReviewRepository.countByMovieReviewAndLickOrDisIsFalse(review))
+                        .likes((int) review.getReactions().stream().filter(ReviewReaction::isReaction).count())
+                        .dislikes((int) review.getReactions().stream().filter(reaction -> !reaction.isReaction()).count())
                         .build())
                 .build();
     }

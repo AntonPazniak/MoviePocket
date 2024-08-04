@@ -41,8 +41,8 @@ public interface MovieListRepository extends JpaRepository<ListMovie, Long> {
     List<ListMovie> findTop10LatestLists();
 
     @Query("SELECT ll.movieList, COUNT(ll) as likeCount " +
-            "FROM LikeList ll " +
-            "WHERE ll.lickOrDis = true " +
+            "FROM ReactionList ll " +
+            "WHERE ll.reaction = true " +
             "GROUP BY ll.movieList " +
             "HAVING COUNT(ll) > 0 " +
             "ORDER BY likeCount DESC")

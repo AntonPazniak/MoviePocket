@@ -12,7 +12,6 @@ package com.moviePocket.service.inter.user;
 import com.moviePocket.controller.dto.UserPostDto;
 import com.moviePocket.db.entities.user.User;
 import jakarta.mail.MessagingException;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,34 +25,34 @@ public interface UserService extends UserDetailsService {
 
     User chekUserAuntByEmail(String email);
 
-    ResponseEntity<Void> activateUser(String code);
+    void activateUser(String code);
 
-    void setNewPassword(String username, String oldPassword, String newPassword);
+    void setNewPassword(String oldPassword, String newPassword);
 
-    void deleteUser(String email, String pas);
+    void deleteUser(String pas);
 
-    ResponseEntity<Void> setTokenEmail(String oldEmail, String newEmail) throws MessagingException;
+    void setTokenEmail(String oldEmail, String newEmail) throws MessagingException;
 
-    ResponseEntity<Void> activateNewEmail(String token);
+    void activateNewEmail(String token);
 
     void setNewUsername(String username);
 
     void setNewBio(String bio);
 
-    ResponseEntity<Void> setNewAvatar(String email, MultipartFile file);
+    void setNewAvatar(MultipartFile file);
 
-    ResponseEntity<Void> deleteAvatar(String email, Long imageId);
+    void deleteAvatar();
 
     User findUserByUsername(String username);
 
-    ResponseEntity<Boolean> existsByUsername(String username);
+    boolean existsByUsername(String username);
 
-    ResponseEntity<Boolean> existsByEmail(String email);
+    boolean existsByEmail(String email);
 
-    ResponseEntity<Void> createPasswordToken(String email) throws MessagingException;
+    void createPasswordToken(String email);
 
-    ResponseEntity<Void> resetPassword(String token, String password);
+    void resetPassword(String token, String password);
 
-    ResponseEntity<List<UserPostDto>> findByPartialUsername(String username);
+    List<UserPostDto> findByPartialUsername(String username);
 
 }

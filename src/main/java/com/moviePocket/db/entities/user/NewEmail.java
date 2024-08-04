@@ -11,11 +11,11 @@ package com.moviePocket.db.entities.user;
 
 import com.moviePocket.db.entities.BaseEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity

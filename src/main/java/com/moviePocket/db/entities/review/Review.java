@@ -37,7 +37,7 @@ public class Review extends BaseEntity {
     private String content;
 
     @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ReviewLike> reaction;
+    private List<ReviewReaction> reactions;
 
     @ManyToOne
     @JoinColumn(name = "module_id")

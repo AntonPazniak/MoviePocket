@@ -11,7 +11,7 @@ package com.moviePocket.service.impl.review;
 
 
 import com.moviePocket.controller.dto.review.ReactionDTO;
-import com.moviePocket.db.entities.review.ReviewLike;
+import com.moviePocket.db.entities.review.ReviewReaction;
 import com.moviePocket.db.repository.review.LikeReviewRepository;
 import com.moviePocket.exception.NotFoundException;
 import com.moviePocket.service.impl.auth.AuthUser;
@@ -43,7 +43,7 @@ public class LikeReviewServiceImpl implements LikeReviewService {
                 likeReviewRepository.save(like);
             }
         } else {
-            likeReviewRepository.save(ReviewLike.builder()
+            likeReviewRepository.save(ReviewReaction.builder()
                     .reaction(reaction)
                     .review(review)
                     .user(user)
