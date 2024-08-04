@@ -9,7 +9,7 @@
 
 package com.moviePocket.controller.post;
 
-import com.moviePocket.db.entities.post.PostDTO;
+import com.moviePocket.controller.dto.post.PostDTO;
 import com.moviePocket.service.inter.post.LikePostService;
 import com.moviePocket.service.inter.post.PostService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,8 +18,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -42,24 +40,21 @@ public class PostController {
     public ResponseEntity<PostDTO> setNewPostList(@RequestParam("title") String title,
                                                   @RequestParam("idList") Long idList,
                                                   @RequestBody String content) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return postService.createPostList(authentication.getName(), title, content, idList);
+        return ResponseEntity.ok(postService.createPostList(title, content, idList));
     }
 
     @PostMapping("/movie/set")
     public ResponseEntity<PostDTO> setNewPostMovie(@RequestParam("title") String title,
                                                    @RequestBody String content,
                                                    @RequestParam("idMovie") Long idMovie) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return postService.createPostMovie(authentication.getName(), title, content, idMovie);
+        return ResponseEntity.ok(postService.createPostMovie(title, content, idMovie));
     }
 
     @PostMapping("/person/set")
     public ResponseEntity<PostDTO> setNewPostPerson(@RequestParam("title") String title,
                                                     @RequestBody String content,
                                                     @RequestParam("idPerson") Long idPerson) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return postService.createPostPerson(authentication.getName(), title, content, idPerson);
+        return ResponseEntity.ok(postService.createPostPerson(title, content, idPerson));
     }
 
     @Operation(summary = "Update post title", description = "Return Http response Ok")
@@ -73,8 +68,8 @@ public class PostController {
     public ResponseEntity<Void> setUpdatePostTitle(@RequestParam("idPost") Long idPost,
                                                    @RequestParam("title") String title,
                                                    @RequestBody String content) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return postService.updatePost(authentication.getName(), idPost, title, content);
+        postService.updatePost(idPost, title, content);
+        return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "Delete post and all that it had (movie lists in it and likes from other 2 tables)", description = "Return Http response Ok")
@@ -86,8 +81,8 @@ public class PostController {
     })
     @PostMapping("/del")
     public ResponseEntity<Void> delPost(@RequestParam("idPost") Long idPost) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return postService.deletePost(authentication.getName(), idPost);
+        postService.deletePost(idPost);
+        return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "Get post", description = "Returns a post for the given post ID")
@@ -98,28 +93,27 @@ public class PostController {
     })
     @GetMapping("/get")
     public ResponseEntity<PostDTO> getPost(@RequestParam("idPost") Long idPost) {
-        return postService.getPost(idPost);
+        return ResponseEntity.ok(postService.getPost(idPost));
     }
 
     @GetMapping("/movie")
     public ResponseEntity<List<PostDTO>> getAllPostsByIdMovie(@RequestParam("idMovie") Long idMovie) {
-        return postService.getAllByIdMovie(idMovie);
+        return ResponseEntity.ok(postService.getAllByIdMovie(idMovie));
     }
 
     @GetMapping("/list")
     public ResponseEntity<List<PostDTO>> getAllPostsByIdList(@RequestParam("idList") Long idList) {
-        return postService.getAllByIdList(idList);
+        return ResponseEntity.ok(postService.getAllByIdList(idList));
     }
 
     @GetMapping("/person")
     public ResponseEntity<List<PostDTO>> getAllPostsByIdPerson(@RequestParam("idPerson") Long idPerson) {
-        return postService.getAllByIdPerson(idPerson);
+        return ResponseEntity.ok(postService.getAllByIdPerson(idPerson));
     }
 
     @GetMapping("/user")
     public ResponseEntity<List<PostDTO>> getAllMyPosts() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return postService.getAllByUser(authentication.getName());
+        return ResponseEntity.ok(postService.getAllByUser());
     }
 
     @Operation(summary = "Get post by title", description = "Returns a post that matches the title")
@@ -127,8 +121,8 @@ public class PostController {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved post"),
     })
     @GetMapping("/get/title")
-    public ResponseEntity<?> getPostByPartialTitle(@RequestParam("title") String title) {
-        return postService.getAllByPartialTitle(title);
+    public ResponseEntity<List<PostDTO>> getPostByPartialTitle(@RequestParam("title") String title) {
+        return ResponseEntity.ok(postService.getAllByPartialTitle(title));
     }
 
     @Operation(summary = "Like or dislike post", description = "Likes or dislikes the specified post")
@@ -140,8 +134,8 @@ public class PostController {
     })
     @PostMapping("/setLike")
     public ResponseEntity<Void> setLikeOrDesPost(@RequestParam("idPost") Long idPost, @RequestParam("like") Boolean like) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return likePostService.setLikeOrDisOrDel(authentication.getName(), idPost, like);
+        likePostService.setLikeOrDis(idPost, like);
+        return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "Get boolean true/false if you are post author", description = "Returns boolean true if you are")
@@ -151,8 +145,7 @@ public class PostController {
     })
     @GetMapping("/authorship")
     public ResponseEntity<Boolean> getAuthorshipByIdPost(@RequestParam("idPost") Long idPost) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return postService.authorshipCheck(idPost, authentication.getName());
+        return ResponseEntity.ok(postService.authorshipCheck(idPost));
     }
 
     @Operation(summary = "Get all posts of user", description = "Returns a list of all posts for the specified username")
@@ -162,7 +155,7 @@ public class PostController {
     })
     @GetMapping("/someUser")
     public ResponseEntity<List<PostDTO>> getAllByUsername(@RequestParam("username") String username) {
-        return postService.getAllByUsernamePosts(username);
+        return ResponseEntity.ok(postService.getAllByUsernamePosts(username));
     }
 
     @Operation(summary = "Get num of likes by post", description = "Returns list of Integers")
@@ -172,17 +165,16 @@ public class PostController {
     })
     @GetMapping("/like")
     public ResponseEntity<Boolean> getAllLikePostsByIdMovie(@RequestParam("idPost") Long idPost) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return likePostService.getLikeOrDis(authentication.getName(), idPost);
+        return ResponseEntity.ok(likePostService.getReaction(idPost));
     }
 
     @GetMapping("/get/last")
     public ResponseEntity<List<PostDTO>> getLast() {
-        return postService.getTop10LatestPosts();
+        return ResponseEntity.ok(postService.getTop10LatestPosts());
     }
 
     @GetMapping("/get/top")
     public ResponseEntity<List<PostDTO>> getTop() {
-        return postService.getTop10LikedPosts();
+        return ResponseEntity.ok(postService.getTop10LikedPosts());
     }
 }

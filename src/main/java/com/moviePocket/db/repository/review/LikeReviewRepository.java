@@ -27,10 +27,10 @@ public interface LikeReviewRepository extends JpaRepository<ReviewLike, Long> {
 
     void deleteAllByReview(Review review);
 
-    @Query("SELECT COUNT(lmr) FROM ReviewLike lmr WHERE lmr.review = :movieReview AND lmr.lickOrDis = true")
+    @Query("SELECT COUNT(lmr) FROM ReviewLike lmr WHERE lmr.review = :movieReview AND lmr.reaction = true")
     int countByMovieReviewAndLickOrDisIsTrue(Review movieReview);
 
-    @Query("SELECT COUNT(lmr) FROM ReviewLike lmr WHERE lmr.review = :movieReview AND lmr.lickOrDis = false")
+    @Query("SELECT COUNT(lmr) FROM ReviewLike lmr WHERE lmr.review = :movieReview AND lmr.reaction = false")
     int countByMovieReviewAndLickOrDisIsFalse(Review movieReview);
 
 

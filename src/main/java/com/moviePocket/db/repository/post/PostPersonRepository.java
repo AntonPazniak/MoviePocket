@@ -16,12 +16,15 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @Transactional
 public interface PostPersonRepository extends JpaRepository<PostPerson, Long> {
 
-    PostPerson findByPost(Post post);
+    Optional<PostPerson> findById(long id);
+
+    Optional<PostPerson> findByPost(Post post);
 
     List<PostPerson> findAllByIdPerson(Long idPerson);
 

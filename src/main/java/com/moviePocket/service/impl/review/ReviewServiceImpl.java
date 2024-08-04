@@ -52,16 +52,21 @@ public class ReviewServiceImpl implements ReviewService {
 
     private Review createReview(String title, String content) {
         User user = auth.getAuthenticatedUser();
-        Review review = new Review(user, title, content);
-        reviewRepository.save(review);
-        return review;
+        return reviewRepository.save(Review.builder()
+                .user(user)
+                .title(title)
+                .content(content)
+                .build());
     }
 
     @Override
     public void createReviewMovie(Long idMovie, String title, String content) {
         Movie movie = movieService.setMovieIfNotExist(idMovie);
         Review review = createReview(title, content);
-        ReviewMovie reviewMovie = new ReviewMovie(movie, review);
+        ReviewMovie reviewMovie = ReviewMovie.builder()
+                .movie(movie)
+                .review(review)
+                .build();
         reviewMovieRepository.save(reviewMovie);
     }
 
@@ -69,15 +74,21 @@ public class ReviewServiceImpl implements ReviewService {
     public void createReviewList(Long idList, String title, String content) {
         ListMovie movieList = listService.getListByIdOrThrow(idList);
         Review review = createReview(title, content);
-        ReviewList reviewList = new ReviewList(movieList, review);
+        ReviewList reviewList = ReviewList.builder()
+                .movieList(movieList)
+                .review(review)
+                .build();
         reviewListRepository.save(reviewList);
     }
 
     @Override
     public void createReviewPost(Long idPost, String title, String content) {
-        var post = postService.getPostById(idPost);
+        var post = postService.getPostByIdOrThrow(idPost);
         Review review = createReview(title, content);
-        ReviewPost reviewPost = new ReviewPost(post, review);
+        ReviewPost reviewPost = ReviewPost.builder()
+                .post(post)
+                .review(review)
+                .build();
         reviewPostRepository.save(reviewPost);
     }
 
@@ -132,7 +143,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public List<ReviewDTO> getAllReviewByIdPost(Long idPost) {
-        Post post = postService.getPostById(idPost);
+        Post post = postService.getPostByIdOrThrow(idPost);
         var reviews = reviewPostRepository.findReviewsByPost(post);
         return reviews.stream().map(this::parsReview).toList();
     }

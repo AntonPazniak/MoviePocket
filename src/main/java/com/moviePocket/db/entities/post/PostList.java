@@ -12,6 +12,7 @@ package com.moviePocket.db.entities.post;
 import com.moviePocket.db.entities.list.ListMovie;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -19,6 +20,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "post_list", uniqueConstraints = @UniqueConstraint(columnNames = {"idPost", "idList"}))
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class PostList {
@@ -35,9 +37,5 @@ public class PostList {
     @JoinColumn(name = "idPost", nullable = false)
     private Post post;
 
-    public PostList(ListMovie movieList, Post post) {
-        this.movieList = movieList;
-        this.post = post;
-    }
 
 }

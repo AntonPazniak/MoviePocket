@@ -12,19 +12,17 @@ package com.moviePocket.db.entities.post;
 import com.moviePocket.db.entities.BaseEntity;
 import com.moviePocket.db.entities.user.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 
 @EqualsAndHashCode(callSuper = true)
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "like_post", uniqueConstraints = @UniqueConstraint(columnNames = {"idUser", "idPost"}))
-public class LikePost extends BaseEntity {
+public class ReactionPost extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "idPost")
@@ -34,5 +32,5 @@ public class LikePost extends BaseEntity {
     @JoinColumn(name = "idUser")
     private User user;
 
-    private boolean lickOrDis;
+    private boolean reaction;
 }

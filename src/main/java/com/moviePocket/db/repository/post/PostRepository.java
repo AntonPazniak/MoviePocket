@@ -18,13 +18,19 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Transactional
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
-    Post getById(Long id);
+
+    Optional<Post> findByTitle(String title);
+
+    Optional<Post> findById(long id);
 
     List<Post> findAllByUser(User user);
+
+    List<Post> findAllByUser_Username(String username);
 
     @Query("Select m from Post m where m.title like :title%")
     List<Post> findAllByTitle(String title);
@@ -33,8 +39,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     List<Post> findTop10LatestPosts();
 
     @Query("SELECT ll.post, COUNT(ll) as likeCount " +
-            "FROM LikePost ll " +
-            "WHERE ll.lickOrDis = true " +
+            "FROM ReactionPost ll " +
+            "WHERE ll.reaction = true " +
             "GROUP BY ll.post " +
             "HAVING COUNT(ll) > 0 " +
             "ORDER BY likeCount DESC")

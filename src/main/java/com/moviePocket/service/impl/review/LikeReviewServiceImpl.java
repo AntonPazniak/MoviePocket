@@ -38,13 +38,13 @@ public class LikeReviewServiceImpl implements LikeReviewService {
 
         if (existingLike.isPresent()) {
             var like = existingLike.get();
-            if (like.isLickOrDis() != reaction) {
-                like.setLickOrDis(reaction);
+            if (like.isReaction() != reaction) {
+                like.setReaction(reaction);
                 likeReviewRepository.save(like);
             }
         } else {
             likeReviewRepository.save(ReviewLike.builder()
-                    .lickOrDis(reaction)
+                    .reaction(reaction)
                     .review(review)
                     .user(user)
                     .build());
@@ -68,7 +68,7 @@ public class LikeReviewServiceImpl implements LikeReviewService {
         if (existingLike.isEmpty()) {
             return null;
         }
-        return existingLike.get().isLickOrDis();
+        return existingLike.get().isReaction();
     }
 
 

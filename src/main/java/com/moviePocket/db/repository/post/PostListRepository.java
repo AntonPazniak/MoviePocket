@@ -16,12 +16,13 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @Transactional
 public interface PostListRepository extends JpaRepository<PostList, Long> {
 
-    PostList findByPost(Post post);
+    Optional<PostList> findByPost(Post post);
 
     List<PostList> findAllByMovieList_Id(Long id);
 }

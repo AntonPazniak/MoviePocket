@@ -9,49 +9,47 @@
 
 package com.moviePocket.service.inter.post;
 
-import com.moviePocket.db.entities.post.PostDTO;
-import org.springframework.http.ResponseEntity;
+import com.moviePocket.controller.dto.post.PostDTO;
 
 import java.util.List;
 
 public interface PostService {
-    ResponseEntity<PostDTO> createPostList(String email, String title, String content, Long idList);
 
-    ResponseEntity<PostDTO> createPostMovie(String email, String title, String content, Long idMovie);
+    PostDTO createPostList(String title, String content, Long idList);
 
-    ResponseEntity<PostDTO> createPostPerson(String email, String title, String content, Long idPerson);
+    PostDTO createPostMovie(String title, String content, Long idMovie);
 
-    ResponseEntity<Void> updatePost(String email, Long idPost, String title, String content);
+    PostDTO createPostPerson(String title, String content, Long idPerson);
 
-    ResponseEntity<Void> deletePost(String email, Long idPost);
+    PostDTO updatePost(Long idPost, String title, String content);
 
-    ResponseEntity<List<PostDTO>> getAllByIdMovie(Long idMovie);
+    void deletePost(Long idPost);
 
-    ResponseEntity<List<PostDTO>> getAllByIdPerson(Long idPerson);
+    List<PostDTO> getAllByIdMovie(Long idMovie);
 
-    ResponseEntity<List<PostDTO>> getAllByUser(String email);
+    List<PostDTO> getAllByIdPerson(Long idPerson);
 
-    ResponseEntity<List<PostDTO>> getAllByIdList(Long idList);
+    List<PostDTO> getAllByUser();
 
-    ResponseEntity<List<PostDTO>> getAllByTitle(String title);
+    List<PostDTO> getAllByIdList(Long idList);
 
-    ResponseEntity<PostDTO> getPost(Long idPost);
+    List<PostDTO> findAllByTitle(String title);
 
-    ResponseEntity<List<PostDTO>> getAllMyPosts(String email);
+    PostDTO getPost(Long idPost);
 
-    ResponseEntity<List<PostDTO>> getAllByUsernamePosts(String username);
+    List<PostDTO> getAllByUsernamePosts(String username);
 
-    ResponseEntity<List<PostDTO>> getNewestPosts();
+    List<PostDTO> getNewestPosts();
 
-    ResponseEntity<List<PostDTO>> getOldestPosts();
+    List<PostDTO> getOldestPosts();
 
-    ResponseEntity<Boolean> authorshipCheck(Long idPost, String username);
+    boolean authorshipCheck(Long idPost);
 
-    ResponseEntity<List<PostDTO>> getTop10LatestPosts();
+    List<PostDTO> getTop10LatestPosts();
 
-    ResponseEntity<List<PostDTO>> getTop10LikedPosts();
+    List<PostDTO> getTop10LikedPosts();
 
-    ResponseEntity<List<PostDTO>> getAllByPartialTitle(String title);
+    List<PostDTO> getAllByPartialTitle(String title);
 
 
 }

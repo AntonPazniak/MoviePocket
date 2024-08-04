@@ -9,20 +9,16 @@
 
 package com.moviePocket.service.inter.post;
 
-import com.moviePocket.db.entities.post.PostDTO;
-import org.springframework.http.ResponseEntity;
-
-import java.util.List;
+import com.moviePocket.controller.dto.review.ReactionDTO;
 
 public interface LikePostService {
-    ResponseEntity<Void> setLikeOrDisOrDel(String username, Long id, boolean likeOrDis);
 
-    ResponseEntity<Boolean> getLikeOrDis(String username, Long id);
 
-    ResponseEntity<Integer[]> getAllLikeAndDisByIdPost(Long idPost);
+    void setLikeOrDis(Long id, boolean likeOrDis);
 
-    ResponseEntity<List<PostDTO>> getMostLikedPosts();
+    Boolean getReaction(Long id);
 
-    ResponseEntity<List<PostDTO>> getLeastLikedPosts();
+    ReactionDTO getAllLikeAndDisByIdPost(Long idPost);
 
+    void deleteReaction(Long idPost);
 }

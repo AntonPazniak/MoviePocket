@@ -14,6 +14,7 @@ import com.moviePocket.db.entities.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Entity
@@ -25,7 +26,7 @@ import lombok.*;
 public class Review extends BaseEntity {
 
     @ManyToOne
-    @JoinColumn(name = "idUser", referencedColumnName = "id")
+    @JoinColumn(name = "idUser", referencedColumnName = "id", nullable = false)
     private User user;
 
     @Column(nullable = false)
@@ -33,5 +34,8 @@ public class Review extends BaseEntity {
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String content;
+
+    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ReviewLike> reaction;
 
 }

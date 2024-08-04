@@ -7,9 +7,10 @@
  * *****************************************************
  */
 
-package com.moviePocket.db.entities.post;
+package com.moviePocket.controller.dto.post;
 
 import com.moviePocket.controller.dto.UserPostDto;
+import com.moviePocket.controller.dto.review.ReactionDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,22 +26,10 @@ public class PostDTO {
     private Long id;
     private String title;
     private String content;
-    private int[] likeOrDis;
+    private ReactionDTO reaction;
     private UserPostDto user;
     private LocalDateTime create;
     private LocalDateTime update;
-    private Long idMovie;
-    private Long idPerson;
-    private Long idList;
-
-
-    public PostDTO(Long id, String title, String content, int[] likeOrDis, UserPostDto user, LocalDateTime create, LocalDateTime update) {
-        this.id = id;
-        this.title = title;
-        this.content = content;
-        this.likeOrDis = likeOrDis;
-        this.user = user;
-        this.create = create;
-        this.update = update;
-    }
+    private Long idModule;
+    private Long idItem;
 }

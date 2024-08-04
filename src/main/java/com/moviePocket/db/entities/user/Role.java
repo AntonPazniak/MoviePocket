@@ -10,10 +10,7 @@
 package com.moviePocket.db.entities.user;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,10 +19,11 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Builder
 @Table(name = "roles")
 public class Role {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false, unique = true)
@@ -35,7 +33,4 @@ public class Role {
     @ToString.Exclude
     private List<User> users = new ArrayList<>();
 
-    public Role(String name) {
-        this.name = name;
-    }
 }

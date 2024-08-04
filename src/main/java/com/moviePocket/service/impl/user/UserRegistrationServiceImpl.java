@@ -2,13 +2,11 @@ package com.moviePocket.service.impl.user;
 
 
 import com.moviePocket.controller.dto.auth.RegisterRequest;
-import com.moviePocket.db.entities.user.Role;
 import com.moviePocket.db.entities.user.User;
 import com.moviePocket.db.repository.user.RoleRepository;
 import com.moviePocket.db.repository.user.UserRepository;
 import com.moviePocket.exception.BadRequestException;
 import com.moviePocket.service.inter.user.UserRegistrationService;
-import com.moviePocket.util.TbConstants;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,12 +26,13 @@ public class UserRegistrationServiceImpl implements UserRegistrationService {
     private final RoleRepository roleRepository;
 
     public User registerUser(@NotNull RegisterRequest user) {
+        var role = roleRepository.findById(1L).orElseThrow();
+
         if (userRepository.existsByUsername(user.getUsername())) {
             throw new BadRequestException("This username is already taken");
         } else if (userRepository.existsByEmail(user.getEmail())) {
             throw new BadRequestException("This email is already taken");
         } else {
-            Role role = roleRepository.findByName(TbConstants.Roles.USER);
             var newUser = User.builder()
                     .email(user.getEmail())
                     .password(passwordEncoder.encode(user.getPassword()))

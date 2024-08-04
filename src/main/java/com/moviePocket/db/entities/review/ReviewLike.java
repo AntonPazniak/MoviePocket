@@ -31,5 +31,5 @@ public class ReviewLike extends BaseEntity {
     @JoinColumn(name = "idUser")
     private User user;
 
-    private boolean lickOrDis;
+    private boolean reaction;
 }

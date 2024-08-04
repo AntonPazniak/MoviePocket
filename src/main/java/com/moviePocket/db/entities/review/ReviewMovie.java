@@ -13,12 +13,14 @@ package com.moviePocket.db.entities.review;
 import com.moviePocket.db.entities.movie.Movie;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "review_movie", uniqueConstraints = @UniqueConstraint(columnNames = {"idReview", "idMovie"}))
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReviewMovie {
@@ -35,8 +37,4 @@ public class ReviewMovie {
     @JoinColumn(name = "idReview", nullable = false)
     private Review review;
 
-    public ReviewMovie(Movie movie, Review movieReview) {
-        this.movie = movie;
-        this.review = movieReview;
-    }
 }

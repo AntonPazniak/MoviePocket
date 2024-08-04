@@ -11,6 +11,7 @@ package com.moviePocket.db.entities.post;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -18,6 +19,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "post_person", uniqueConstraints = @UniqueConstraint(columnNames = {"idPost", "idPerson"}))
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class PostPerson {
@@ -33,8 +35,4 @@ public class PostPerson {
     @JoinColumn(name = "idPost", nullable = false)
     private Post post;
 
-    public PostPerson(Long idPerson, Post post) {
-        this.idPerson = idPerson;
-        this.post = post;
-    }
 }
