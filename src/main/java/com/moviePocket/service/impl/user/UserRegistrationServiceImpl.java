@@ -7,6 +7,7 @@ import com.moviePocket.db.repository.user.RoleRepository;
 import com.moviePocket.db.repository.user.UserRepository;
 import com.moviePocket.exception.BadRequestException;
 import com.moviePocket.service.inter.user.UserRegistrationService;
+import com.moviePocket.util.RoleConstants;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,7 +27,7 @@ public class UserRegistrationServiceImpl implements UserRegistrationService {
     private final RoleRepository roleRepository;
 
     public User registerUser(@NotNull RegisterRequest user) {
-        var role = roleRepository.findById(1L).orElseThrow();
+        var role = roleRepository.findById(RoleConstants.ID_USER).orElseThrow();
 
         if (userRepository.existsByUsername(user.getUsername())) {
             throw new BadRequestException("This username is already taken");

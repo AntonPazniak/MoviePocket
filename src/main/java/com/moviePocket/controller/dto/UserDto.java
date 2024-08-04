@@ -45,7 +45,7 @@ public class UserDto {
 
     public static UserDto fromUser(User user) {
         UserDto userDto = new UserDto();
-        userDto.setUsername(user.getUsername());
+        userDto.setUsername(user.getLogin());
         userDto.setEmail(user.getEmail());
         userDto.setBio(user.getBio());
         userDto.setAvatar(user.getAvatar().getId());

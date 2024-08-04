@@ -15,13 +15,13 @@ import java.util.List;
 
 public interface ReviewService {
 
-    void createReviewMovie(Long idMovie, String title, String content);
+    ReviewDTO createReviewMovie(Long idMovie, String title, String content);
 
-    void createReviewList(Long idList, String title, String content);
+    ReviewDTO createReviewList(Long idList, String title, String content);
 
-    void createReviewPost(Long idPost, String title, String content);
+    ReviewDTO createReviewPost(Long idPost, String title, String content);
 
-    void updateReview(Long idReview, String title, String content);
+    ReviewDTO updateReview(Long idReview, String title, String content);
 
     void deleteReview(Long idReview);
 

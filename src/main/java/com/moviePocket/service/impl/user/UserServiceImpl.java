@@ -56,8 +56,6 @@ public class UserServiceImpl implements UserService {
     private final ImageServiceImpl imageService;
     private final AuthUser authUser;
 
-
-
     @Override
     public void cleanSave(User user) {
         userRepository.save(user);
@@ -97,7 +95,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void setNewUsername(String newUsername) {
         var user = authUser.getAuthenticatedUser();
-        if (user.getUsername().equals(newUsername)) {
+        if (user.getLogin().equals(newUsername)) {
             throw new BadRequestException("The current username is the same as the new one.");
         } else if (userRepository.existsByUsername(newUsername)) {
             throw new ForbiddenException("Username is already taken.");
@@ -171,7 +169,7 @@ public class UserServiceImpl implements UserService {
                 newEmailRepository.save(newEmailOb);
             }
 
-            String username = user.getUsername();
+            String username = user.getLogin();
             String link = "https://moviepocket.projektstudencki.pl/api/user/edit/activateNewEmail/" + newEmailOb.getTokenEmailActivate();
             String massage = "You are just in the middle of setting up your new email address. \n Please confirm your new email address.";
 
@@ -249,13 +247,13 @@ public class UserServiceImpl implements UserService {
         if (users == null)
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         List<UserPostDto> userPostDtos = users.stream()
-                .map(user -> new UserPostDto(user.getUsername(), user.getAvatar() != null ? user.getAvatar().getId() : null))
+                .map(user -> new UserPostDto(user.getLogin(), user.getAvatar() != null ? user.getAvatar().getId() : null))
                 .collect(Collectors.toList());
         return ResponseEntity.ok(userPostDtos);
     }
 
     private void sendEmail(User user, String token) throws MessagingException {
-        String username = user.getUsername();
+        String username = user.getLogin();
         String link = "https://moviepocket.projektstudencki.pl/newPassword?token=" + token;
         String massage = "You are just in the middle of having your new password. \n Please confirm your email address by going by the link.";
         emailSenderService.sendMailWithAttachment(user.getEmail(), buildEmail(username, massage, link), "Password Recovery");

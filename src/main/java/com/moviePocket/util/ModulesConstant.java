@@ -4,7 +4,7 @@ import com.moviePocket.db.entities.Module;
 
 import java.util.List;
 
-public class ModelsConstant {
+public class ModulesConstant {
 
     public static final List<Module> modules;
 

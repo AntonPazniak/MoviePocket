@@ -91,7 +91,7 @@ public class TracingServiceImpl implements TracingService {
 
         trackingList.forEach(
                 tracking -> {
-                    String username = tracking.getUser().getUsername();
+                    String username = tracking.getUser().getLogin();
                     MovieTMDB movie = TMDBApi.getInfoMovie(tracking.getMovie().getId());
                     String link = "https://moviepocket.projektstudencki.pl/film/" + tracking.getMovie().getId();
                     try {

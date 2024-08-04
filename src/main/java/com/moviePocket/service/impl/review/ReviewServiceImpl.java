@@ -12,6 +12,7 @@ package com.moviePocket.service.impl.review;
 import com.moviePocket.controller.dto.UserPostDto;
 import com.moviePocket.controller.dto.review.ReactionDTO;
 import com.moviePocket.controller.dto.review.ReviewDTO;
+import com.moviePocket.db.entities.Module;
 import com.moviePocket.db.entities.list.ListMovie;
 import com.moviePocket.db.entities.movie.Movie;
 import com.moviePocket.db.entities.post.Post;
@@ -28,6 +29,7 @@ import com.moviePocket.service.impl.list.MovieListServiceImpl;
 import com.moviePocket.service.impl.movie.MovieServiceImpl;
 import com.moviePocket.service.impl.post.PostServiceImpl;
 import com.moviePocket.service.inter.raview.ReviewService;
+import com.moviePocket.util.ModulesConstant;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -50,56 +52,67 @@ public class ReviewServiceImpl implements ReviewService {
     private final ReviewPostRepository reviewPostRepository;
 
 
-    private Review createReview(String title, String content) {
+    private Review createReview(String title, String content, Module module, Long idItem) {
         User user = auth.getAuthenticatedUser();
         return reviewRepository.save(Review.builder()
                 .user(user)
                 .title(title)
                 .content(content)
+                .module(module)
+                .idItem(idItem)
                 .build());
     }
 
     @Override
-    public void createReviewMovie(Long idMovie, String title, String content) {
+    public ReviewDTO createReviewMovie(Long idMovie, String title, String content) {
         Movie movie = movieService.setMovieIfNotExist(idMovie);
-        Review review = createReview(title, content);
+        Review review = createReview(title, content, ModulesConstant.movie, idMovie);
         ReviewMovie reviewMovie = ReviewMovie.builder()
                 .movie(movie)
                 .review(review)
                 .build();
-        reviewMovieRepository.save(reviewMovie);
+        return parsReview(
+                reviewMovieRepository.save(reviewMovie)
+                        .getReview()
+        );
     }
 
     @Override
-    public void createReviewList(Long idList, String title, String content) {
+    public ReviewDTO createReviewList(Long idList, String title, String content) {
         ListMovie movieList = listService.getListByIdOrThrow(idList);
-        Review review = createReview(title, content);
+        Review review = createReview(title, content, ModulesConstant.list, idList);
         ReviewList reviewList = ReviewList.builder()
                 .movieList(movieList)
                 .review(review)
                 .build();
-        reviewListRepository.save(reviewList);
+        return parsReview(
+                reviewListRepository.save(reviewList)
+                        .getReview()
+        );
     }
 
     @Override
-    public void createReviewPost(Long idPost, String title, String content) {
+    public ReviewDTO createReviewPost(Long idPost, String title, String content) {
         var post = postService.getPostByIdOrThrow(idPost);
-        Review review = createReview(title, content);
+        Review review = createReview(title, content, ModulesConstant.post, idPost);
         ReviewPost reviewPost = ReviewPost.builder()
                 .post(post)
                 .review(review)
                 .build();
-        reviewPostRepository.save(reviewPost);
+        return parsReview(
+                reviewPostRepository.save(reviewPost)
+                        .getReview()
+        );
     }
 
     @Override
-    public void updateReview(Long idReview, String title, String content) {
+    public ReviewDTO updateReview(Long idReview, String title, String content) {
         User user = auth.getAuthenticatedUser();
         Review movieReview = getReviewByIdOrThrow(idReview);
         if (movieReview.getUser().equals(user)) {
             movieReview.setTitle(title);
             movieReview.setContent(content);
-            reviewRepository.save(movieReview);
+            return parsReview(reviewRepository.save(movieReview));
         } else {
             throw new ForbiddenException("You cannot modify a review if it is not yours.");
         }
@@ -113,16 +126,12 @@ public class ReviewServiceImpl implements ReviewService {
         if (!review.getUser().equals(user))
             throw new ForbiddenException("You cannot delete a review if it is not yours.");
 
-        ReviewMovie reviewMovie = reviewMovieRepository.findByReview(review);
-        ReviewList reviewList = reviewListRepository.findByReview(review);
-        ReviewPost reviewPost = reviewPostRepository.findByReview(review);
-
-        if (reviewMovie != null) {
-            reviewMovieRepository.delete(reviewMovie);
-        } else if (reviewList != null) {
-            reviewListRepository.delete(reviewList);
-        } else if (reviewPost != null) {
-            reviewPostRepository.delete(reviewPost);
+        if (review.getModule() == ModulesConstant.movie) {
+            reviewMovieRepository.delete(reviewMovieRepository.findByReview(review));
+        } else if (review.getModule() == ModulesConstant.list) {
+            reviewListRepository.delete(reviewListRepository.findByReview(review));
+        } else if (review.getModule() == ModulesConstant.post) {
+            reviewPostRepository.delete(reviewPostRepository.findByReview(review));
         }
         likeReviewRepository.deleteAllByReview(review);
         reviewRepository.delete(review);
@@ -194,7 +203,7 @@ public class ReviewServiceImpl implements ReviewService {
                 .content(review.getContent())
                 .user(UserPostDto.builder()
                         .avatar(review.getUser().getAvatar() != null ? review.getUser().getAvatar().getId() : null)
-                        .username(review.getUser().getUsername())
+                        .username(review.getUser().getLogin())
                         .build()
                 )
                 .dataCreated(review.getCreated())

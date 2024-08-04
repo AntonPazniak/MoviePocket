@@ -46,7 +46,7 @@ public class UserEditController {
             if (user.getAvatar() != null)
                 idAvatar = user.getAvatar().getId();
             return ResponseEntity.ok(new UserDto(
-                    user.getUsername(),
+                    user.getLogin(),
                     user.getEmail(),
                     user.getBio(),
                     idAvatar

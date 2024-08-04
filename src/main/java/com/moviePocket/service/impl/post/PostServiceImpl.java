@@ -27,7 +27,7 @@ import com.moviePocket.service.impl.auth.AuthUser;
 import com.moviePocket.service.impl.list.MovieListServiceImpl;
 import com.moviePocket.service.impl.movie.MovieServiceImpl;
 import com.moviePocket.service.inter.post.PostService;
-import com.moviePocket.util.ModelsConstant;
+import com.moviePocket.util.ModulesConstant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -63,7 +63,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostDTO createPostList(String title, String content, Long idList) {
-        Post post = createPost(title, content, ModelsConstant.post, idList);
+        Post post = createPost(title, content, ModulesConstant.post, idList);
         ListMovie list = listService.getListByIdOrThrow(idList);
         var postList = PostList.builder()
                 .post(post)
@@ -75,7 +75,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostDTO createPostMovie(String title, String content, Long idMovie) {
-        Post post = createPost(title, content, ModelsConstant.movie, idMovie);
+        Post post = createPost(title, content, ModulesConstant.movie, idMovie);
         Movie movie = movieService.setMovieIfNotExist(idMovie);
         PostMovie postMovie = PostMovie.builder()
                 .movie(movie)
@@ -87,7 +87,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostDTO createPostPerson(String title, String content, Long idPerson) {
-        Post post = createPost(title, content, ModelsConstant.person, idPerson);
+        Post post = createPost(title, content, ModulesConstant.person, idPerson);
         PostPerson postPerson = PostPerson.builder()
                 .idPerson(idPerson)
                 .post(post)
@@ -175,10 +175,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostDTO getPost(Long idPost) {
-        return parsPostToShortDTO(
-                getPostByIdOrThrow(idPost)
-        );
-
+        return parsPostToShortDTO(getPostByIdOrThrow(idPost));
     }
 
 
@@ -217,7 +214,7 @@ public class PostServiceImpl implements PostService {
                         .build())
                 .user(UserPostDto.builder()
                         .avatar(post.getUser().getAvatar() != null ? post.getUser().getAvatar().getId() : null)
-                        .username(post.getUser().getUsername())
+                        .username(post.getUser().getLogin())
                         .build()
                 )
                 .build();

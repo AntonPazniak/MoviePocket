@@ -45,7 +45,7 @@ public class UserRegistrationDto {
     public static UserRegistrationDto fromUser(User user) {
         UserRegistrationDto userDto = new UserRegistrationDto();
         userDto.setId(user.getId());
-        userDto.setUsername(user.getUsername());
+        userDto.setUsername(user.getLogin());
         userDto.setEmail(user.getEmail());
 
         return userDto;

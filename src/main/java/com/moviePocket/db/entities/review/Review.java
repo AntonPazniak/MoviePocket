@@ -10,6 +10,7 @@
 package com.moviePocket.db.entities.review;
 
 import com.moviePocket.db.entities.BaseEntity;
+import com.moviePocket.db.entities.Module;
 import com.moviePocket.db.entities.user.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -37,5 +38,12 @@ public class Review extends BaseEntity {
 
     @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReviewLike> reaction;
+
+    @ManyToOne
+    @JoinColumn(name = "module_id")
+    private Module module;
+
+    @Column(nullable = false)
+    private Long idItem;
 
 }

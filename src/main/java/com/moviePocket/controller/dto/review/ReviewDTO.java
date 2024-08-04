@@ -42,7 +42,7 @@ public class ReviewDTO {
                 .dataCreated(review.getCreated())
                 .dataUpdated(review.getUpdated())
                 .user(UserPostDto.builder()
-                        .username(review.getUser().getUsername())
+                        .username(review.getUser().getLogin())
                         .avatar(review.getUser().getAvatar() != null ? review.getUser().getAvatar().getId() : null)
                         .build())
                 .build();

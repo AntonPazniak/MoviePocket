@@ -47,9 +47,8 @@ public class Post extends BaseEntity {
     private List<ReviewPost> reviews;
 
     @ManyToOne
-    @JoinColumn(name = "module_id") // specify the actual foreign key column name
+    @JoinColumn(name = "module_id")
     private Module module;
-
 
     @Column(nullable = false)
     private Long idItem;
