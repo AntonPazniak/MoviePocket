@@ -17,13 +17,12 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 @Configuration
 @EnableScheduling
 public class SchedulerConfig {
-
     @Bean
     public ThreadPoolTaskScheduler taskScheduler() {
         ThreadPoolTaskScheduler taskScheduler = new ThreadPoolTaskScheduler();
-        taskScheduler.setPoolSize(10); // Количество потоков в пуле задач
-        taskScheduler.setThreadNamePrefix("scheduled-task-"); // Префикс имен потоков
-        taskScheduler.setRemoveOnCancelPolicy(true); // Удалять задачи из пула, если они были отменены
+        taskScheduler.setPoolSize(10);
+        taskScheduler.setThreadNamePrefix("scheduled-task-");
+        taskScheduler.setRemoveOnCancelPolicy(true);
         return taskScheduler;
     }
 }

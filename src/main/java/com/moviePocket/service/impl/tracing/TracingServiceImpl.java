@@ -9,8 +9,8 @@
 
 package com.moviePocket.service.impl.tracing;
 
-import com.moviePocket.api.TMDBApi;
 import com.moviePocket.api.models.MovieTMDB;
+import com.moviePocket.component.TMDBClient;
 import com.moviePocket.db.entities.movie.Movie;
 import com.moviePocket.db.entities.tracking.Tracking;
 import com.moviePocket.db.entities.user.User;
@@ -38,6 +38,7 @@ public class TracingServiceImpl implements TracingService {
     private final TrackingRepository trackingRepository;
     private final MovieServiceImpl movieService;
     private final EmailSenderService emailSenderService;
+    private final TMDBClient tmdbClient;
     private final AuthUser auth;
 
 
@@ -91,12 +92,19 @@ public class TracingServiceImpl implements TracingService {
 
         trackingList.forEach(
                 tracking -> {
-                    String username = tracking.getUser().getLogin();
-                    MovieTMDB movie = TMDBApi.getInfoMovie(tracking.getMovie().getId());
+                    String username = tracking.getUser().getUsername();
+                    MovieTMDB movie = tmdbClient.getMovieInfo(tracking.getMovie().getId());
                     String link = "https://moviepocket.projektstudencki.pl/film/" + tracking.getMovie().getId();
                     try {
-                        emailSenderService.sendMailWithAttachment(tracking.getUser().getEmail(), buildEmailReleased(username, movie.getTitle(), movie.getOverview(), link)
-                                , "Movie release tomorrow " + movie.getTitle());
+                        emailSenderService.sendMailWithAttachment(
+                                tracking.getUser().getEmail(),
+                                buildEmailReleased(
+                                        username,
+                                        movie.getTitle(),
+                                        movie.getOverview(),
+                                        link
+                                ),
+                                "Movie release tomorrow " + movie.getTitle());
                     } catch (MessagingException e) {
                         throw new RuntimeException(e);
                     }

@@ -15,9 +15,11 @@ import com.moviePocket.db.entities.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -26,7 +28,7 @@ import lombok.NoArgsConstructor;
 public class DislikedMovie extends BaseEntity {
 
     @ManyToOne
-    @JoinColumn(name = "idUser", referencedColumnName = "id")
+    @JoinColumn(name = "idUSer", referencedColumnName = "id")
     private User user;
 
     @ManyToOne
