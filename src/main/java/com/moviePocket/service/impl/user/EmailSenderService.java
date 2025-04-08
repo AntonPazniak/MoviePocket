@@ -11,6 +11,7 @@ package com.moviePocket.service.impl.user;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -25,7 +26,7 @@ public class EmailSenderService {
 
     private final JavaMailSender javaMailSender;
 
-    public void sendMailWithAttachment(String toEmail,
+    public void sendMailWithAttachment(@Email String toEmail,
                                        String body,
                                        String subject) throws MessagingException {
         try {
