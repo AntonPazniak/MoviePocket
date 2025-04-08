@@ -86,12 +86,12 @@ public class User implements UserDetails {
     }
 
     public String getLogin() {
-        return username;
+        return email;
     }
 
     @Override
     public String getUsername() {
-        return email;
+        return username;
     }
 
     @Override
