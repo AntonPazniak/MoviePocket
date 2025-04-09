@@ -77,7 +77,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public PostDTO createPostMovie(String title, String content, Long idMovie) {
         Post post = createPost(title, content, ModulesConstant.movie, idMovie);
-        Movie movie = movieService.setMovieIfNotExist(idMovie);
+        Movie movie = movieService.getOrSetMovieIfNotExistOrThrowNotFoundException(idMovie);
         PostMovie postMovie = PostMovie.builder()
                 .movie(movie)
                 .post(post)

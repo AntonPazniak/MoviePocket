@@ -13,5 +13,5 @@ import com.moviePocket.db.entities.movie.Movie;
 
 public interface MovieService {
 
-    Movie setMovieIfNotExist(Long idMovie);
+    Movie getOrSetMovieIfNotExistOrThrowNotFoundException(Long idMovie);
 }

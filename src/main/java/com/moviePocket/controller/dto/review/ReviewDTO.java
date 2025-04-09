@@ -11,6 +11,7 @@ package com.moviePocket.controller.dto.review;
 
 import com.moviePocket.controller.dto.UserPostDto;
 import com.moviePocket.db.entities.review.Review;
+import com.moviePocket.db.entities.review.ReviewReaction;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -36,17 +37,21 @@ public class ReviewDTO {
 
     public static ReviewDTO parsReview(@NotNull Review review) {
         return ReviewDTO.builder()
-                .id(review.getId())
                 .title(review.getTitle())
                 .content(review.getContent())
+                .user(UserPostDto.builder()
+                        .avatar(review.getUser().getAvatar() != null ? review.getUser().getAvatar().getId() : null)
+                        .username(review.getUser().getUsername())
+                        .build()
+                )
                 .dataCreated(review.getCreated())
                 .dataUpdated(review.getUpdated())
-                .user(UserPostDto.builder()
-                        .username(review.getUser().getLogin())
-                        .avatar(review.getUser().getAvatar() != null ? review.getUser().getAvatar().getId() : null)
+                .id(review.getId())
+                .reactions(ReactionDTO.builder()
+                        .likes((int) review.getReactions().stream().filter(ReviewReaction::isReaction).count())
+                        .dislikes((int) review.getReactions().stream().filter(reaction -> !reaction.isReaction()).count())
                         .build())
                 .build();
     }
-
 
 }

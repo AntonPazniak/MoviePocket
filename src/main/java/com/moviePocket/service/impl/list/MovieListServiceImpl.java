@@ -123,7 +123,7 @@ public class MovieListServiceImpl implements MovieListService {
         if (!list.getUser().equals(user)) {
             throw new ForbiddenException("Yor can't modify this list");
         } else {
-            Movie movie = movieService.setMovieIfNotExist(idMovie);
+            Movie movie = movieService.getOrSetMovieIfNotExistOrThrowNotFoundException(idMovie);
             if (list.getMovies().contains(movie)) {
                 list.getMovies().remove(movie);
             } else {

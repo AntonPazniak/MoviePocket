@@ -40,7 +40,7 @@ public class RatingMovieServiceImpl implements RatingMovieService {
     @Override
     public void setRating(Long idMovie, int rating) {
         var user = auth.getAuthenticatedUser();
-        Movie movie = movieService.setMovieIfNotExist(idMovie);
+        Movie movie = movieService.getOrSetMovieIfNotExistOrThrowNotFoundException(idMovie);
 
         var ratingMovie = ratingMovieRepository.findByUserAndMovie_id(user, idMovie);
         if (ratingMovie.isEmpty()) {

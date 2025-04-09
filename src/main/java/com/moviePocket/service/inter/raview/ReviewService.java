@@ -9,6 +9,7 @@
 
 package com.moviePocket.service.inter.raview;
 
+import com.moviePocket.controller.dto.review.ReactionDTO;
 import com.moviePocket.controller.dto.review.ReviewDTO;
 
 import java.util.List;
@@ -44,5 +45,13 @@ public interface ReviewService {
     Integer getCountReviewByUser();
 
     Boolean getAuthorship(Long idReview);
+
+    void setLikeOrDisLike(Long idReview, boolean reaction);
+
+    void deleteReaction(Long idReview);
+
+    Boolean getReaction(Long id);
+
+    ReactionDTO getAllReactionReview(Long idReview);
 
 }

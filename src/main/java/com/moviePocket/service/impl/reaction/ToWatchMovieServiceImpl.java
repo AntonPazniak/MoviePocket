@@ -43,7 +43,7 @@ public class ToWatchMovieServiceImpl implements ReactionMovie {
         if (optionalToWatchMovie.isPresent()) {
             toWatchMovieRepository.delete(optionalToWatchMovie.get());
         } else {
-            Movie movie = movieService.setMovieIfNotExist(idMovie);
+            Movie movie = movieService.getOrSetMovieIfNotExistOrThrowNotFoundException(idMovie);
             if (movie != null) {
                 ToWatchMovie newToWatchMovie = new ToWatchMovie(user, movie);
                 toWatchMovieRepository.save(newToWatchMovie);

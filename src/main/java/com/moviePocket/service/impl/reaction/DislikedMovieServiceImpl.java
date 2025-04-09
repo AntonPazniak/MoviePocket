@@ -42,7 +42,7 @@ public class DislikedMovieServiceImpl implements ReactionMovie {
         if (optionalDislikedMovie.isPresent()) {
             dislikedMovieRepository.delete(optionalDislikedMovie.get());
         } else {
-            Movie movie = movieService.setMovieIfNotExist(idMovie);
+            Movie movie = movieService.getOrSetMovieIfNotExistOrThrowNotFoundException(idMovie);
             DislikedMovie newDislikedMovie = new DislikedMovie(auth.getAuthenticatedUser(), movie);
             dislikedMovieRepository.save(newDislikedMovie);
         }

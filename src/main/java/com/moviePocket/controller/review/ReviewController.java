@@ -11,7 +11,6 @@ package com.moviePocket.controller.review;
 
 import com.moviePocket.controller.dto.review.ReactionDTO;
 import com.moviePocket.controller.dto.review.ReviewDTO;
-import com.moviePocket.service.inter.raview.LikeReviewService;
 import com.moviePocket.service.inter.raview.ReviewService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -29,7 +28,6 @@ import java.util.List;
 public class ReviewController {
 
     private final ReviewService reviewService;
-    private final LikeReviewService likeMovieReviewService;
 
     @Operation(summary = "Create or update a movie review",
             description = "Sets a review for a movie. The review is created or updated based on the provided ID.",
@@ -183,7 +181,7 @@ public class ReviewController {
     })
     @PostMapping("/like")
     public ResponseEntity<Object> setReaction(@RequestParam("idReview") Long idReview, @RequestParam("like") boolean like) {
-        likeMovieReviewService.setLikeOrDisLike(idReview, like);
+        reviewService.setLikeOrDisLike(idReview, like);
         return ResponseEntity.ok().build();
     }
 
@@ -197,7 +195,7 @@ public class ReviewController {
     })
     @DeleteMapping("/like/del")
     public ResponseEntity<Object> deleteReaction(@RequestParam("idReview") Long idReview) {
-        likeMovieReviewService.deleteReaction(idReview);
+        reviewService.deleteReaction(idReview);
         return ResponseEntity.ok().build();
     }
 
@@ -211,7 +209,7 @@ public class ReviewController {
     })
     @GetMapping("/like")
     public ResponseEntity<Boolean> getReaction(@RequestParam("idReview") Long idReview) {
-        return ResponseEntity.ok(likeMovieReviewService.getReaction(idReview));
+        return ResponseEntity.ok(reviewService.getReaction(idReview));
     }
 
     @Operation(summary = "Get all reactions for a review",
@@ -224,7 +222,7 @@ public class ReviewController {
     })
     @GetMapping("/likes")
     public ResponseEntity<ReactionDTO> getAllLikesByReviewId(@RequestParam("idReview") Long idReview) {
-        return ResponseEntity.ok(likeMovieReviewService.getAllReactionReview(idReview));
+        return ResponseEntity.ok(reviewService.getAllReactionReview(idReview));
     }
 
     @Operation(summary = "Get authorship of a review",

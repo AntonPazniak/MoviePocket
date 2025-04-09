@@ -9,7 +9,6 @@
 
 package com.moviePocket.service.impl.review;
 
-import com.moviePocket.controller.dto.UserPostDto;
 import com.moviePocket.controller.dto.review.ReactionDTO;
 import com.moviePocket.controller.dto.review.ReviewDTO;
 import com.moviePocket.db.entities.Module;
@@ -18,10 +17,8 @@ import com.moviePocket.db.entities.movie.Movie;
 import com.moviePocket.db.entities.post.Post;
 import com.moviePocket.db.entities.review.*;
 import com.moviePocket.db.entities.user.User;
-import com.moviePocket.db.repository.review.ReviewListRepository;
-import com.moviePocket.db.repository.review.ReviewMovieRepository;
-import com.moviePocket.db.repository.review.ReviewPostRepository;
-import com.moviePocket.db.repository.review.ReviewRepository;
+import com.moviePocket.db.repository.review.*;
+import com.moviePocket.exception.BadRequestException;
 import com.moviePocket.exception.ForbiddenException;
 import com.moviePocket.exception.NotFoundException;
 import com.moviePocket.service.impl.auth.AuthUser;
@@ -49,10 +46,13 @@ public class ReviewServiceImpl implements ReviewService {
     private final ReviewListRepository reviewListRepository;
     private final PostServiceImpl postService;
     private final ReviewPostRepository reviewPostRepository;
+    private final LikeReviewRepository likeReviewRepository;
 
 
     private Review createReview(String title, String content, Module module, Long idItem) {
         User user = auth.getAuthenticatedUser();
+        if (title.isEmpty() || content.isEmpty())
+            throw new BadRequestException("Title or content cannot be empty");
         return reviewRepository.save(Review.builder()
                 .user(user)
                 .title(title)
@@ -65,13 +65,13 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public ReviewDTO createReviewMovie(Long idMovie, String title, String content) {
-        Movie movie = movieService.setMovieIfNotExist(idMovie);
+        Movie movie = movieService.getOrSetMovieIfNotExistOrThrowNotFoundException(idMovie);
         Review review = createReview(title, content, ModulesConstant.movie, idMovie);
         ReviewMovie reviewMovie = ReviewMovie.builder()
                 .movie(movie)
                 .review(review)
                 .build();
-        return parsReview(
+        return ReviewDTO.parsReview(
                 reviewMovieRepository.save(reviewMovie)
                         .getReview()
         );
@@ -85,7 +85,7 @@ public class ReviewServiceImpl implements ReviewService {
                 .movieList(movieList)
                 .review(review)
                 .build();
-        return parsReview(
+        return ReviewDTO.parsReview(
                 reviewListRepository.save(reviewList)
                         .getReview()
         );
@@ -99,7 +99,7 @@ public class ReviewServiceImpl implements ReviewService {
                 .post(post)
                 .review(review)
                 .build();
-        return parsReview(
+        return ReviewDTO.parsReview(
                 reviewPostRepository.save(reviewPost)
                         .getReview()
         );
@@ -112,7 +112,7 @@ public class ReviewServiceImpl implements ReviewService {
         if (movieReview.getUser().equals(user)) {
             movieReview.setTitle(title);
             movieReview.setContent(content);
-            return parsReview(reviewRepository.save(movieReview));
+            return ReviewDTO.parsReview(reviewRepository.save(movieReview));
         } else {
             throw new ForbiddenException("You cannot modify a review if it is not yours.");
         }
@@ -139,33 +139,33 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public List<ReviewDTO> getAllReviewByIdMovie(Long idMovie) {
         var review = reviewMovieRepository.findReviewsByMovieId(idMovie);
-        return review.stream().map(this::parsReview).toList();
+        return review.stream().map(ReviewDTO::parsReview).toList();
     }
 
     @Override
     public List<ReviewDTO> getAllReviewByIdList(Long idList) {
         ListMovie movieList = listService.getListByIdOrThrow(idList);
         var reviews = reviewListRepository.findReviewsByMovieList(movieList);
-        return reviews.stream().map(this::parsReview).toList();
+        return reviews.stream().map(ReviewDTO::parsReview).toList();
     }
 
     @Override
     public List<ReviewDTO> getAllReviewByIdPost(Long idPost) {
         Post post = postService.getPostByIdOrThrow(idPost);
         var reviews = reviewPostRepository.findReviewsByPost(post);
-        return reviews.stream().map(this::parsReview).toList();
+        return reviews.stream().map(ReviewDTO::parsReview).toList();
     }
 
     @Override
     public List<ReviewDTO> getAllReviewsByUser() {
         User user = auth.getAuthenticatedUser();
         var reviews = reviewRepository.findAllByUser(user);
-        return reviews.stream().map(this::parsReview).toList();
+        return reviews.stream().map(ReviewDTO::parsReview).toList();
     }
 
     @Override
     public ReviewDTO getReviewById(Long idReview) {
-        return parsReview(getReviewByIdOrThrow(idReview));
+        return ReviewDTO.parsReview(getReviewByIdOrThrow(idReview));
     }
 
     @Override
@@ -196,28 +196,56 @@ public class ReviewServiceImpl implements ReviewService {
         return review.getUser().equals(user);
     }
 
-    private ReviewDTO parsReview(Review review) {
-        return ReviewDTO.builder()
-                .title(review.getTitle())
-                .content(review.getContent())
-                .user(UserPostDto.builder()
-                        .avatar(review.getUser().getAvatar() != null ? review.getUser().getAvatar().getId() : null)
-                        .username(review.getUser().getLogin())
-                        .build()
-                )
-                .dataCreated(review.getCreated())
-                .dataUpdated(review.getUpdated())
-                .id(review.getId())
-                .reactions(ReactionDTO.builder()
-                        .likes((int) review.getReactions().stream().filter(ReviewReaction::isReaction).count())
-                        .dislikes((int) review.getReactions().stream().filter(reaction -> !reaction.isReaction()).count())
-                        .build())
-                .build();
-    }
-
-    public Review getReviewByIdOrThrow(long idReview) {
+    private Review getReviewByIdOrThrow(long idReview) {
         return reviewRepository.findById(idReview)
                 .orElseThrow(() -> new NotFoundException("Review not found"));
+    }
+
+    @Override
+    public void setLikeOrDisLike(Long idReview, boolean reaction) {
+        var user = auth.getAuthenticatedUser();
+        var review = getReviewByIdOrThrow(idReview);
+        var existingLike = likeReviewRepository.findByUserAndReview(user, review);
+
+        if (existingLike.isPresent()) {
+            var like = existingLike.get();
+            if (like.isReaction() != reaction) {
+                like.setReaction(reaction);
+                likeReviewRepository.save(like);
+            }
+        } else {
+            likeReviewRepository.save(ReviewReaction.builder()
+                    .reaction(reaction)
+                    .review(review)
+                    .user(user)
+                    .build());
+        }
+    }
+
+    @Override
+    public void deleteReaction(Long idReview) {
+        var user = auth.getAuthenticatedUser();
+        var review = getReviewByIdOrThrow(idReview);
+        var existingLike = likeReviewRepository.findByUserAndReview(user, review)
+                .orElseThrow(() -> new NotFoundException("Reaction not found on id review " + idReview));
+        likeReviewRepository.delete(existingLike);
+    }
+
+    @Override
+    public Boolean getReaction(Long idReview) {
+        var user = auth.getAuthenticatedUser();
+        var review = getReviewByIdOrThrow(idReview);
+        var existingLike = likeReviewRepository.findByUserAndReview(user, review);
+        if (existingLike.isEmpty()) {
+            return null;
+        }
+        return existingLike.get().isReaction();
+    }
+
+
+    @Override
+    public ReactionDTO getAllReactionReview(Long idReview) {
+        return null;
     }
 
 }

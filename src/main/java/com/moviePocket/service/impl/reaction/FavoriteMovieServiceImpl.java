@@ -41,7 +41,7 @@ public class FavoriteMovieServiceImpl implements ReactionMovie {
         if (optionalFavoriteMovie.isPresent()) {
             favoriteMovieRepository.delete(optionalFavoriteMovie.get());
         } else {
-            Movie movie = movieService.setMovieIfNotExist(idMovie);
+            Movie movie = movieService.getOrSetMovieIfNotExistOrThrowNotFoundException(idMovie);
             if (movie != null) {
                 FavoriteMovie newFavoriteMovie = new FavoriteMovie(auth.getAuthenticatedUser(), movie);
                 favoriteMovieRepository.save(newFavoriteMovie);

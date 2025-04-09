@@ -78,7 +78,7 @@ class TracingServiceImplTest {
 
         // then
         assertFalse(result);
-//        verify(auth).getAuthenticatedUser();
+        verify(auth).getAuthenticatedUser();
         verify(trackingRepository).existsByUserAndMovie_Id(mockUser, movieId);
     }
 
@@ -94,7 +94,7 @@ class TracingServiceImplTest {
 
         when(auth.getAuthenticatedUser()).thenReturn(mockUser);
         when(trackingRepository.findByUserAndMovie_Id(mockUser, movieId)).thenReturn(Optional.empty());
-        when(movieService.setMovieIfNotExist(movieId)).thenReturn(movie);
+        when(movieService.getOrSetMovieIfNotExistOrThrowNotFoundException(movieId)).thenReturn(movie);
 
         // when
         tracingService.setOrDel(movieId);
@@ -115,7 +115,7 @@ class TracingServiceImplTest {
 
         when(auth.getAuthenticatedUser()).thenReturn(mockUser);
         when(trackingRepository.findByUserAndMovie_Id(mockUser, movieId)).thenReturn(Optional.empty());
-        when(movieService.setMovieIfNotExist(movieId)).thenReturn(movie);
+        when(movieService.getOrSetMovieIfNotExistOrThrowNotFoundException(movieId)).thenReturn(movie);
 
         // when
         tracingService.setOrDel(movieId);

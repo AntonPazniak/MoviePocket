@@ -32,10 +32,7 @@ import org.webjars.NotFoundException;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 
 @Slf4j
@@ -52,37 +49,46 @@ public class TMDBApi {
                 .create();
     }
 
-    public static MovieTMDB getInfoMovie(Long idMovie) {
+    public static Optional<MovieTMDB> getInfoMovie(Long idMovie) {
         if (idMovie > 0) {
-            String responseString = getMovieDetails(idMovie);
-            if (responseString != null)
-                return gson.fromJson(responseString, MovieTMDB.class);
+            var responseString = getMovieDetails(idMovie);
+            if (responseString.isPresent()) {
+                MovieTMDB movie = gson.fromJson(responseString.get(), MovieTMDB.class);
+                return Optional.ofNullable(movie);
+            }
         } else {
-            String responseString = getTVsInfo(Math.abs(idMovie));
-            if (responseString != null) {
-                MovieTMDB movie = gson.fromJson(responseString, MovieTMDB.class);
-                movie.setId(movie.getId() * (-1));
-                return movie;
+            var responseString = getTVsInfo(Math.abs(idMovie));
+            if (responseString.isPresent()) {
+                MovieTMDB movie = gson.fromJson(responseString.get(), MovieTMDB.class);
+                if (movie != null) {
+                    movie.setId(movie.getId() * -1);
+                }
+                return Optional.ofNullable(movie);
             }
         }
-        return null;
+        return Optional.empty();
     }
 
-    public static Movie getShortInfoMovie(Long idMovie) {
+
+    public static Optional<Movie> getShortInfoMovie(Long idMovie) {
         if (idMovie > 0) {
-            String responseString = getMovieDetails(idMovie);
-            if (responseString != null)
-                return gson.fromJson(responseString, Movie.class);
+            var responseString = getMovieDetails(idMovie);
+            if (responseString.isPresent()) {
+                Movie movie = gson.fromJson(responseString.get(), Movie.class);
+                return Optional.ofNullable(movie);
+            }
         } else {
-            String responseString = getTVsInfo(Math.abs(idMovie));
-            if (responseString != null) {
-                return parseTVSeries(responseString);
+            var responseString = getTVsInfo(Math.abs(idMovie));
+            if (responseString.isPresent()) {
+                Movie tvSeries = parseTVSeries(responseString.get());
+                return Optional.ofNullable(tvSeries);
             }
         }
-        return null;
+        return Optional.empty();
     }
 
-    private static String getMovieDetails(Long idMovie) {
+
+    private static Optional<String> getMovieDetails(Long idMovie) {
         OkHttpClient client = new OkHttpClient();
 
         String url = "https://api.themoviedb.org/3/movie/" + idMovie + "?language=" + language + "&api_key=" + TMDBConfig.getApiKey();
@@ -94,18 +100,17 @@ public class TMDBApi {
 
         try {
             Response response = client.newCall(request).execute();
-            if (response.isSuccessful()) {
-                assert response.body() != null;
-                return response.body().string();
-            } else
-                return null;
+            if (response.isSuccessful() && response.body() != null) {
+                return Optional.of(response.body().string());
+            }
         } catch (IOException e) {
             log.error(e.toString());
-            return null;
         }
+        return Optional.empty();
     }
 
-    private static String getMovieTrailerUrl(Long movieId) {
+
+    private static Optional<String> getMovieTrailerUrl(Long movieId) {
         OkHttpClient client = new OkHttpClient();
         String url = "https://api.themoviedb.org/3/movie/" + movieId + "/videos?language=" + language + "&api_key=" + TMDBConfig.getApiKey();
 
@@ -113,18 +118,20 @@ public class TMDBApi {
                 .url(url)
                 .get()
                 .build();
+
         try {
             Response response = client.newCall(request).execute();
             if (response.isSuccessful()) {
                 String responseBody = response.body().string();
                 JSONObject jsonObject = new JSONObject(responseBody);
                 JSONArray resultsArray = jsonObject.getJSONArray("results");
+
                 for (int i = 0; i < resultsArray.length(); i++) {
                     JSONObject videoObject = resultsArray.getJSONObject(i);
                     String type = videoObject.getString("type");
                     if ("Trailer".equals(type)) {
                         String key = videoObject.getString("key");
-                        return "https://www.youtube.com/embed/" + key;
+                        return Optional.of("https://www.youtube.com/embed/" + key);
                     }
                 }
             }
@@ -132,11 +139,11 @@ public class TMDBApi {
             log.error(e.toString());
         }
 
-        return null;
+        return Optional.empty();
     }
 
 
-    private static String getTVsInfo(Long idTV) {
+    private static Optional<String> getTVsInfo(Long idTV) {
         OkHttpClient client = new OkHttpClient();
         String url = "https://api.themoviedb.org/3/tv/" + idTV + "?language=" + language + "&api_key=" + TMDBConfig.getApiKey();
 
@@ -144,17 +151,19 @@ public class TMDBApi {
                 .url(url)
                 .get()
                 .build();
+
         try {
             Response response = client.newCall(request).execute();
-            if (response.isSuccessful()) {
-                assert response.body() != null;
-                return response.body().string();
+            if (response.isSuccessful() && response.body() != null) {
+                return Optional.of(response.body().string());
             }
         } catch (IOException e) {
             log.error(e.toString());
         }
-        return null;
+
+        return Optional.empty();
     }
+
 
     public static List<Genre> getGenres() {
         OkHttpClient client = new OkHttpClient();
